@@ -3,6 +3,7 @@ package com.group_2.onlineshop.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
+    @Lazy
     private JwtRequestFilter jwtRequestFilter;
 
     @Bean
@@ -25,8 +27,14 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                                .requestMatchers("api/auth/user/info").authenticated()
+//                        .requestMatchers("/api/products/**").permitAll()
+//                        .requestMatchers("api/reviews/**").permitAll()
+//                        .requestMatchers("api/categories/**").permitAll()
+//                        .requestMatchers("/api/orders/*/status").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/change-password").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -1,17 +1,11 @@
-package com.group_2.onlineshop.entity;
+package com.group_2.onlineshop.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "images")
-public class Image {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ImageDTO {
     private Long id;
-
     private String url;
     private String publicId;
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }

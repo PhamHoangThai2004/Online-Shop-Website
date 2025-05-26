@@ -5,20 +5,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private double price;
+
     private Double salePrice;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(nullable = false)
     private int stock;
+
+    @Column(nullable = false)
     private int soldQuantity = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id")
     private List<Image> images = new ArrayList<>();
+
+    public Product() {
+    }
+
+    public Product(String name, double price, int stock, Category category) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+    }
 
     public Long getId() {
         return id;
@@ -33,6 +59,9 @@ public class Product {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be null or empty");
+        }
         this.name = name;
     }
 
@@ -41,6 +70,9 @@ public class Product {
     }
 
     public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
         this.price = price;
     }
 
@@ -49,6 +81,9 @@ public class Product {
     }
 
     public void setSalePrice(Double salePrice) {
+        if (salePrice != null && salePrice < 0) {
+            throw new IllegalArgumentException("Sale price cannot be negative");
+        }
         this.salePrice = salePrice;
     }
 
@@ -65,6 +100,9 @@ public class Product {
     }
 
     public void setStock(int stock) {
+        if (stock < 0) {
+            throw new IllegalArgumentException("Stock cannot be negative");
+        }
         this.stock = stock;
     }
 
@@ -73,6 +111,9 @@ public class Product {
     }
 
     public void setSoldQuantity(int soldQuantity) {
+        if (soldQuantity < 0) {
+            throw new IllegalArgumentException("Sold quantity cannot be negative");
+        }
         this.soldQuantity = soldQuantity;
     }
 
@@ -81,6 +122,22 @@ public class Product {
     }
 
     public void setImages(List<Image> images) {
-        this.images = images;
+        this.images = images != null ? images : new ArrayList<>();
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public double getEffectivePrice() {
+        return (salePrice != null && salePrice < price) ? salePrice : price;
+    }
+
+    public boolean isInStock() {
+        return stock > 0;
     }
 }

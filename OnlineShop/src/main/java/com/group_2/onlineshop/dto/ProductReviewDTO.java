@@ -1,24 +1,12 @@
-package com.group_2.onlineshop.entity;
+package com.group_2.onlineshop.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "product_reviews")
-public class ProductReview {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductReviewDTO {
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    private int rating; // 1-5
+    private Long productId;
+    private Long userId;
+    private int rating;
     private String comment;
     private LocalDateTime createdAt;
 
@@ -30,20 +18,20 @@ public class ProductReview {
         this.id = id;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public int getRating() {
