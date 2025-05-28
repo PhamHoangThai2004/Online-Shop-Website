@@ -6,6 +6,7 @@ import com.group_2.onlineshop.dto.ProductDTO;
 import com.group_2.onlineshop.entity.Category;
 import com.group_2.onlineshop.entity.Image;
 import com.group_2.onlineshop.repository.CategoryRepository;
+import com.group_2.onlineshop.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +22,16 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // Get all categories
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // Lấy tất cả các danh mục: http://localhost:8080/api/categories
     @GetMapping
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Get category by ID
+    // Lấy danh mục bằng Id
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         Optional<Category> category = categoryRepository.findById(id);
@@ -36,16 +40,44 @@ public class CategoryController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Create a new category
+    // Tạo 1 danh mục mới: http://localhost:8080/api/categories
     @PostMapping
-    public CategoryDTO createCategory(@RequestBody Category category) {
+    public ResponseEntity<?> createCategory(
+            @RequestBody Category category,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
         Category savedCategory = categoryRepository.save(category);
-        return convertToDTO(savedCategory);
+        return ResponseEntity.ok(convertToDTO(savedCategory));
     }
 
-    // Update a category
+    // Cập nhập danh mục: http://localhost:8080/api/categories/3
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
+    public ResponseEntity<?> updateCategory(
+            @PathVariable Long id,
+            @RequestBody Category updatedCategory,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<Category> existingCategory = categoryRepository.findById(id);
         if (existingCategory.isPresent()) {
             updatedCategory.setId(id);
@@ -55,9 +87,23 @@ public class CategoryController {
         return ResponseEntity.notFound().build();
     }
 
-    // Delete a category
+    // Xoá danh mục: http://localhost:8080/api/categories/5
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCategory(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
             return ResponseEntity.ok().build();
@@ -65,7 +111,6 @@ public class CategoryController {
         return ResponseEntity.notFound().build();
     }
 
-    // Helper method to convert Category to CategoryDTO
     private CategoryDTO convertToDTO(Category category) {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setId(category.getId());
@@ -84,13 +129,12 @@ public class CategoryController {
                 productDTO.setImages(product.getImages() != null ?
                         product.getImages().stream().map(this::convertToImageDTO).collect(Collectors.toList()) : null);
                 return productDTO;
-            }).collect(Collectors.toList());
+            }).toList();
             categoryDTO.setProducts(productDTOs);
         }
         return categoryDTO;
     }
 
-    // Helper method to convert Image to ImageDTO
     private ImageDTO convertToImageDTO(Image image) {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(image.getId());

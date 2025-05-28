@@ -29,29 +29,25 @@ public class ProductReviewController {
     @Autowired
     private UserRepository userRepository;
 
-    // Create a product review
+    // Tạo 1 review mới
     @PostMapping("/products/{id}/reviews")
     public ResponseEntity<ProductReviewDTO> createReview(
             @PathVariable Long id,
             @RequestBody ProductReviewRequest reviewRequest) {
-        // Check if product exists
         Optional<Product> product = productRepository.findById(id);
         if (!product.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        // Check if user exists
         Optional<User> user = userRepository.findById(reviewRequest.getUserId());
         if (!user.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
 
-        // Validate rating (1-5)
         if (reviewRequest.getRating() < 1 || reviewRequest.getRating() > 5) {
             return ResponseEntity.badRequest().build();
         }
 
-        // Create review
         ProductReview review = new ProductReview();
         review.setProduct(product.get());
         review.setUser(user.get());
@@ -59,54 +55,46 @@ public class ProductReviewController {
         review.setComment(reviewRequest.getComment());
         review.setCreatedAt(LocalDateTime.now());
 
-        // Save review
         ProductReview savedReview = productReviewRepository.save(review);
         return ResponseEntity.ok(convertToDTO(savedReview));
     }
 
-    // Update a product review
+    // Cập nhập review
     @PutMapping("/reviews/{reviewId}")
     public ResponseEntity<ProductReviewDTO> updateReview(
             @PathVariable Long reviewId,
             @RequestBody ProductReviewRequest reviewRequest) {
-        // Check if review exists
         Optional<ProductReview> existingReview = productReviewRepository.findById(reviewId);
         if (!existingReview.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        // Check if user exists and owns the review
         Optional<User> user = userRepository.findById(reviewRequest.getUserId());
         if (!user.isPresent() || !existingReview.get().getUser().getId().equals(reviewRequest.getUserId())) {
             return ResponseEntity.badRequest().build();
         }
 
-        // Validate rating (1-5)
         if (reviewRequest.getRating() < 1 || reviewRequest.getRating() > 5) {
             return ResponseEntity.badRequest().build();
         }
 
-        // Update review
         ProductReview review = existingReview.get();
         review.setRating(reviewRequest.getRating());
         review.setComment(reviewRequest.getComment());
-        review.setCreatedAt(LocalDateTime.now()); // Update timestamp
+        review.setCreatedAt(LocalDateTime.now());
 
-        // Save updated review
         ProductReview updatedReview = productReviewRepository.save(review);
         return ResponseEntity.ok(convertToDTO(updatedReview));
     }
 
-    // Get all reviews for a product
+    // Lấy tất cả các review của 1 sản phẩm
     @GetMapping("/products/{id}/reviews")
     public ResponseEntity<List<ProductReviewDTO>> getReviewsByProduct(@PathVariable Long id) {
-        // Check if product exists
         Optional<Product> product = productRepository.findById(id);
         if (!product.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        // Get reviews
         List<ProductReview> reviews = productReviewRepository.findAll().stream()
                 .filter(review -> review.getProduct().getId().equals(id))
                 .toList();
@@ -118,12 +106,11 @@ public class ProductReviewController {
         return ResponseEntity.ok(reviewDTOs);
     }
 
-    // Delete a product review
+    // Xoá 1 review
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
             @PathVariable Long reviewId,
             @RequestBody DeleteReviewRequest deleteRequest) {
-        // Check if review exists
         Optional<ProductReview> existingReview = productReviewRepository.findById(reviewId);
         if (!existingReview.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -139,7 +126,6 @@ public class ProductReviewController {
         return ResponseEntity.ok().build();
     }
 
-    // Convert ProductReview entity to DTO
     private ProductReviewDTO convertToDTO(ProductReview review) {
         ProductReviewDTO dto = new ProductReviewDTO();
         dto.setId(review.getId());

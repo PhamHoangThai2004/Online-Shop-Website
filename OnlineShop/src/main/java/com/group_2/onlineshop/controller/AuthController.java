@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -85,7 +88,18 @@ public class AuthController {
     }
 
     @GetMapping("/user/info")
-    public ResponseEntity<?> getUserInfo(@RequestParam("username") String username) {
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         User user = userService.findByUsername(username);
         if (user == null) {
             return ResponseEntity.badRequest().body("User not found");
@@ -101,6 +115,47 @@ public class AuthController {
         userInfo.setAddress(user.getAddress());
 
         return ResponseEntity.ok(userInfo);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        User currentUser = userService.findByUsername(username);
+        if (currentUser == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+//        if (!"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+//            return ResponseEntity.status(403).body("Access denied: Admin role required");
+//        }
+
+        // Get all users and convert to UserInfoResponse (excluding password)
+        List<User> users = userService.findAllUsers();
+        List<UserInfoResponse> userInfoList = users.stream()
+                .map(user -> {
+                    UserInfoResponse userInfo = new UserInfoResponse();
+                    userInfo.setId(user.getId());
+                    userInfo.setUsername(user.getUsername());
+                    userInfo.setEmail(user.getEmail());
+                    userInfo.setRole(user.getRole());
+                    userInfo.setFullName(user.getFullName());
+                    userInfo.setPhoneNumber(user.getPhoneNumber());
+                    userInfo.setAddress(user.getAddress());
+                    return userInfo;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(userInfoList);
     }
 }
 

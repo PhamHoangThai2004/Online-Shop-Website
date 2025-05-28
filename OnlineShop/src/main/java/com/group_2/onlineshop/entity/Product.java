@@ -112,9 +112,9 @@ public class Product {
 
     public void setSoldQuantity(int soldQuantity) {
         if (soldQuantity < 0) {
-            throw new IllegalArgumentException("Sold quantity cannot be negative");
+            this.soldQuantity = 0;
         }
-        this.soldQuantity = soldQuantity;
+        else this.soldQuantity = soldQuantity;
     }
 
     public List<Image> getImages() {

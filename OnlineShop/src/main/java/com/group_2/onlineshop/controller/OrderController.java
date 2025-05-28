@@ -4,6 +4,7 @@ import com.group_2.onlineshop.dto.OrderItemDTO;
 import com.group_2.onlineshop.dto.OrderDTO;
 import com.group_2.onlineshop.entity.*;
 import com.group_2.onlineshop.repository.*;
+import com.group_2.onlineshop.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,30 @@ public class OrderController {
     @Autowired
     private UserRepository userRepository;
 
-    // Create order from cart
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // Tạo 1 đơn hàng từ giỏ hàng: http://localhost:8080/api/orders/create
     @PostMapping("/create")
-    public ResponseEntity<OrderDTO> createOrder(@RequestParam Long userId) {
+    public ResponseEntity<?> createOrder(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        long userId;
+        try {
+            userId = Long.parseLong(jwtUtil.extractId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -46,7 +68,6 @@ public class OrderController {
         }
 
         Cart cart = cartOpt.get();
-        // Check stock availability
         for (CartItem item : cart.getItems()) {
             Product product = item.getProduct();
             if (item.getQuantity() > product.getStock()) {
@@ -54,7 +75,6 @@ public class OrderController {
             }
         }
 
-        // Create order
         Order order = new Order();
         order.setUser(user.get());
         order.setStatus("PENDING");
@@ -63,7 +83,6 @@ public class OrderController {
 
         Order savedOrder = orderRepository.save(order);
 
-        // Convert cart items to order items
         for (CartItem cartItem : cart.getItems()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(savedOrder);
@@ -73,7 +92,6 @@ public class OrderController {
             orderItem.setPrice(price);
             totalPrice += price * cartItem.getQuantity();
 
-            // Update product stock and sold quantity
             Product product = cartItem.getProduct();
             product.setStock(product.getStock() - cartItem.getQuantity());
             product.setSoldQuantity(product.getSoldQuantity() + cartItem.getQuantity());
@@ -85,14 +103,13 @@ public class OrderController {
         order.setTotalPrice(totalPrice);
         savedOrder = orderRepository.save(order);
 
-        // Clear cart after successful order
         cart.getItems().clear();
         cartRepository.save(cart);
 
         return ResponseEntity.ok(convertToResponse(savedOrder));
     }
 
-    // Get all orders by user
+    // Get đơn hàng bằng user: http://localhost:8080/api/orders/user/1
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderDTO>> getOrdersByUser(@PathVariable Long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -103,7 +120,7 @@ public class OrderController {
         return ResponseEntity.ok(orders.stream().map(this::convertToResponse).collect(Collectors.toList()));
     }
 
-    // Get order by ID
+    // Get đơn hàng bằng Id: http://localhost:8080/api/orders/1
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
@@ -113,11 +130,23 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(order.get()));
     }
 
-    // Update order status (ADMIN only)
+    // Cập nhập status đơn hàng(chỉ dành cho ADMIN): http://localhost:8080/api/orders/2/status?status=SHIPPED
     @PutMapping("/{orderId}/status")
-    public ResponseEntity<OrderDTO> updateOrderStatus(
+    public ResponseEntity<?> updateOrderStatus(
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long orderId,
             @RequestParam String status) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<Order> orderOpt = orderRepository.findById(orderId);
         if (!orderOpt.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -131,27 +160,40 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(updatedOrder));
     }
 
-    // Cancel order (user can cancel if PENDING)
+    // Huỷ đơn hàng (user chỉ có thể huỷ đơn hàng nếu status đang là PENDING)
+//    http://localhost:8080/api/orders/2/cancel
     @PutMapping("/{orderId}/cancel")
-    public ResponseEntity<OrderDTO> cancelOrder(
-            @PathVariable Long orderId,
-            @RequestParam Long userId) {
+    public ResponseEntity<?> cancelOrder(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long orderId) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        String userId = jwtUtil.extractId(token);
+
         Optional<Order> orderOpt = orderRepository.findById(orderId);
-        if (!orderOpt.isPresent()) {
+        if (orderOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         Order order = orderOpt.get();
-        if (!order.getUser().getId().equals(userId)) {
+        if (!order.getUser().getId().toString().equals(userId)) {
             return ResponseEntity.badRequest().build();
         }
         if (!order.getStatus().equals("PENDING")) {
             return ResponseEntity.badRequest().build();
         }
 
-        // Restore stock and sold quantity
         List<OrderItem> items = orderItemRepository.findAll().stream()
                 .filter(item -> item.getOrder().getId().equals(orderId))
-                .collect(Collectors.toList());
+                .toList();
         for (OrderItem item : items) {
             Product product = item.getProduct();
             product.setStock(product.getStock() + item.getQuantity());
@@ -164,7 +206,6 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(updatedOrder));
     }
 
-    // Helper method to convert Order to OrderResponse
     private OrderDTO convertToResponse(Order order) {
         OrderDTO response = new OrderDTO();
         response.setId(order.getId());
@@ -173,10 +214,9 @@ public class OrderController {
         response.setStatus(order.getStatus());
         response.setCreatedAt(order.getCreatedAt());
 
-        // Fetch OrderItems for the order
         List<OrderItem> items = orderItemRepository.findAll().stream()
                 .filter(item -> item.getOrder().getId().equals(order.getId()))
-                .collect(Collectors.toList());
+                .toList();
         response.setItems(items.stream().map(item -> {
             OrderItemDTO itemDto = new OrderItemDTO();
             itemDto.setProductId(item.getProduct().getId());
@@ -189,7 +229,6 @@ public class OrderController {
         return response;
     }
 
-    // Helper method to validate status
     private boolean isValidStatus(String status) {
         return status.equals("PENDING") || status.equals("SHIPPED") || status.equals("DELIVERED") || status.equals("CANCELLED");
     }

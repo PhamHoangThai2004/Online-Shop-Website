@@ -5,6 +5,7 @@ import com.group_2.onlineshop.dto.ProductDTO;
 import com.group_2.onlineshop.entity.Image;
 import com.group_2.onlineshop.entity.Product;
 import com.group_2.onlineshop.repository.ProductRepository;
+import com.group_2.onlineshop.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,13 +25,17 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    // Get all products
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // Lấy tất cả danh sách sản phẩm: http://localhost:8080/api/products
+    // Sẽ fix để phân trang
     @GetMapping
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Get product by ID
+    // Lấy thông tin chi tiết sản phẩm bằng Id: http://localhost:8080/api/products/1
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         Optional<Product> product = productRepository.findById(id);
@@ -39,16 +44,45 @@ public class ProductController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Create a new product
+    // Tạo một sản phẩm mới (chỉ ADMIN có quyền): http://localhost:8080/api/products
     @PostMapping
-    public ProductDTO createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody Product product
+    ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Product savedProduct = productRepository.save(product);
-        return convertToDTO(savedProduct);
+        return ResponseEntity.ok(convertToDTO(savedProduct));
     }
 
-    // Update a product
+    // Cập nhập sản phẩm (chỉ ADMIN có quyền): http://localhost:8080/api/products/4
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
+    public ResponseEntity<?> updateProduct(
+            @PathVariable Long id,
+            @RequestBody Product updatedProduct,
+            @RequestHeader("Authorization") String authorizationHeader
+            ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<Product> existingProduct = productRepository.findById(id);
         if (existingProduct.isPresent()) {
             updatedProduct.setId(id);
@@ -58,9 +92,23 @@ public class ProductController {
         return ResponseEntity.notFound().build();
     }
 
-    // Delete a product
+    // Xoá 1 sản phâ (chỉ ADMIN có quyền): http://localhost:8080/api/products/4
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProduct(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
             return ResponseEntity.ok().build();
@@ -79,24 +127,20 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String sort) {
-        // Xử lý sắp xếp
+
         String[] sortParams = sort.split(",");
         String sortField = sortParams[0];
         Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
         Sort sortBy = Sort.by(sortDirection, sortField);
 
-        // Tạo Pageable cho phân trang
         Pageable pageable = PageRequest.of(page, size, sortBy);
 
-        // Tìm kiếm và lọc sản phẩm
         Page<Product> productPage = productRepository.searchAndFilterProducts(keyword, categoryId, minPrice, maxPrice, inStock, pageable);
 
-        // Chuyển đổi sang DTO
         Page<ProductDTO> productDTOPage = productPage.map(this::convertToDTO);
         return ResponseEntity.ok(productDTOPage);
     }
 
-    // Search products by keyword (using findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase)
     @GetMapping("/search-by-keyword")
     public ResponseEntity<List<ProductDTO>> searchByKeyword(@RequestParam String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
@@ -106,14 +150,12 @@ public class ProductController {
         return ResponseEntity.ok(products.stream().map(this::convertToDTO).collect(Collectors.toList()));
     }
 
-    // Filter products by category (using findByCategoryId)
     @GetMapping("/filter-by-category")
     public ResponseEntity<List<ProductDTO>> filterByCategory(@RequestParam Long categoryId) {
         List<Product> products = productRepository.findByCategoryId(categoryId);
         return ResponseEntity.ok(products.stream().map(this::convertToDTO).collect(Collectors.toList()));
     }
 
-    // Helper method to convert Product to ProductDTO
     private ProductDTO convertToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
@@ -129,7 +171,6 @@ public class ProductController {
         return productDTO;
     }
 
-    // Helper method to convert Image to ImageDTO
     private ImageDTO convertToImageDTO(Image image) {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(image.getId());

@@ -9,6 +9,7 @@ import com.group_2.onlineshop.entity.User;
 import com.group_2.onlineshop.repository.CartRepository;
 import com.group_2.onlineshop.repository.ProductRepository;
 import com.group_2.onlineshop.repository.UserRepository;
+import com.group_2.onlineshop.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,10 @@ public class CartController {
     @Autowired
     private UserRepository userRepository;
 
-    // Get cart by user ID
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // Lấy danh sách sản phẩm trong giỏ hàng của User: http://localhost:8080/api/cart/user/1
     @GetMapping("/user/{userId}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable Long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -46,12 +50,30 @@ public class CartController {
                 });
     }
 
-    // Add product to cart
+    // Thêm 1 sản phẩm vào giỏ hàng: http://localhost:8080/api/cart/add?productId=1&quantity=1
     @PostMapping("/add")
-    public ResponseEntity<CartDTO> addProductToCart(
-            @RequestParam Long userId,
+    public ResponseEntity<?> addProductToCart(
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam Long productId,
             @RequestParam int quantity) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        long userId;
+        try {
+            userId = Long.parseLong(jwtUtil.extractId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<User> user = userRepository.findById(userId);
         Optional<Product> product = productRepository.findById(productId);
         if (!user.isPresent() || !product.isPresent()) {
@@ -86,12 +108,30 @@ public class CartController {
         return ResponseEntity.ok(convertToResponse(savedCart));
     }
 
-    // Update quantity of product in cart
+    // Cập nhật số lượng sản phẩm trong giỏ hàng: http://localhost:8080/api/cart/update?productId=1&quantity=1
     @PutMapping("/update")
-    public ResponseEntity<CartDTO> updateCartItem(
-            @RequestParam Long userId,
+    public ResponseEntity<?> updateCartItem(
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam Long productId,
             @RequestParam int quantity) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        long userId;
+        try {
+            userId = Long.parseLong(jwtUtil.extractId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -116,11 +156,29 @@ public class CartController {
         return ResponseEntity.ok(convertToResponse(savedCart));
     }
 
-    // Remove product from cart
+    // Xoá 1 sản phẩm khỏi giỏ hàng http://localhost:8080/api/cart/remove?productId=1
     @DeleteMapping("/remove")
-    public ResponseEntity<CartDTO> removeProductFromCart(
-            @RequestParam Long userId,
+    public ResponseEntity<?> removeProductFromCart(
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam Long productId) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        long userId;
+        try {
+            userId = Long.parseLong(jwtUtil.extractId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -135,7 +193,6 @@ public class CartController {
         return ResponseEntity.ok(convertToResponse(savedCart));
     }
 
-    // Helper method to convert Cart to CartResponse
     private CartDTO convertToResponse(Cart cart) {
         CartDTO response = new CartDTO();
         response.setId(cart.getId());
