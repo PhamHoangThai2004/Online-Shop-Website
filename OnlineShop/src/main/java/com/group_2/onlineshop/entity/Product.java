@@ -28,6 +28,10 @@ public class Product {
     @Column(nullable = false)
     private int soldQuantity = 0;
 
+    private String brand;
+
+    private String origin;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -115,6 +119,22 @@ public class Product {
             this.soldQuantity = 0;
         }
         else this.soldQuantity = soldQuantity;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     public List<Image> getImages() {

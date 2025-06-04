@@ -1,0 +1,265 @@
+* {
+    box-sizing: border-box; /* Đảm bảo tất cả phần tử tính toán kích thước chính xác */
+}
+
+body {
+    font-family: "Roboto Light", sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.navbar {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navbar-brand:hover {
+    text-decoration: underline;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar-links a:hover {
+    text-decoration: underline;
+}
+
+.cart-icon {
+    position: relative;
+    color: white;
+    margin-right: 30px;
+}
+
+.cart-icon svg {
+    position: relative;
+    z-index: 1;
+}
+
+.badge {
+    position: absolute;
+    top: -10px;
+    right: -12px;
+    background-color: #fff;
+    color: #4CAF50;
+    border-radius: 30px;
+    border: 3px solid #4CAF50;
+    padding: 1px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+    z-index: 0;
+}
+
+.badge[data-count="0"], .badge:empty {
+    display: none;
+}
+
+.main-container {
+    display: flex;
+    margin-top: 60px; /* Để tránh che khuất bởi navbar */
+}
+
+.sidebar {
+    width: 250px; /* Chiều rộng cố định */
+    background-color: #fff;
+    position: fixed;
+    top: 60px; /* Dưới navbar */
+    left: 0;
+    height: calc(100% - 60px); /* Chiều cao đầy đủ trừ navbar */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding-top: 10px;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #666;
+    font-size: 16px;
+    padding: 15px 20px;
+    width: 100%; /* Giới hạn chiều rộng bằng sidebar */
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.sidebar-item i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.sidebar-item span {
+    display: inline-block;
+    white-space: nowrap; /* Ngăn text xuống dòng */
+}
+
+.sidebar-item:hover {
+    color: #4CAF50;
+    background-color: #f0f0f0;
+}
+
+.sidebar-item.active {
+    color: #4CAF50;
+    background-color: #e8f5e9;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.content {
+    flex: 1;
+    margin-left: 250px; /* Khớp với chiều rộng sidebar */
+    padding: 20px; /* Thêm padding để nội dung không sát viền */
+}
+
+.info-container {
+    width: 100%; /* Chiếm toàn bộ chiều rộng của content */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.info-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4CAF50;
+    font-size: 24px;
+}
+
+.user-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-field label {
+    /*font-weight: bold;*/
+    min-width: 120px;
+    color: #4CAF50;
+}
+
+.info-field input,
+.info-field select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.readonly-text {
+    flex: 1;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    display: inline-block;
+}
+
+.change-password-link {
+    color: #0c97d3;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.change-password-link:hover {
+    text-decoration: underline;
+    color: #83b1c5;
+}
+
+.edit-info-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    align-self: flex-end;
+    margin-top: 15px;
+}
+
+.edit-info-btn:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px 0;
+    }
+
+    .sidebar-item {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .sidebar-item i {
+        margin-right: 5px;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .info-container {
+        margin: 0;
+        padding: 15px;
+    }
+
+    .info-field {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .info-field label {
+        min-width: auto;
+    }
+
+    .edit-info-btn {
+        width: 100%;
+        padding: 10px;
+    }
+}

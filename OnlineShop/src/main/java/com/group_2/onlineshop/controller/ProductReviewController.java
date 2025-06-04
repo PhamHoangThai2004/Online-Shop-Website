@@ -29,6 +29,25 @@ public class ProductReviewController {
     @Autowired
     private UserRepository userRepository;
 
+    // Lấy tất cả các review của 1 sản phẩm
+    @GetMapping("/products/{id}/reviews")
+    public ResponseEntity<List<ProductReviewDTO>> getReviewsByProduct(@PathVariable Long id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (!product.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<ProductReview> reviews = productReviewRepository.findAll().stream()
+                .filter(review -> review.getProduct().getId().equals(id))
+                .toList();
+
+        List<ProductReviewDTO> reviewDTOs = reviews.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(reviewDTOs);
+    }
+
     // Tạo 1 review mới
     @PostMapping("/products/{id}/reviews")
     public ResponseEntity<ProductReviewDTO> createReview(
@@ -85,25 +104,6 @@ public class ProductReviewController {
 
         ProductReview updatedReview = productReviewRepository.save(review);
         return ResponseEntity.ok(convertToDTO(updatedReview));
-    }
-
-    // Lấy tất cả các review của 1 sản phẩm
-    @GetMapping("/products/{id}/reviews")
-    public ResponseEntity<List<ProductReviewDTO>> getReviewsByProduct(@PathVariable Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        if (!product.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<ProductReview> reviews = productReviewRepository.findAll().stream()
-                .filter(review -> review.getProduct().getId().equals(id))
-                .toList();
-
-        List<ProductReviewDTO> reviewDTOs = reviews.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(reviewDTOs);
     }
 
     // Xoá 1 review

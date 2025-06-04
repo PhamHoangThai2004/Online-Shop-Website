@@ -83,8 +83,52 @@ public class AuthController {
         }
 
         user.setPassword(changePasswordRequest.getNewPassword());
-        userService.updateUser(user);
+        userService.updatePassword(user);
         return ResponseEntity.ok("Password changed successfully");
+    }
+
+    // Thay đổi thông tin user
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String authorizationHeader,
+                                            @RequestBody UpdateUserRequest updateUserRequest) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        // Update only allowed fields
+        if (updateUserRequest.getEmail() != null) {
+            user.setEmail(updateUserRequest.getEmail());
+        }
+        if (updateUserRequest.getFullName() != null) {
+            user.setFullName(updateUserRequest.getFullName());
+        }
+        if (updateUserRequest.getBirthday() != null) {
+            user.setBirthday(updateUserRequest.getBirthday());
+        }
+        if (updateUserRequest.getGender() != null) {
+            user.setGender(updateUserRequest.getGender());
+        }
+        if (updateUserRequest.getPhoneNumber() != null) {
+            user.setPhoneNumber(updateUserRequest.getPhoneNumber());
+        }
+        if (updateUserRequest.getAddress() != null) {
+            user.setAddress(updateUserRequest.getAddress());
+        }
+
+        userService.updateUser(user);
+        return ResponseEntity.ok("User information updated successfully");
     }
 
     @GetMapping("/user/info")
@@ -111,6 +155,8 @@ public class AuthController {
         userInfo.setEmail(user.getEmail());
         userInfo.setRole(user.getRole());
         userInfo.setFullName(user.getFullName());
+        userInfo.setBirthday(user.getBirthday());
+        userInfo.setGender(user.getGender());
         userInfo.setPhoneNumber(user.getPhoneNumber());
         userInfo.setAddress(user.getAddress());
 
@@ -135,11 +181,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body("User not found");
         }
 
-//        if (!"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
-//            return ResponseEntity.status(403).body("Access denied: Admin role required");
-//        }
-
-        // Get all users and convert to UserInfoResponse (excluding password)
         List<User> users = userService.findAllUsers();
         List<UserInfoResponse> userInfoList = users.stream()
                 .map(user -> {
@@ -156,6 +197,26 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(userInfoList);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> getAllUsers(@PathVariable Long id) {
+        User user = userService.findById(id);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        UserInfoResponse userInfo = new UserInfoResponse();
+        userInfo.setId(user.getId());
+        userInfo.setEmail(user.getEmail());
+        userInfo.setRole(user.getRole());
+        userInfo.setFullName(user.getFullName());
+        userInfo.setBirthday(user.getBirthday());
+        userInfo.setGender(user.getGender());
+        userInfo.setPhoneNumber(user.getPhoneNumber());
+        userInfo.setAddress(user.getAddress());
+
+        return ResponseEntity.ok(userInfo);
     }
 }
 
@@ -274,12 +335,71 @@ class ChangePasswordRequest {
     }
 }
 
+class UpdateUserRequest {
+    private String email;
+    private String fullName;
+    private String birthday;
+    private String gender;
+    private String phoneNumber;
+    private String address;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+}
+
 class UserInfoResponse {
     private Long id;
     private String username;
     private String email;
     private String role;
     private String fullName;
+    private String birthday;
+    private String gender;
     private String phoneNumber;
     private String address;
 
@@ -321,6 +441,22 @@ class UserInfoResponse {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getPhoneNumber() {

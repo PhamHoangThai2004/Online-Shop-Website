@@ -1,0 +1,240 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.navbar {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navbar-brand:hover {
+    text-decoration: underline;
+}
+
+.search-bar {
+    flex: 1;
+    margin: 0 20px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+}
+
+.search-bar button {
+    padding: 8px;
+    background-color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-links a:hover {
+    text-decoration: underline;
+}
+
+.cart-icon {
+    position: relative;
+    color: white;
+    margin-right: 30px;
+}
+
+.cart-icon svg {
+    position: relative;
+    z-index: 1; /* Đảm bảo SVG không bị che */
+}
+
+.badge {
+    position: absolute;
+    top: -10px; /* Điều chỉnh để sát góc trên bên phải */
+    right: -12px;
+    background-color: #fff; /* Nền trắng */
+    color: #4CAF50; /* Chữ đen */
+    border-radius: 30px; /* Tạo hình bubble giống hình ảnh */
+    border: 3px solid #4CAF50; /* Viền mỏng màu đen */
+    padding: 1px; /* Giảm padding để nhỏ hơn */
+    font-size: 12px; /* Giảm kích thước chữ */
+    font-weight: bold;
+    min-width: 18px; /* Giảm kích thước tối thiểu */
+    text-align: center;
+    z-index: 0; /* Đặt badge dưới SVG */
+}
+
+.badge[data-count="0"], .badge:empty {
+    display: none;
+}
+
+.main-container {
+    display: flex;
+    padding: 20px;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 15px;
+    margin-right: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+}
+
+.category-list li {
+    padding: 10px 0;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.category-list li:hover {
+    color: #4CAF50;
+}
+
+.product-grid {
+    flex: 1;
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+}
+
+.sort-options label {
+    margin-right: 10px;
+    color: #333;
+}
+
+.sort-options select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.product-card h4 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.product-card .original-price {
+    color: #888;
+    margin: 5px 0;
+    text-decoration: line-through;
+}
+
+.product-card .sale-price {
+    color: red;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.product-card .regular-price {
+    color: blue;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.product-card .rating-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f1c40f;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.product-card .rating-number .fa-star {
+    margin-right: 5px;
+    color: #f1c40f;
+}
+
+.product-card .sold-quantity {
+    color: #555;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.add-to-cart {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart:hover {
+    background-color: #45a049;
+}
+
+.no-products {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-style: italic;
+}

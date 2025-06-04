@@ -1,0 +1,68 @@
+.form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button[type="submit"]:hover {
+    background: #45a049;
+}
+.message {
+    margin-top: 10px;
+    color: red;
+}
+/* Thêm CSS cho password wrapper */
+.password-wrapper {
+    position: relative;
+}
+.password-wrapper input {
+    padding-right: 40px; /* Để lại không gian cho con mắt */
+}
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #000000; /* Màu mặc định khi ẩn mật khẩu */
+    transition: color 0.3s; /* Hiệu ứng chuyển màu mượt mà */
+}
+.toggle-password:hover {
+    color: #666;
+}
+.toggle-password.active {
+    color: #ff0000; /* Màu khi hiển thị mật khẩu */
+}
+/* Thêm animation khi thay đổi trạng thái */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+.toggle-password.active {
+    animation: pulse 0.5s ease-in-out;
+}

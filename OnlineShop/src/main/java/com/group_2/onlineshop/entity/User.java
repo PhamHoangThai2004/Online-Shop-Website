@@ -13,6 +13,8 @@ public class User {
     private String email;
     private String role; // CUSTOMER or ADMIN
     private String fullName;
+    private String gender;
+    private String birthday;
     private String phoneNumber;
     private String address;
 
@@ -62,6 +64,22 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getPhoneNumber() {

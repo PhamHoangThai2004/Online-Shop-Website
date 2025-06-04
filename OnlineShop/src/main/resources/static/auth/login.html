@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/auth/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico"> <!-- Thêm favicon -->
+</head>
+<body>
+<div class="container">
+    <h2>Đăng nhập</h2>
+    <form id="loginForm" class="form">
+        <div class="form-group">
+            <label for="loginUsername">Tên đăng nhập:</label>
+            <input type="text" id="loginUsername" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Mật khẩu:</label>
+            <div class="password-wrapper">
+                <input type="password" id="loginPassword" name="password" required>
+                <span class="toggle-password" onclick="togglePassword('loginPassword')">
+                        <i class="fa fa-eye" id="loginEyeIcon"></i>
+                    </span>
+            </div>
+        </div>
+        <button type="submit">Đăng nhập</button>
+        <div id="loginMessage" class="message"></div>
+    </form>
+    <p><a href="/auth/register.html">Chưa có tài khoản? Đăng ký ngay!</a></p>
+    <p><a href="/index.html">Quay lại trang chủ</a></p>
+</div>
+<script src="/auth/auth.js"></script>
+</body>
+</html>

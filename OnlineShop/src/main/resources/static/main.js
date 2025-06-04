@@ -1,0 +1,1 @@
+console.log("Ứng dụng đã khởi động!")

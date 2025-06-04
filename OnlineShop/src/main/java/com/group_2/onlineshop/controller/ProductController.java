@@ -37,7 +37,7 @@ public class ProductController {
 
     // Lấy thông tin chi tiết sản phẩm bằng Id: http://localhost:8080/api/products/1
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+        public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         Optional<Product> product = productRepository.findById(id);
         return product.map(this::convertToDTO)
                 .map(ResponseEntity::ok)
@@ -90,6 +90,15 @@ public class ProductController {
             return ResponseEntity.ok(convertToDTO(savedProduct));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // Lấy danh sách sản phẩm theo danh mục: http://localhost:8080/api/products?categoryId={id}
+    @GetMapping(params = "categoryId")
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@RequestParam Long categoryId) {
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+
+        List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(productDTOs);
     }
 
     // Xoá 1 sản phâ (chỉ ADMIN có quyền): http://localhost:8080/api/products/4
@@ -150,12 +159,6 @@ public class ProductController {
         return ResponseEntity.ok(products.stream().map(this::convertToDTO).collect(Collectors.toList()));
     }
 
-    @GetMapping("/filter-by-category")
-    public ResponseEntity<List<ProductDTO>> filterByCategory(@RequestParam Long categoryId) {
-        List<Product> products = productRepository.findByCategoryId(categoryId);
-        return ResponseEntity.ok(products.stream().map(this::convertToDTO).collect(Collectors.toList()));
-    }
-
     private ProductDTO convertToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
@@ -164,6 +167,8 @@ public class ProductController {
         productDTO.setSalePrice(product.getSalePrice());
         productDTO.setDescription(product.getDescription());
         productDTO.setStock(product.getStock());
+        productDTO.setBrand(product.getBrand());
+        productDTO.setOrigin(product.getOrigin());
         productDTO.setSoldQuantity(product.getSoldQuantity());
         productDTO.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
         productDTO.setImages(product.getImages() != null ?

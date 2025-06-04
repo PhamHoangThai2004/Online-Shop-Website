@@ -1,0 +1,311 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.navbar {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navbar-brand:hover {
+    text-decoration: underline;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar-links a:hover {
+    text-decoration: underline;
+}
+
+.cart-icon {
+    position: relative;
+    color: white;
+    margin-right: 30px;
+}
+
+.cart-icon svg {
+    position: relative;
+    z-index: 1; /* Đảm bảo SVG không bị che */
+}
+
+.badge {
+    position: absolute;
+    top: -10px; /* Điều chỉnh để sát góc trên bên phải */
+    right: -12px;
+    background-color: #fff; /* Nền trắng */
+    color: #4CAF50; /* Chữ đen */
+    border-radius: 30px; /* Tạo hình bubble giống hình ảnh */
+    border: 3px solid #4CAF50; /* Viền mỏng màu đen */
+    padding: 1px; /* Giảm padding để nhỏ hơn */
+    font-size: 12px; /* Giảm kích thước chữ */
+    font-weight: bold;
+    min-width: 18px; /* Giảm kích thước tối thiểu */
+    text-align: center;
+    z-index: 0; /* Đặt badge dưới SVG */
+}
+
+.badge[data-count="0"], .badge:empty {
+    display: none;
+}
+
+.cart-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-end-end-radius: 8px;
+    border-end-start-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #4CAF50;
+    font-size: 24px;
+}
+
+#cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#cart-table th,
+#cart-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+#cart-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    color: #bbb;
+}
+
+#cart-table td {
+    vertical-align: middle;
+}
+
+#cart-table th:first-child,
+#cart-table td:first-child {
+    width: 40px; /* Điều chỉnh độ rộng cho cột checkbox */
+}
+
+#cart-table img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+#cart-table tr:hover {
+    background-color: #f9f9f9; /* Hiệu ứng hover cho hàng */
+}
+
+.quantity-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.quantity-btn {
+    background-color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.quantity-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.quantity-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.delete-btn {
+    color: red;
+    cursor: pointer;
+    font-size: 16px;
+    background: none;
+    border: none;
+}
+
+.delete-btn:hover {
+    color: darkred;
+}
+
+.cart-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.cart-summary label {
+    margin-right: 20px;
+}
+
+.cart-summary input[type="checkbox"] {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.cart-summary h3 {
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+}
+
+#cart-total {
+    color: red;
+    font-weight: bold;
+}
+
+.buy-now-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.buy-now-btn:hover {
+    background-color: #45a049; /* Màu đỏ đậm hơn khi hover */
+}
+
+@media (max-width: 768px) {
+    .cart-container {
+        padding: 10px;
+    }
+
+    #cart-table th,
+    #cart-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    #cart-table img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .quantity-input {
+        width: 30px;
+        font-size: 12px;
+    }
+
+    .buy-now-btn {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .cart-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cart-summary label {
+        margin-bottom: 10px;
+    }
+}
+
+.cart-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.delete-all-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.delete-all-btn:hover {
+    background-color: #c82333;
+}
+
+.delete-all-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Làm checkbox to hơn */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.item-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+#select-all {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Style cho trạng thái indeterminate */
+#select-all:indeterminate {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+@media (max-width: 768px) {
+    .cart-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .delete-all-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

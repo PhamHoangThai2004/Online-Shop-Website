@@ -10,10 +10,11 @@ public class ProductDTO {
     private String description;
     private int stock;
     private int soldQuantity;
+    private String brand;
+    private String origin;
     private String categoryName;
     private List<ImageDTO> images; // Danh sách ảnh với id, url, và publicId
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -68,6 +69,22 @@ public class ProductDTO {
 
     public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     public String getCategoryName() {

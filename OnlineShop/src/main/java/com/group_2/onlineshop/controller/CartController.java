@@ -33,9 +33,27 @@ public class CartController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Lấy danh sách sản phẩm trong giỏ hàng của User: http://localhost:8080/api/cart/user/1
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<CartDTO> getCartByUserId(@PathVariable Long userId) {
+    // Lấy danh sách sản phẩm trong giỏ hàng của User: http://localhost:8080/api/cart/user
+    @GetMapping("/user")
+    public ResponseEntity<?> getCartByUserId( @RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        long userId;
+        try {
+            userId = Long.parseLong(jwtUtil.extractId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return ResponseEntity.notFound().build();

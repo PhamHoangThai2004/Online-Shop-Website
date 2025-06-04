@@ -36,9 +36,11 @@ public class OrderController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Tạo 1 đơn hàng từ giỏ hàng: http://localhost:8080/api/orders/create
+    // Tạo 1 đơn hàng từ danh sách sản phẩm đã chọn: http://localhost:8080/api/orders/create
     @PostMapping("/create")
-    public ResponseEntity<?> createOrder(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> createOrder(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody OrderRequest orderRequest) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Invalid Authorization header");
         }
@@ -59,19 +61,21 @@ public class OrderController {
 
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("User not found");
         }
 
-        Optional<Cart> cartOpt = cartRepository.findByUser(user.get());
-        if (!cartOpt.isPresent() || cartOpt.get().getItems().isEmpty()) {
-            return ResponseEntity.badRequest().body(null);
+        if (orderRequest.getItems() == null || orderRequest.getItems().isEmpty()) {
+            return ResponseEntity.badRequest().body("No items selected for the order");
         }
 
-        Cart cart = cartOpt.get();
-        for (CartItem item : cart.getItems()) {
-            Product product = item.getProduct();
-            if (item.getQuantity() > product.getStock()) {
-                return ResponseEntity.badRequest().body(null);
+        // Kiểm tra số lượng tồn kho
+        for (OrderRequest.OrderItemRequest item : orderRequest.getItems()) {
+            Optional<Product> product = productRepository.findById(item.getProductId());
+            if (!product.isPresent()) {
+                return ResponseEntity.status(404).body("Product with ID " + item.getProductId() + " not found");
+            }
+            if (item.getQuantity() <= 0 || item.getQuantity() > product.get().getStock()) {
+                return ResponseEntity.status(400).body("Invalid quantity for product with ID " + item.getProductId());
             }
         }
 
@@ -83,19 +87,22 @@ public class OrderController {
 
         Order savedOrder = orderRepository.save(order);
 
-        for (CartItem cartItem : cart.getItems()) {
+        for (OrderRequest.OrderItemRequest itemRequest : orderRequest.getItems()) {
+            Optional<Product> product = productRepository.findById(itemRequest.getProductId());
+            Product prod = product.get(); // Đã kiểm tra tồn tại ở trên
+
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(savedOrder);
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            double price = cartItem.getProduct().getSalePrice() != null ? cartItem.getProduct().getSalePrice() : cartItem.getProduct().getPrice();
+            orderItem.setProduct(prod);
+            orderItem.setQuantity(itemRequest.getQuantity());
+            double price = prod.getSalePrice() != null ? prod.getSalePrice() : prod.getPrice();
             orderItem.setPrice(price);
-            totalPrice += price * cartItem.getQuantity();
+            totalPrice += price * itemRequest.getQuantity();
 
-            Product product = cartItem.getProduct();
-            product.setStock(product.getStock() - cartItem.getQuantity());
-            product.setSoldQuantity(product.getSoldQuantity() + cartItem.getQuantity());
-            productRepository.save(product);
+            // Cập nhật tồn kho và số lượng đã bán
+            prod.setStock(prod.getStock() - itemRequest.getQuantity());
+            prod.setSoldQuantity(prod.getSoldQuantity() + itemRequest.getQuantity());
+            productRepository.save(prod);
 
             orderItemRepository.save(orderItem);
         }
@@ -103,8 +110,16 @@ public class OrderController {
         order.setTotalPrice(totalPrice);
         savedOrder = orderRepository.save(order);
 
-        cart.getItems().clear();
-        cartRepository.save(cart);
+        // Xóa các sản phẩm đã đặt hàng khỏi giỏ hàng
+        Optional<Cart> cartOpt = cartRepository.findByUser(user.get());
+        if (cartOpt.isPresent()) {
+            Cart cart = cartOpt.get();
+            List<Long> orderedProductIds = orderRequest.getItems().stream()
+                    .map(OrderRequest.OrderItemRequest::getProductId)
+                    .collect(Collectors.toList());
+            cart.getItems().removeIf(cartItem -> orderedProductIds.contains(cartItem.getProduct().getId()));
+            cartRepository.save(cart);
+        }
 
         return ResponseEntity.ok(convertToResponse(savedOrder));
     }
@@ -130,7 +145,7 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(order.get()));
     }
 
-    // Cập nhập status đơn hàng(chỉ dành cho ADMIN): http://localhost:8080/api/orders/2/status?status=SHIPPED
+    // Cập nhập status đơn hàng (chỉ dành cho ADMIN): http://localhost:8080/api/orders/2/status?status=SHIPPED
     @PutMapping("/{orderId}/status")
     public ResponseEntity<?> updateOrderStatus(
             @RequestHeader("Authorization") String authorizationHeader,
@@ -160,8 +175,8 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(updatedOrder));
     }
 
-    // Huỷ đơn hàng (user chỉ có thể huỷ đơn hàng nếu status đang là PENDING)
-//    http://localhost:8080/api/orders/2/cancel
+    // Hủy đơn hàng (user chỉ có thể hủy đơn hàng nếu status đang là PENDING)
+    // http://localhost:8080/api/orders/2/cancel
     @PutMapping("/{orderId}/cancel")
     public ResponseEntity<?> cancelOrder(
             @RequestHeader("Authorization") String authorizationHeader,
@@ -231,5 +246,38 @@ public class OrderController {
 
     private boolean isValidStatus(String status) {
         return status.equals("PENDING") || status.equals("SHIPPED") || status.equals("DELIVERED") || status.equals("CANCELLED");
+    }
+}
+
+class OrderRequest {
+    private List<OrderItemRequest> items;
+
+    public List<OrderItemRequest> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItemRequest> items) {
+        this.items = items;
+    }
+
+    static class OrderItemRequest {
+        private Long productId;
+        private int quantity;
+
+        public Long getProductId() {
+            return productId;
+        }
+
+        public void setProductId(Long productId) {
+            this.productId = productId;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
     }
 }

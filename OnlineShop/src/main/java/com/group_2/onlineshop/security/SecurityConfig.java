@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers("api/auth/user/info").authenticated()
+                        .requestMatchers("api/auth/update").authenticated()
                         .requestMatchers("/api/auth/users", "/api/orders/*/status").hasRole("ADMIN")
                         .requestMatchers("api/orders/*/cancel").authenticated()
                         .requestMatchers("api/orders/create").authenticated()
@@ -40,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"api/products").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"api/products/**").hasRole("ADMIN")
-                        .requestMatchers("api/cart/add", "api/cart/update", "api/cart/remove").authenticated()
+                        .requestMatchers("api/cart/*").authenticated()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
