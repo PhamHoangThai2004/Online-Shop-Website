@@ -5,6 +5,39 @@
     <title>Chỉnh sửa Sản phẩm</title>
     <link rel="stylesheet" href="../dashboard.css">
     <link rel="stylesheet" href="product.css">
+    <style>
+        /* CSS bổ sung cho phần ảnh */
+        .image-preview {
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .image-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .file-input {
+            margin: 10px 0;
+        }
+        /* CSS cho nút Xem đánh giá */
+        .view-reviews-btn {
+            background-color: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        .view-reviews-btn:hover {
+            background-color: #138496;
+        }
+    </style>
 </head>
 <body>
 
@@ -62,8 +95,16 @@
                 <!-- Danh sách danh mục sẽ được điền động trong detail.js -->
             </select>
         </div>
+        <div>
+            <label>Ảnh hiện có và thêm mới:</label><br>
+            <div class="file-input">
+                <input type="file" id="imageUpload" name="imageUpload" multiple accept="image/*">
+            </div>
+            <div id="imagePreview" class="image-preview"></div>
+        </div>
         <button type="submit">Xác nhận</button>
         <button type="button" onclick="window.location.href='product.html'">Hủy</button>
+        <button type="button" class="view-reviews-btn" onclick="viewProductReviews()">Xem đánh giá sản phẩm</button>
     </form>
 </div>
 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đánh giá Sản phẩm</title>
+    <link rel="stylesheet" href="../dashboard.css">
+    <link rel="stylesheet" href="review.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2><a href="../dashboard.html">Admin</a></h2>
+    <ul>
+        <li><a href="../user/user.html">Quản lí User</a></li>
+        <li><a href="../product/product.html">Quản lí Sản phẩm</a></li>
+        <li><a href="../category/category.html">Quản lí Danh mục</a></li>
+        <li><a href="../order/order.html">Quản lí Đơn hàng</a></li>
+        <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
+        <li class="logout-item"><a href="" id="logoutButton">Đăng xuất</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <h1>Đánh giá Sản phẩm</h1>
+    <button class="back-btn" onclick="goBack()">Quay lại</button>
+    <div id="reviewsContainer">
+        <table id="reviewsTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Created At</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody id="reviewsBody"></tbody>
+        </table>
+        <p id="noReviewsMessage" class="no-reviews" style="display: none;">Không có đánh giá nào cho sản phẩm này.</p>
+    </div>
+</div>
+
+<script src="review.js"></script>
+<script src="../dashboard.js"></script>
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <p class="modal-message">Bạn có muốn đăng xuất?</p>
+        <div class="modal-actions">
+            <button id="yesButton" class="yes-button">Có</button>
+            <button id="noButton" class="no-button">Không</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

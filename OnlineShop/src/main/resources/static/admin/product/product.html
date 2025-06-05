@@ -9,9 +9,9 @@
 </head>
 <body>
 <div class="sidebar">
-    <h2><a href="#">Admin</a></h2>
+    <h2><a href="../dashboard.html">Admin</a></h2>
     <ul>
-        <li><a href="#">Quản lý User</a></li>
+        <li><a href="../user/user.html">Quản lý User</a></li>
         <li class="active"><a href="#">Quản lý Sản phẩm</a></li>
         <li><a href="../category/category.html">Quản lý Danh mục</a></li>
         <li><a href="../order/order.html">Quản lý Đơn hàng</a></li>
@@ -21,7 +21,25 @@
 </div>
 
 <div class="main-content">
-    <h1>Quản lý Sản phẩm</h1>
+    <h1 style="color: #1a2a3a">Quản lý Sản phẩm</h1>
+
+    <div class="controls">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sản phẩm">
+            <button onclick="fetchAndRenderProducts()"><i class="fas fa-search"></i> Tìm kiếm</button>
+        </div>
+        <div class="sort-options">
+            <label for="sortOption">Sắp xếp:</label>
+            <select id="sortOption" onchange="fetchAndRenderProducts()">
+                <option value="idAsc" selected>Theo ID tăng dần</option>
+                <option value="idDesc">Theo ID giảm dần</option>
+                <option value="priceAsc">Theo giá tăng dần</option>
+                <option value="priceDesc">Theo giá giảm dần</option>
+                <option value="nameAsc">Theo tên A-Z</option>
+                <option value="nameDesc">Theo tên Z-A</option>
+            </select>
+        </div>
+    </div>
 
     <button id="toggleCreateFormButton">Thêm Sản Phẩm</button>
 
@@ -92,18 +110,16 @@
         </table>
     </section>
 </div>
-
-<div class="modal" id="logoutModal">
+<script src="product.js"></script>
+<script src="../dashboard.js"></script>
+<div id="logoutModal" class="modal">
     <div class="modal-content">
-        <div class="modal-message">Bạn có muốn đăng xuất?</div>
+        <p class="modal-message">Bạn có muốn đăng xuất?</p>
         <div class="modal-actions">
-            <button class="yes-button" id="confirmLogout">Có</button>
-            <button class="no-button" id="cancelLogout">Không</button>
+            <button id="yesButton" class="yes-button">Có</button>
+            <button id="noButton" class="no-button">Không</button>
         </div>
     </div>
 </div>
-
-<script src="product.js"></script>
-<script src="../dashboard.js"></script>
 </body>
 </html>

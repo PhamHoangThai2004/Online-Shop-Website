@@ -7,6 +7,8 @@ const cancelCreateButton = document.getElementById('cancelCreateButton');
 const categorySelect = document.getElementById('category');
 const imageInput = document.getElementById('images');
 const imagePreview = document.getElementById('imagePreview');
+const searchInput = document.getElementById('searchInput');
+const sortOptionSelect = document.getElementById('sortOption');
 
 // Thông tin Cloudinary
 const CLOUDINARY_CLOUD_NAME = 'dvzqdq4my';
@@ -71,8 +73,33 @@ async function fetchAndRenderProducts() {
 }
 
 function renderProducts(products) {
+    const searchTerm = searchInput.value.toLowerCase();
+
+    // Lọc sản phẩm theo tên
+    let filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchTerm)
+    );
+
+    // Sắp xếp sản phẩm dựa trên lựa chọn
+    const sortOption = sortOptionSelect.value;
+
+    if (sortOption === 'idAsc') {
+        filteredProducts.sort((a, b) => a.id - b.id);
+    } else if (sortOption === 'idDesc') {
+        filteredProducts.sort((a, b) => b.id - a.id);
+    } else if (sortOption === 'priceAsc') {
+        filteredProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortOption === 'priceDesc') {
+        filteredProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortOption === 'nameAsc') {
+        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === 'nameDesc') {
+        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    // Render danh sách sản phẩm
     productTableBody.innerHTML = '';
-    products.forEach(product => {
+    filteredProducts.forEach(product => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${product.id}</td>
@@ -266,3 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchCategories();
     fetchAndRenderProducts();
 });
+
+// Gắn sự kiện tìm kiếm theo input
+searchInput.addEventListener('input', fetchAndRenderProducts);
