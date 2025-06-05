@@ -1,0 +1,210 @@
+/* Style cho nút "Thêm Sản Phẩm" */
+#toggleCreateFormButton {
+    padding: 12px 25px; /* Tăng padding */
+    background-color: #28a745; /* Màu xanh lá cây */
+    color: white;
+    border: none;
+    border-radius: 6px; /* Bo góc nhẹ */
+    cursor: pointer;
+    margin-bottom: 30px; /* Tăng khoảng cách dưới nút */
+    font-size: 1.05em; /* Kích thước chữ lớn hơn */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Hiệu ứng mượt mà */
+    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.2); /* Đổ bóng nhẹ */
+    display: block; /* Để nút chiếm hết chiều rộng và có thể căn giữa */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#toggleCreateFormButton:hover {
+    background-color: #218838; /* Màu xanh đậm hơn khi hover */
+    transform: translateY(-2px); /* Nâng nút lên một chút */
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); /* Đổ bóng mạnh hơn khi hover */
+}
+
+/* Đảm bảo form hiển thị đẹp */
+form.form-inline {
+    background-color: #ffffff; /* Nền trắng cho form */
+    padding: 30px; /* Tăng padding */
+    margin-bottom: 30px; /* Tăng khoảng cách dưới form */
+    border-radius: 8px; /* Bo góc nhẹ */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Đổ bóng nhẹ nhàng */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; /* Tăng khoảng cách giữa các phần tử */
+    justify-content: space-between; /* Dàn đều các input */
+}
+
+form div {
+    flex: 1 1 calc(50% - 12.5px); /* Chia 2 cột, trừ đi gap */
+    min-width: 280px; /* Đảm bảo không quá hẹp trên màn hình nhỏ */
+}
+
+/* Cho textarea chiếm toàn bộ chiều rộng khi cần */
+form div:has(textarea) {
+    flex: 1 1 100%;
+}
+
+
+form label {
+    display: block;
+    margin-bottom: 8px; /* Tăng khoảng cách dưới label */
+    font-weight: bold;
+    color: #333; /* Màu chữ đậm hơn */
+    font-size: 0.95em; /* Kích thước chữ nhỏ hơn một chút */
+}
+
+/* Áp dụng style cho cả input, textarea VÀ select */
+form input[type="text"],
+form input[type="number"],
+form textarea,
+form select { /* <-- Đã thêm select vào đây */
+    padding: 12px; /* Tăng padding input */
+    width: 100%;
+    border: 1px solid #dcdcdc; /* Viền nhẹ hơn */
+    border-radius: 6px; /* Bo góc input */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+    font-size: 1em; /* Kích thước chữ input */
+}
+
+form textarea {
+    height: 120px; /* Tăng chiều cao textarea */
+    resize: vertical; /* Cho phép resize theo chiều dọc */
+}
+
+/* Áp dụng style focus cho cả input, textarea VÀ select */
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form textarea:focus,
+form select:focus { /* <-- Đã thêm select vào đây */
+    border-color: #007bff; /* Viền xanh khi focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Đổ bóng nhẹ khi focus */
+    outline: none; /* Bỏ viền outline mặc định */
+}
+
+form button {
+    padding: 12px 25px; /* Tăng padding nút */
+    color: white;
+    border: none;
+    border-radius: 6px; /* Bo góc nút */
+    cursor: pointer;
+    margin-top: 20px;
+    margin-right: 15px; /* Tăng khoảng cách giữa các nút */
+    font-size: 1.05em; /* Kích thước chữ nút */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Hiệu ứng chuyển động mượt mà */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ cho nút */
+}
+
+form button[type="submit"] {
+    background-color: #007bff; /* Màu xanh dương cho nút submit */
+}
+
+form button[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+#cancelCreateButton {
+    background-color: #dc3545; /* Màu đỏ cho nút hủy */
+}
+
+#cancelCreateButton:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* Căn giữa tiêu đề */
+h1 {
+    text-align: center;
+    margin-bottom: 30px; /* Tăng khoảng cách dưới tiêu đề chính */
+    color: #2c3e50; /* Màu chữ phù hợp với sidebar */
+}
+
+h2 {
+    text-align: center;
+    margin-top: 40px; /* Tăng khoảng cách trên tiêu đề phụ */
+    margin-bottom: 25px; /* Tăng khoảng cách dưới tiêu đề phụ */
+    color: #34495e; /* Màu chữ đậm hơn */
+}
+
+/* Các phần tử của main-content */
+.main-content {
+    flex: 1;
+    padding: 30px; /* Tăng padding tổng thể */
+    background-color: #f8f9fa; /* Màu nền nhẹ hơn */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden; /* Đảm bảo bo góc hoạt động với border */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+table th, table td {
+    padding: 15px; /* Tăng padding ô bảng */
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Chỉ border dưới */
+}
+
+table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase; /* Chữ hoa cho tiêu đề cột */
+    font-size: 0.9em;
+}
+
+table tr:last-child td {
+    border-bottom: none; /* Bỏ border dưới cùng của hàng cuối */
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1; /* Hiệu ứng hover cho hàng */
+}
+
+table td button {
+    margin-right: 8px; /* Tăng khoảng cách giữa các nút */
+    padding: 6px 12px; /* Tăng padding nút trong bảng */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+table td button:first-child { /* Nút Sửa */
+    background-color: #ffc107; /* Màu vàng */
+    color: #333;
+}
+
+table td button:first-child:hover {
+    background-color: #e0a800;
+    transform: translateY(-1px);
+}
+
+table td button:nth-child(2) { /* Nút Chi tiết */
+    background-color: #17a2b8; /* Màu xanh nước biển */
+    color: white;
+}
+
+table td button:nth-child(2):hover {
+    background-color: #138496;
+    transform: translateY(-1px);
+}
+
+table td button:last-child { /* Nút Xóa */
+    background-color: #dc3545; /* Màu đỏ */
+    color: white;
+}
+
+table td button:last-child:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}

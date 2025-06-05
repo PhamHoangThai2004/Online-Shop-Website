@@ -163,6 +163,8 @@ public class AuthController {
         return ResponseEntity.ok(userInfo);
     }
 
+
+    // Get All account
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {

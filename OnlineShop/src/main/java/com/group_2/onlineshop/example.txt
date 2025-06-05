@@ -1,477 +1,319 @@
-package com.group_2.onlineshop.controller;
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded in order-detail.js, starting initialization');
+    getUserInfo();
+    getOrderDetail();
+});
 
-import com.group_2.onlineshop.entity.User;
-import com.group_2.onlineshop.security.JwtUtil;
-import com.group_2.onlineshop.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-@RestController
-@RequestMapping("/api/auth")
-public class AuthController {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserService userService;
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-        );
-
-        User user = userService.findByUsername(loginRequest.getUsername());
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-
-        String id = user.getId().toString();
-        String role = user.getRole();
-
-        String token = jwtUtil.generateToken(id, loginRequest.getUsername(), role);
-        return ResponseEntity.ok(new LoginResponse(token));
+async function getUserInfo() {
+    console.log('Fetching user info started in order-detail.js');
+    const token = localStorage.getItem('token');
+    console.log('Token from localStorage:', token);
+    if (!token || token.trim() === '') {
+        console.error('No valid token found in localStorage');
+        alert('Vui lòng đăng nhập để xem chi tiết đơn hàng!');
+        window.location.href = '/auth/login.html';
+        return;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        if (userService.findByUsername(registerRequest.getUsername()) != null) {
-            return ResponseEntity.badRequest().body("Username already exists");
+    try {
+        const response = await fetch('http://localhost:8080/api/auth/user/info', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('API Response Status:', response.status);
+        if (response.ok) {
+            const userInfo = await response.json();
+            console.log('User Info Received:', userInfo);
+            if (userInfo && userInfo.fullName) {
+                document.getElementById('userInfo').textContent = `Xin chào, ${userInfo.fullName}`;
+            } else {
+                console.error('Invalid user info structure:', userInfo);
+                document.getElementById('userInfo').textContent = 'Xin chào';
+            }
+        } else {
+            const errorText = await response.text();
+            console.error('API Error - Status:', response.status, 'Message:', errorText);
+            if (response.status === 401) {
+                alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
+                window.location.href = '/auth/login.html';
+            } else {
+                alert(`Lỗi khi lấy thông tin người dùng: ${errorText}`);
+            }
         }
-
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setPassword(registerRequest.getPassword());
-        user.setEmail(registerRequest.getEmail());
-        user.setRole(registerRequest.getRole());
-        user.setFullName(registerRequest.getFullName());
-        user.setPhoneNumber(registerRequest.getPhoneNumber());
-        user.setAddress(registerRequest.getAddress());
-
-        User savedUser = userService.registerUser(user);
-        return ResponseEntity.ok("User registered successfully with ID: " + savedUser.getId());
-    }
-
-    @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String authorizationHeader,
-                                            @RequestBody ChangePasswordRequest changePasswordRequest) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body("Invalid Authorization header");
-        }
-
-        String token = authorizationHeader.substring(7);
-        String username = jwtUtil.extractUsername(token);
-
-        if (!jwtUtil.validateToken(token, username)) {
-            return ResponseEntity.status(401).body("Invalid or expired token");
-        }
-
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-
-        user.setPassword(changePasswordRequest.getNewPassword());
-        userService.updateUser(user);
-        return ResponseEntity.ok("Password changed successfully");
-    }
-
-    // Thay đổi thông tin user
-    @PutMapping("/update")
-    public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String authorizationHeader,
-                                            @RequestBody UpdateUserRequest updateUserRequest) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body("Invalid Authorization header");
-        }
-
-        String token = authorizationHeader.substring(7);
-        String username = jwtUtil.extractUsername(token);
-
-        if (!jwtUtil.validateToken(token, username)) {
-            return ResponseEntity.status(401).body("Invalid or expired token");
-        }
-
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-
-        // Update only allowed fields
-        if (updateUserRequest.getEmail() != null) {
-            user.setEmail(updateUserRequest.getEmail());
-        }
-        if (updateUserRequest.getFullName() != null) {
-            user.setFullName(updateUserRequest.getFullName());
-        }
-        if (updateUserRequest.getBirthday() != null) {
-            user.setBirthday(updateUserRequest.getBirthday());
-        }
-        if (updateUserRequest.getGender() != null) {
-            user.setGender(updateUserRequest.getGender());
-        }
-        if (updateUserRequest.getPhoneNumber() != null) {
-            user.setPhoneNumber(updateUserRequest.getPhoneNumber());
-        }
-        if (updateUserRequest.getAddress() != null) {
-            user.setAddress(updateUserRequest.getAddress());
-        }
-
-        userService.updateUser(user);
-        return ResponseEntity.ok("User information updated successfully");
-    }
-
-    @GetMapping("/user/info")
-    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body("Invalid Authorization header");
-        }
-
-        String token = authorizationHeader.substring(7);
-        String username = jwtUtil.extractUsername(token);
-
-        if (!jwtUtil.validateToken(token, username)) {
-            return ResponseEntity.status(401).body("Invalid or expired token");
-        }
-
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-
-        UserInfoResponse userInfo = new UserInfoResponse();
-        userInfo.setId(user.getId());
-        userInfo.setUsername(user.getUsername());
-        userInfo.setEmail(user.getEmail());
-        userInfo.setRole(user.getRole());
-        userInfo.setFullName(user.getFullName());
-        userInfo.setBirthday(user.getBirthday());
-        userInfo.setGender(user.getGender());
-        userInfo.setPhoneNumber(user.getPhoneNumber());
-        userInfo.setAddress(user.getAddress());
-
-        return ResponseEntity.ok(userInfo);
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body("Invalid Authorization header");
-        }
-
-        String token = authorizationHeader.substring(7);
-        String username = jwtUtil.extractUsername(token);
-
-        if (!jwtUtil.validateToken(token, username)) {
-            return ResponseEntity.status(401).body("Invalid or expired token");
-        }
-
-        User currentUser = userService.findByUsername(username);
-        if (currentUser == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-
-        List<User> users = userService.findAllUsers();
-        List<UserInfoResponse> userInfoList = users.stream()
-                .map(user -> {
-                    UserInfoResponse userInfo = new UserInfoResponse();
-                    userInfo.setId(user.getId());
-                    userInfo.setUsername(user.getUsername());
-                    userInfo.setEmail(user.getEmail());
-                    userInfo.setRole(user.getRole());
-                    userInfo.setFullName(user.getFullName());
-                    userInfo.setPhoneNumber(user.getPhoneNumber());
-                    userInfo.setAddress(user.getAddress());
-                    return userInfo;
-                })
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(userInfoList);
-    }
-
-    @GetMapping("/users/{id}")
-    public ResponseEntity<?> getAllUsers(@PathVariable Long id) {
-        User user = userService.findById(id);
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-
-        UserInfoResponse userInfo = new UserInfoResponse();
-        userInfo.setId(user.getId());
-        userInfo.setEmail(user.getEmail());
-        userInfo.setRole(user.getRole());
-        userInfo.setFullName(user.getFullName());
-        userInfo.setBirthday(user.getBirthday());
-        userInfo.setGender(user.getGender());
-        userInfo.setPhoneNumber(user.getPhoneNumber());
-        userInfo.setAddress(user.getAddress());
-
-        return ResponseEntity.ok(userInfo);
+    } catch (error) {
+        console.error('Fetch Error:', error.message);
+        alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
     }
 }
 
-class LoginRequest {
-    private String username;
-    private String password;
-
-    public String getUsername() {
-        return username;
+async function getOrderDetail() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Vui lòng đăng nhập để xem chi tiết đơn hàng!');
+        window.location.href = '/auth/login.html';
+        return;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    if (!orderId) {
+        alert('Không tìm thấy mã đơn hàng!');
+        window.location.href = '/customer/order/order-list.html';
+        return;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    try {
+        const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-}
-
-class LoginResponse {
-    private String token;
-
-    public LoginResponse(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-}
-
-class RegisterRequest {
-    private String username;
-    private String password;
-    private String email;
-    private String role;
-    private String fullName;
-    private String phoneNumber;
-    private String address;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+        if (response.ok) {
+            const order = await response.json();
+            displayOrderDetail(order);
+        } else {
+            const errorText = await response.text();
+            alert(`Lỗi khi lấy chi tiết đơn hàng: ${errorText}`);
+            window.location.href = '/customer/order/order-list.html';
+        }
+    } catch (error) {
+        console.error('Fetch Error:', error.message);
+        alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
+        window.location.href = '/customer/order/order-list.html';
     }
 }
 
-class ChangePasswordRequest {
-    private String newPassword;
+let currentProductId = null;
+let selectedRating = 0;
 
-    public String getNewPassword() {
-        return newPassword;
+function displayOrderDetail(order) {
+    // Hiển thị thông tin đơn hàng
+    document.getElementById('order-id').textContent = order.id;
+    document.getElementById('order-date').textContent = new Date(order.createdAt).toLocaleDateString('vi-VN');
+    document.getElementById('total-price').textContent = order.totalPrice.toLocaleString('vi-VN') + ' VNĐ';
+    document.getElementById('order-status').textContent = order.status;
+
+    // Hiển thị danh sách sản phẩm
+    const orderItems = document.getElementById('order-items');
+    orderItems.innerHTML = '';
+
+    const canReview = order.status === 'SHIPPED';
+    document.getElementById('review-header').style.display = canReview ? 'table-cell' : 'none';
+
+    if (order.items.length === 0) {
+        orderItems.innerHTML = `<tr><td colspan="${canReview ? 5 : 4}" style="text-align: center;">Không có sản phẩm nào trong đơn hàng.</td></tr>`;
+        return;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-}
+    order.items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.productName}</td>
+            <td>${item.price.toLocaleString('vi-VN')} VNĐ</td>
+            <td>${item.quantity}</td>
+            <td>${(item.price * item.quantity).toLocaleString('vi-VN')} VNĐ</td>
+            ${canReview ? `<td><span class="review-link" onclick="openReviewDialog(${item.productId})">Review</span></td>` : ''}
+        `;
+        orderItems.appendChild(row);
+    });
 
-class UpdateUserRequest {
-    private String email;
-    private String fullName;
-    private String birthday;
-    private String gender;
-    private String phoneNumber;
-    private String address;
+    // Hiển thị nút Hủy hoặc Mua lại
+    const actionButtons = document.getElementById('action-buttons');
+    actionButtons.innerHTML = '';
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    if (order.status === 'PENDING') {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.classList.add('cancel-btn');
+        cancelBtn.textContent = 'Hủy Đơn Hàng';
+        cancelBtn.onclick = () => cancelOrder(order.id);
+        actionButtons.appendChild(cancelBtn);
+    } else if (order.status === 'CANCELLED' || order.status === 'SHIPPED') {
+        const reorderBtn = document.createElement('button');
+        reorderBtn.classList.add('reorder-btn');
+        reorderBtn.textContent = 'Mua Lại';
+        reorderBtn.onclick = () => reorder(order.items);
+        actionButtons.appendChild(reorderBtn);
     }
 }
 
-class UserInfoResponse {
-    private Long id;
-    private String username;
-    private String email;
-    private String role;
-    private String fullName;
-    private String birthday;
-    private String gender;
-    private String phoneNumber;
-    private String address;
+function openReviewDialog(productId) {
+    currentProductId = productId;
+    selectedRating = 0;
+    document.getElementById('review-comment').value = '';
 
-    public Long getId() {
-        return id;
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.classList.remove('selected');
+        star.addEventListener('click', () => {
+            selectedRating = parseInt(star.getAttribute('data-value'));
+            stars.forEach(s => s.classList.remove('selected'));
+            for (let i = 0; i < selectedRating; i++) {
+                stars[i].classList.add('selected');
+            }
+        });
+    });
+
+    document.getElementById('review-dialog').style.display = 'flex';
+}
+
+function closeReviewDialog() {
+    document.getElementById('review-dialog').style.display = 'none';
+    currentProductId = null;
+    selectedRating = 0;
+}
+
+async function submitReview() {
+    if (!currentProductId) {
+        alert('Lỗi: Không xác định được sản phẩm để review!');
+        return;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    if (selectedRating === 0) {
+        alert('Vui lòng chọn số sao để đánh giá!');
+        return;
     }
 
-    public String getUsername() {
-        return username;
+    const comment = document.getElementById('review-comment').value.trim();
+    if (!comment) {
+        alert('Vui lòng nhập bình luận!');
+        return;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Vui lòng đăng nhập để gửi review!');
+        window.location.href = '/auth/login.html';
+        return;
     }
 
-    public String getEmail() {
-        return email;
+    // Lấy userId từ token (giả định jwtUtil.extractId là hàm có sẵn)
+    let userId;
+    try {
+        userId = parseInt(await extractIdFromToken(token));
+    } catch (error) {
+        console.error('Error extracting userId:', error.message);
+        alert('Lỗi khi lấy thông tin người dùng. Vui lòng thử lại!');
+        return;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    const reviewData = {
+        userId: userId,
+        rating: selectedRating,
+        comment: comment
+    };
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/products/${currentProductId}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewData)
+        });
+
+        if (response.ok) {
+            alert('Gửi review thành công!');
+            closeReviewDialog();
+        } else {
+            const errorText = await response.text();
+            alert(`Lỗi khi gửi review: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Fetch Error:', error.message);
+        alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
+    }
+}
+
+// Hàm giả định để lấy userId từ token (cần tích hợp với jwtUtil nếu có)
+async function extractIdFromToken(token) {
+    // Giả định jwtUtil.extractId là hàm có sẵn trong ứng dụng
+    // Đây là placeholder, cần thay bằng logic thực tế
+    return new Promise((resolve) => {
+        // Thay bằng mã thực tế để gọi jwtUtil.extractId(token)
+        const mockUserId = "1"; // Thay bằng logic thực tế
+        resolve(mockUserId);
+    });
+}
+
+async function cancelOrder(orderId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Vui lòng đăng nhập để hủy đơn hàng!');
+        window.location.href = '/auth/login.html';
+        return;
     }
 
-    public String getRole() {
-        return role;
+    if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+        return;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    try {
+        const response = await fetch(`http://localhost:8080/api/orders/${orderId}/cancel`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert('Hủy đơn hàng thành công!');
+            getOrderDetail();
+        } else {
+            const errorText = await response.text();
+            alert(`Lỗi khi hủy đơn hàng: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Fetch Error:', error.message);
+        alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
+    }
+}
+
+async function reorder(items) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Vui lòng đăng nhập để mua lại đơn hàng!');
+        window.location.href = '/auth/login.html';
+        return;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
+    try {
+        for (const item of items) {
+            const response = await fetch(`http://localhost:8080/api/cart/add?productId=${item.productId}&quantity=${item.quantity}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+            if (!response.ok) {
+                const errorText = await response.text();
+                alert(`Lỗi khi thêm sản phẩm ${item.productName} vào giỏ hàng: ${errorText}`);
+                return;
+            }
+        }
 
-    public String getBirthday() {
-        return birthday;
+        alert('Đã thêm tất cả sản phẩm vào giỏ hàng!');
+        window.location.href = '/customer/cart/cart.html';
+    } catch (error) {
+        console.error('Fetch Error:', error.message);
+        alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
     }
+}
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
+function goBack() {
+    window.location.href = '/customer/order/order-list.html';
+}
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/auth/login.html';
 }

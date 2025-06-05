@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Đơn Hàng</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="order-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-brand"><a href="/customer/home/home.html" style="color: #ffffff; text-decoration: none">Online Shop</a></div>
+    <div class="navbar-links" id="userSection">
+        <a href="/customer/cart/cart.html" class="cart-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+                <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/>
+            </svg>
+            <span id="cart-count" class="badge">0</span>
+        </a>
+        <a href="/customer/user/info.html" id="userInfo">Xin chào</a>
+        <a href="#" onclick="logout()">Đăng xuất</a>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="sidebar">
+        <a href="/customer/user/info.html" class="sidebar-item">
+            <i class="fas fa-user"></i>
+            <span>Tài khoản của tôi</span>
+        </a>
+        <a href="/customer/order/order-list.html" class="sidebar-item active">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Đơn hàng</span>
+        </a>
+        <a href="/customer/cart/cart.html" class="sidebar-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Giỏ hàng</span>
+        </a>
+        <a href="#" class="sidebar-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Đăng xuất</span>
+        </a>
+    </div>
+
+    <div class="content">
+        <div class="info-container">
+            <h2>Chi Tiết Đơn Hàng</h2>
+            <div class="order-detail-section">
+                <p><strong>Mã Đơn Hàng:</strong> <span id="order-id"></span></p>
+                <p><strong>Ngày Đặt Hàng:</strong> <span id="order-date"></span></p>
+                <p><strong>Tổng Tiền:</strong> <span id="total-price"></span></p>
+                <p><strong>Trạng Thái:</strong> <span id="order-status"></span></p>
+                <table class="order-table">
+                    <thead id="review-header">
+                    <tr>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Tổng</th>
+                        <th>Review</th>
+                    </tr>
+                    </thead>
+                    <tbody id="order-items"></tbody>
+                </table>
+                <div id="action-buttons" class="action-buttons">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="review-dialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
+    <div style="background: white; padding: 20px; border-radius: 5px; width: 400px;">
+        <h3>Đánh giá sản phẩm</h3>
+        <div class="rating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <textarea id="review-comment" placeholder="Nhập bình luận của bạn..." style="width: 100%; height: 100px; margin-top: 10px;"></textarea>
+        <div style="margin-top: 10px;">
+            <button onclick="submitReview()">Gửi</button>
+            <button onclick="closeReviewDialog()">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<script src="order-detail.js"></script>
+</body>
+</html>

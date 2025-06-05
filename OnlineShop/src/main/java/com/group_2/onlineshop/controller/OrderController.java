@@ -124,9 +124,26 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(savedOrder));
     }
 
-    // Get đơn hàng bằng user: http://localhost:8080/api/orders/user/1
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByUser(@PathVariable Long userId) {
+    // Get đơn hàng bằng user: http://localhost:8080/api/orders/user
+    @GetMapping("/user")
+    public ResponseEntity<?> getOrdersByUser(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+
+        long userId;
+        try {
+            userId = Long.parseLong(jwtUtil.extractId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return ResponseEntity.notFound().build();

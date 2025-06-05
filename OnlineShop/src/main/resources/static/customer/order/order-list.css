@@ -1,5 +1,5 @@
 * {
-    box-sizing: border-box; /* Đảm bảo tất cả phần tử tính toán kích thước chính xác */
+    box-sizing: border-box;
 }
 
 body {
@@ -79,16 +79,16 @@ body {
 
 .main-container {
     display: flex;
-    margin-top: 60px; /* Để tránh che khuất bởi navbar */
+    margin-top: 60px;
 }
 
 .sidebar {
-    width: 250px; /* Chiều rộng cố định */
+    width: 250px;
     background-color: #fff;
     position: fixed;
-    top: 60px; /* Dưới navbar */
+    top: 60px;
     left: 0;
-    height: calc(100% - 60px); /* Chiều cao đầy đủ trừ navbar */
+    height: calc(100% - 60px);
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -102,7 +102,7 @@ body {
     color: #666;
     font-size: 16px;
     padding: 15px 20px;
-    width: 100%; /* Giới hạn chiều rộng bằng sidebar */
+    width: 100%;
     transition: color 0.3s, background-color 0.3s;
 }
 
@@ -113,7 +113,7 @@ body {
 
 .sidebar-item span {
     display: inline-block;
-    white-space: nowrap; /* Ngăn text xuống dòng */
+    white-space: nowrap;
 }
 
 .sidebar-item:hover {
@@ -130,12 +130,12 @@ body {
 
 .content {
     flex: 1;
-    margin-left: 250px; /* Khớp với chiều rộng sidebar */
-    padding: 20px; /* Thêm padding để nội dung không sát viền */
+    margin-left: 250px;
+    padding: 20px;
 }
 
 .info-container {
-    width: 100%; /* Chiếm toàn bộ chiều rộng của content */
+    width: 100%;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
@@ -149,90 +149,96 @@ body {
     font-size: 24px;
 }
 
-.user-info-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.info-field {
+.filter-section {
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.info-field label {
-    min-width: 120px;
+.filter-section label {
     color: #4CAF50;
 }
 
-.info-field input,
-.info-field select {
-    flex: 1;
+.filter-section select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-}
-
-.password-wrapper {
-    position: relative;
-    flex: 1;
-}
-
-.password-wrapper input {
-    width: 100%;
-    padding-right: 40px; /* Để không bị đè lên icon */
-}
-
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
     cursor: pointer;
+}
+
+.order-list-section {
+    margin-top: 20px;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.order-table th, .order-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.order-table th {
+    background-color: #f5f5f5;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.order-table td {
     color: #666;
 }
 
-.toggle-password:hover {
-    color: #4CAF50;
+.order-table tr:hover {
+    background-color: #f9f9f9;
 }
 
-.readonly-text {
-    flex: 1;
-    padding: 8px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    display: inline-block;
-}
-
-.change-password-link {
+.order-id {
     color: #4CAF50;
+    cursor: pointer;
     text-decoration: none;
-    font-size: 16px;
 }
 
-.change-password-link:hover {
+.order-id:hover {
     text-decoration: underline;
 }
 
-.edit-info-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    align-self: flex-end;
-    margin-top: 15px;
+.order-details {
+    display: none;
+    background-color: #f9f9f9;
+    padding: 10px;
 }
 
-.edit-info-btn:hover {
-    background-color: #45a049;
+.order-details table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.order-details th, .order-details td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.order-details th {
+    background-color: #f0f0f0;
+    color: #666;
+    font-weight: bold;
+}
+
+.action-text {
+    color: #4CAF50;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.action-text:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {
@@ -270,17 +276,26 @@ body {
         padding: 15px;
     }
 
-    .info-field {
+    .filter-section {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .info-field label {
-        min-width: auto;
+    .filter-section select {
+        width: 100%;
+        margin-top: 5px;
     }
 
-    .edit-info-btn {
-        width: 100%;
-        padding: 10px;
+    .order-table {
+        font-size: 14px;
+    }
+
+    .order-table th, .order-table td {
+        padding: 8px;
+    }
+
+    .order-details th, .order-details td {
+        padding: 6px;
+        font-size: 12px;
     }
 }

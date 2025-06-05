@@ -1,0 +1,225 @@
+/* Tổng thể main-content */
+.main-content {
+    flex: 1;
+    padding: 30px; /* Tăng padding tổng thể */
+    background-color: #f8f9fa; /* Màu nền nhẹ hơn */
+}
+
+/* Căn giữa tiêu đề */
+h1 {
+    text-align: center;
+    margin-bottom: 30px; /* Tăng khoảng cách dưới tiêu đề chính */
+    color: #2c3e50; /* Màu chữ phù hợp với sidebar */
+}
+
+/* Style cho form tìm kiếm */
+#searchForm {
+    display: flex;
+    justify-content: center; /* Căn giữa form tìm kiếm */
+    margin-bottom: 30px; /* Tăng khoảng cách dưới form tìm kiếm */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    gap: 15px; /* Khoảng cách giữa input và button */
+    align-items: center;
+}
+
+#searchForm input[type="text"] {
+    padding: 12px; /* Tăng padding input */
+    flex: 1; /* Cho phép input mở rộng */
+    max-width: 400px; /* Giới hạn chiều rộng input */
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1em;
+}
+
+#searchForm input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+#searchForm button {
+    padding: 12px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+
+#searchForm button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Bảng danh mục */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden; /* Đảm bảo bo góc hoạt động với border */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+table th, table td {
+    padding: 15px; /* Tăng padding ô bảng */
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Chỉ border dưới */
+}
+
+table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase; /* Chữ hoa cho tiêu đề cột */
+    font-size: 0.9em;
+}
+
+table tr:last-child td {
+    border-bottom: none; /* Bỏ border dưới cùng của hàng cuối */
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1; /* Hiệu ứng hover cho hàng */
+}
+
+/* Nút thêm danh mục ở footer bảng */
+table tfoot #showAddForm {
+    background-color: #28a745; /* Màu xanh lá cây */
+    color: white;
+    font-size: 2em; /* Kích thước chữ lớn */
+    border-radius: 50%; /* Hình tròn */
+    width: 50px; /* Kích thước nút tròn */
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    margin: 15px auto; /* Căn giữa nút */
+}
+
+table tfoot #showAddForm:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Nút Sửa/Xóa trong bảng */
+table td button {
+    margin-right: 8px; /* Tăng khoảng cách giữa các nút */
+    padding: 6px 12px; /* Tăng padding nút trong bảng */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+table td button:first-child { /* Nút Sửa */
+    background-color: #ffc107; /* Màu vàng */
+    color: #333;
+}
+
+table td button:first-child:hover {
+    background-color: #e0a800;
+    transform: translateY(-1px);
+}
+
+table td button:last-child { /* Nút Xóa */
+    background-color: #dc3545; /* Màu đỏ */
+    color: white;
+}
+
+table td button:last-child:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+
+/* Form thêm và sửa danh mục */
+#addForm, #editForm {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 30px; /* Tăng khoảng cách trên form */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: center; /* Căn giữa các input và button */
+}
+
+#addForm input[type="text"],
+#editForm input[type="text"] {
+    flex: 1; /* Cho phép input mở rộng */
+    max-width: 400px; /* Giới hạn chiều rộng input */
+    padding: 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1em;
+}
+
+#addForm input[type="text"]:focus,
+#editForm input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+#addForm button[type="submit"],
+#editForm button[type="submit"] {
+    padding: 12px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+
+#addForm button[type="submit"]:hover,
+#editForm button[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Thông báo thành công */
+#successDialog {
+    background-color: #4CAF50; /* Màu xanh lá cây */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-weight: bold;
+    font-size: 1.1em;
+    animation: fadeInOut 4s forwards; /* Hoạt ảnh fade in/out */
+}
+
+/* Keyframes cho hoạt ảnh fade in/out */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}

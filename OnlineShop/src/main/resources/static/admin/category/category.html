@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lí Danh mục</title>
+  <link rel="stylesheet" href="../dashboard.css">
+  <link rel="stylesheet" href="category.css">
+  <script defer src="category.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2><a href="../dashboard.html">Admin</a></h2>
+  <ul>
+    <li><a href="../user/user.html">Quản lí User</a></li>
+    <li><a href="../product/product.html">Quản lí Sản phẩm</a></li>
+    <li class="active"><a href="category.html">Quản lí Danh mục</a></li>
+    <li><a href="../order/order.html">Quản lí Đơn hàng</a></li>
+    <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
+    <li class="logout-item"><a href="" id="logoutButton">Đăng xuất</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <h1>Quản lí Danh mục</h1>
+
+  <!-- Tìm kiếm danh mục -->
+  <form id="searchForm">
+    <input type="text" id="searchName" placeholder="Nhập tên danh mục...">
+    <button type="submit">Tìm kiếm</button>
+  </form>
+
+  <!-- Bảng danh mục -->
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tên danh mục</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody id="categoryTableBody"></tbody>
+    <tfoot>
+    <tr>
+      <td colspan="3" style="text-align:center;">
+        <button id="showAddForm">+</button>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+
+  <!-- Form thêm danh mục (ẩn ban đầu) -->
+  <form id="addForm" style="display:none; margin-top:20px;">
+    <input type="text" id="newCategoryName" placeholder="Tên danh mục mới" required>
+    <button type="submit">Thêm danh mục mới</button>
+  </form>
+  <form id="editForm" style="display:none; margin-top:20px;">
+    <input type="hidden" id="editCategoryId">
+    <input type="text" id="editCategoryName" placeholder="Tên danh mục mới" required>
+    <button type="submit">Cập nhật</button>
+  </form>
+  <div id="successDialog" style="display:none; position:fixed; top:20px; right:20px; background-color:#4CAF50; color:white; padding:10px 20px; border-radius:5px; box-shadow:0 0 10px rgba(0,0,0,0.3); z-index:1000;">
+    Sửa danh mục thành công!
+  </div>
+</div>
+
+</body>
+</html>

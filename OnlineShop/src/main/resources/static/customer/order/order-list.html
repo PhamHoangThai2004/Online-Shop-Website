@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đổi Mật Khẩu</title>
+    <title>Danh Sách Đơn Hàng</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-    <link rel="stylesheet" href="/customer/user/change-password.css">
+    <link rel="stylesheet" href="/customer/order/order-list.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -27,11 +27,11 @@
 <div class="main-container">
     <!-- Sidebar -->
     <div class="sidebar">
-        <a href="/customer/user/info.html" class="sidebar-item active">
+        <a href="/customer/user/info.html" class="sidebar-item">
             <i class="fas fa-user"></i>
             <span>Tài khoản của tôi</span>
         </a>
-        <a href="/customer/order/order-list.html" class="sidebar-item">
+        <a href="/customer/order/list.html" class="sidebar-item active">
             <i class="fas fa-shopping-bag"></i>
             <span>Đơn hàng</span>
         </a>
@@ -48,36 +48,37 @@
     <!-- Nội dung chính -->
     <div class="content">
         <div class="info-container">
-            <h2>Đổi Mật Khẩu</h2>
-            <div class="user-info-section">
-                <div class="info-field">
-                    <label><strong>Mật khẩu cũ:</strong></label>
-                    <div class="password-wrapper">
-                        <input type="password" id="old-password" name="old-password" placeholder="Nhập mật khẩu cũ">
-                        <i class="fas fa-eye toggle-password" data-target="old-password"></i>
-                    </div>
-                </div>
-                <div class="info-field">
-                    <label><strong>Mật khẩu mới:</strong></label>
-                    <div class="password-wrapper">
-                        <input type="password" id="new-password" name="new-password" placeholder="Nhập mật khẩu mới">
-                        <i class="fas fa-eye toggle-password" data-target="new-password"></i>
-                    </div>
-                </div>
-                <div class="info-field">
-                    <label><strong>Xác nhận lại:</strong></label>
-                    <div class="password-wrapper">
-                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Xác nhận mật khẩu mới">
-                        <i class="fas fa-eye toggle-password" data-target="confirm-password"></i>
-                    </div>
-                </div>
-                <button class="edit-info-btn" onclick="changePassword()">Đổi Mật Khẩu</button>
+            <h2>Danh Sách Đơn Hàng</h2>
+            <div class="filter-section">
+                <label for="status-filter"><strong>Lọc theo trạng thái:</strong></label>
+                <select id="status-filter" onchange="filterOrders()">
+                    <option value="ALL">Tất cả</option>
+                    <option value="PENDING">Đang chờ</option>
+                    <option value="SHIPPED">Đã ship</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+            </div>
+            <div class="order-list-section">
+                <table class="order-table">
+                    <thead>
+                    <tr>
+                        <th>Mã Đơn Hàng</th>
+                        <th>Ngày Đặt Hàng</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody id="order-list">
+                    <!-- Dữ liệu đơn hàng sẽ được thêm bằng JavaScript -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<script src="/customer/user/change-password.js"></script>
+<script src="/customer/order/order-list.js"></script>
 <script src="/customer/home/home.js"></script>
 </body>
 </html>

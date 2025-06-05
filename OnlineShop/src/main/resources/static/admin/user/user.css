@@ -1,0 +1,197 @@
+/* Tổng thể main-content */
+.main-content {
+    flex: 1;
+    padding: 30px; /* Tăng padding tổng thể */
+    background-color: #f8f9fa; /* Màu nền nhẹ hơn */
+}
+
+/* Căn giữa tiêu đề */
+h1 {
+    text-align: center;
+    margin-bottom: 30px; /* Tăng khoảng cách dưới tiêu đề chính */
+    color: #2c3e50; /* Màu chữ phù hợp với sidebar */
+}
+
+/* Style cho thanh tìm kiếm */
+.controls {
+    display: flex;
+    justify-content: center; /* Căn giữa form tìm kiếm */
+    margin-bottom: 30px; /* Tăng khoảng cách dưới form tìm kiếm */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    gap: 15px; /* Khoảng cách giữa input và button */
+    align-items: center;
+}
+
+.controls input[type="text"] {
+    padding: 12px; /* Tăng padding input */
+    flex: 1; /* Cho phép input mở rộng */
+    max-width: 400px; /* Giới hạn chiều rộng input */
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1em;
+}
+
+.controls input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.controls button {
+    padding: 12px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Bảng người dùng */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden; /* Đảm bảo bo góc hoạt động với border */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+table th, table td {
+    padding: 15px; /* Tăng padding ô bảng */
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Chỉ border dưới */
+}
+
+table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase; /* Chữ hoa cho tiêu đề cột */
+    font-size: 0.9em;
+}
+
+table tr:last-child td {
+    border-bottom: none; /* Bỏ border dưới cùng của hàng cuối */
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1; /* Hiệu ứng hover cho hàng */
+}
+
+/* Nút Sửa/Thay đổi Role trong bảng */
+table td button {
+    margin-right: 8px; /* Tăng khoảng cách giữa các nút */
+    padding: 6px 12px; /* Tăng padding nút trong bảng */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+table td button:first-child { /* Nút Sửa */
+    background-color: #ffc107; /* Màu vàng */
+    color: #333;
+}
+
+table td button:first-child:hover {
+    background-color: #e0a800;
+    transform: translateY(-1px);
+}
+
+table td button:last-child { /* Nút Thay đổi Role */
+    background-color: #17a2b8; /* Màu xanh nước biển nhạt hơn lightseagreen */
+    color: white;
+}
+
+table td button:last-child:hover {
+    background-color: #138496; /* Màu xanh đậm hơn khi hover */
+    transform: translateY(-1px);
+}
+
+/* Giữ lại các style form.form-inline nếu bạn có sử dụng form này ở user.js để edit user */
+/* Tuy nhiên, trong HTML hiện tại không có form.form-inline nên phần này có thể không cần thiết */
+form.form-inline {
+    background-color: #ffffff;
+    padding: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: space-between;
+}
+
+form.form-inline div {
+    flex: 1 1 calc(50% - 12.5px);
+    min-width: 280px;
+}
+
+form.form-inline label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.95em;
+}
+
+form.form-inline input[type="text"],
+form.form-inline input[type="email"],
+form.form-inline select {
+    padding: 12px;
+    width: 100%;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1em;
+}
+
+form.form-inline input[type="text"]:focus,
+form.form-inline input[type="email"]:focus,
+form.form-inline select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+form.form-inline button {
+    padding: 12px 25px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-right: 15px;
+    font-size: 1.05em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form.form-inline button[type="submit"] {
+    background-color: #007bff;
+}
+
+form.form-inline button[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}

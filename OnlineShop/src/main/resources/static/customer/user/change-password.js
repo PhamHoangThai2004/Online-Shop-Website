@@ -1,7 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded in change-password.js, starting initialization');
     getUserInfo();
+    setupPasswordToggles();
 });
+
+function setupPasswordToggles() {
+    const toggleIcons = document.querySelectorAll('.toggle-password');
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            const targetId = icon.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+}
 
 async function getUserInfo() {
     console.log('Fetching user info started in change-password.js');
@@ -10,7 +30,7 @@ async function getUserInfo() {
     if (!token || token.trim() === '') {
         console.error('No valid token found in localStorage');
         alert('Vui lòng đăng nhập để đổi mật khẩu!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = 'auth/login.html';
         return;
     }
 
@@ -55,7 +75,7 @@ async function changePassword() {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('Vui lòng đăng nhập để đổi mật khẩu!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = 'auth/login.html';
         return;
     }
 
@@ -125,7 +145,7 @@ async function changePassword() {
                 if (changePasswordResponse.ok) {
                     alert('Đổi mật khẩu thành công! Vui lòng đăng nhập lại.');
                     localStorage.removeItem('token'); // Xóa token
-                    window.location.href = '/customer/login/login.html'; // Chuyển hướng về trang đăng nhập
+                    window.location.href = '/auth/login.html'; // Chuyển hướng về trang đăng nhập
                 } else {
                     const errorText = await changePasswordResponse.text();
                     alert(`Lỗi khi đổi mật khẩu: ${errorText}`);

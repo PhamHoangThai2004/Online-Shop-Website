@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa Sản phẩm</title>
+    <link rel="stylesheet" href="../dashboard.css">
+    <link rel="stylesheet" href="product.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2><a href="../dashboard.html">Admin</a></h2>
+    <ul>
+        <li><a href="../user/user.html">Quản lí User</a></li>
+        <li class="active"><a href="../product/product.html">Quản lí Sản phẩm</a></li>
+        <li><a href="../category/category.html">Quản lí Danh mục</a></li>
+        <li><a href="../order/order.html">Quản lí Đơn hàng</a></li>
+        <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
+        <li class="logout-item"><a href="" id="logoutButton">Đăng xuất</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <h1>Chỉnh sửa Sản phẩm</h1>
+    <form id="updateProductForm" class="form-inline">
+        <div>
+            <label for="id">ID:</label><br>
+            <input type="text" id="id" name="id" readonly>
+        </div>
+        <div>
+            <label for="name">Tên sản phẩm:</label><br>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="price">Giá:</label><br>
+            <input type="number" id="price" name="price" step="0.01" required>
+        </div>
+        <div>
+            <label for="salePrice">Giá khuyến mãi:</label><br>
+            <input type="number" id="salePrice" name="salePrice" step="0.01">
+        </div>
+        <div>
+            <label for="description">Mô tả:</label><br>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <div>
+            <label for="stock">Số lượng tồn:</label><br>
+            <input type="number" id="stock" name="stock" required>
+        </div>
+        <div>
+            <label for="brand">Thương hiệu:</label><br>
+            <input type="text" id="brand" name="brand">
+        </div>
+        <div>
+            <label for="origin">Xuất xứ:</label><br>
+            <input type="text" id="origin" name="origin">
+        </div>
+        <div>
+            <label for="category">Danh mục:</label><br>
+            <select id="category" name="category" required>
+                <option value="">Chọn danh mục</option>
+                <!-- Danh sách danh mục sẽ được điền động trong detail.js -->
+            </select>
+        </div>
+        <button type="submit">Xác nhận</button>
+        <button type="button" onclick="window.location.href='product.html'">Hủy</button>
+    </form>
+</div>
+
+<script src="detail.js"></script>
+</body>
+</html>

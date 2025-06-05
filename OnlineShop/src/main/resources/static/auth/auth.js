@@ -41,7 +41,6 @@ if (loginForm) {
 
             if (loginResponse.ok) {
                 localStorage.setItem('token', loginData.token); // Lưu token
-                localStorage.setItem('username', username); // Lưu user name
 
                 // Gọi API để lấy thông tin người dùng (bao gồm role)
                 const userInfoResponse = await fetch('http://localhost:8080/api/auth/user/info', {
@@ -62,7 +61,6 @@ if (loginForm) {
                     if (role === 'CUSTOMER') {
                         setTimeout(() => window.location.href = '/customer/home/home.html', 1000);
                     } else if (role === 'ADMIN') {
-                        // Dự kiến cho tương lai
                         setTimeout(() => window.location.href = '/admin/dashboard.html', 1000);
                     } else {
                         document.getElementById('loginMessage').textContent = 'Vai trò không hợp lệ!';
@@ -78,7 +76,7 @@ if (loginForm) {
                 }
             } else {
                 console.log(loginData.message);
-                document.getElementById('loginMessage').textContent = 'Đăng nhập thất bại!';
+                document.getElementById('loginMessage').textContent = 'Tài khoản hoặc mật khẩu không chính xác';
                 document.getElementById('loginMessage').style.color = 'red';
             }
         } catch (error) {
