@@ -45,7 +45,9 @@ body {
     transition: background 0.3s;
 }
 
-.sidebar ul li:hover,
+.sidebar ul li:hover {
+    background-color: #0c97d3;
+}
 .sidebar ul li.active {
     background-color: #16a085;
 }

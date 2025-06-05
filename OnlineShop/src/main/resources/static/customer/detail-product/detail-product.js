@@ -41,7 +41,7 @@ async function fetchProductDetail() {
 
 function displayProductDetail(product, reviews, averageRating) {
     const detailDiv = document.getElementById('product-detail');
-    const formattedPrice = product.price ? `Giá: đ${product.price.toLocaleString('vi-VN')}` : 'N/A';
+    const formattedPrice = product.price ? `đ${product.price.toLocaleString('vi-VN')}` : 'N/A'; // Sửa bỏ chữ 'Giá:'
     const formattedSalePrice = product.salePrice ? `đ${product.salePrice.toLocaleString('vi-VN')}` : null;
 
     // Lưu thông tin product vào biến toàn cục để sử dụng trong addToCart
@@ -49,10 +49,13 @@ function displayProductDetail(product, reviews, averageRating) {
     window.currentProduct = product;
 
     // Tính phần trăm giảm giá nếu salePrice tồn tại
-    let discountPercentage = null;
-    if (formattedSalePrice && product.price && product.salePrice !== null) {
+    let discountPercentageHtml = '';
+    if (formattedSalePrice && product.price && product.salePrice !== null && product.price > 0) { // Đảm bảo price > 0 để tránh chia cho 0
         const discount = product.price - product.salePrice;
-        discountPercentage = ((discount / product.price) * 100).toFixed(0); // Làm tròn đến số nguyên
+        const percentage = ((discount / product.price) * 100);
+        if (percentage > 0) { // Chỉ hiển thị nếu có giảm giá thực sự
+            discountPercentageHtml = `<span class="discount-percentage">-${percentage.toFixed(0)}%</span>`;
+        }
     }
 
     // Hiển thị hình ảnh
@@ -85,9 +88,9 @@ function displayProductDetail(product, reviews, averageRating) {
                 <div class="review-item">
                     <div class="review-header">
                         <span class="review-user">${review.fullName}</span>
+                        <span class="review-date">${dateTime}</span>
                     </div>
                     <div class="review-rating">${stars}</div>
-                    <div class="review-date">${dateTime} | Phản hồi hàng</div>
                     <p class="review-comment">${comment}</p>
                 </div>
             `;
@@ -105,6 +108,33 @@ function displayProductDetail(product, reviews, averageRating) {
                 <div class="thumbnail-section">
                     ${thumbnailsHtml || `<img src="${defaultImage}" alt="${product.name} thumbnail" class="thumbnail-image" onclick="changeMainImage('${defaultImage}')">`}
                 </div>
+            </div>
+            <div class="info-section">
+                <h2>${product.name}</h2>
+                <div class="price-rating">
+                    ${formattedSalePrice ? `
+                        <div class="price-group">
+                            <span class="original-price">${formattedPrice}</span>
+                            ${discountPercentageHtml}
+                        </div>
+                        <p class="sale-price">${formattedSalePrice}</p>
+                    ` : `
+                        <p class="regular-price">${formattedPrice}</p>
+                    `}
+                    <div class="rating-sold-info">
+                        <span class="rating-number"><i class="fa fa-star"></i> ${averageRating}</span>
+                        <span class="sold-quantity">Đã bán: ${product.soldQuantity || 0}</span>
+                    </div>
+                </div>
+                <div class="product-info-panel">
+                    <h3>CHI TIẾT SẢN PHẨM</h3>
+                    <div class="info-item"><strong>Danh mục:</strong> <span>${product.categoryName || 'Chưa có thông tin'}</span></div>
+                    <div class="info-item"><strong>Số lượng trong kho:</strong> <span>${product.stock || 0}</span></div>
+                    <div class="info-item"><strong>Thương hiệu:</strong> <span>${product.brand || 'Chưa có thông tin'}</span></div>
+                    <div class="info-item"><strong>Xuất xứ:</strong> <span>${product.origin || 'Chưa có thông tin'}</span></div>
+                    <div class="info-item"><strong>Thời gian giao hàng:</strong> <span>1 tuần</span></div>
+                    <div class="info-item"><strong>Gửi từ:</strong> <span>Hà Nội</span></div>
+                </div>
                 <div class="quantity-section">
                     <label for="quantity">Số Lượng</label>
                     <div class="quantity-controls">
@@ -117,37 +147,11 @@ function displayProductDetail(product, reviews, averageRating) {
                     <button class="add-to-cart" onclick="addToCart(${product.id})"><i class="fa fa-shopping-cart"></i> Thêm Vào Giỏ Hàng</button>
                     <button class="buy-now" onclick="buyNow(${product.id})">Mua Ngay</button>
                 </div>
-<!--                <button class="add-to-cart mobile-only" onclick="addToCart(${product.id})"><i class="fa fa-shopping-cart"></i> Thêm Vào Giỏ Hàng</button>-->
             </div>
-            <div class="info-section">
-                <h2>${product.name}</h2>
-                <div class="price-rating">
-                    ${formattedSalePrice ? `
-                        <p class="price-group">
-                            <span class="original-price">${formattedPrice}</span>
-                            <span class="discount-percentage" style="color: red;">-${discountPercentage}%</span>
-                        </p>
-                        <p class="sale-price">${formattedSalePrice}</p>
-                    ` : `
-                        <p style="font-weight: bold; color: blue;">${formattedPrice}</p>
-                    `}
-                    <p class="rating-number"><i class="fa fa-star"></i> ${averageRating}</p>
-                </div>
-                <div class="product-info-panel">
-                    <h3>CHI TIẾT SẢN PHẨM</h3>
-                    <div class="info-item"><strong>Danh mục:</strong> <span>${product.categoryName || 'Chưa có thông tin'}</span></div>
-                    <div class="info-item"><strong>Số lượng trong kho:</strong> <span>${product.stock || 0}</span></div>
-                    <div class="info-item"><strong>Số sản phẩm đã bán:</strong> <span>${product.soldQuantity || 0}</span></div>
-                    <div class="info-item"><strong>Thương hiệu:</strong> <span>${product.brand || 'Chưa có thông tin'}</span></div>
-                    <div class="info-item"><strong>Xuất xứ:</strong> <span>${product.origin || 'Chưa có thông tin'}</span></div>
-                    <div class="info-item"><strong>Thời gian giao hàng:</strong> <span>1 tuần</span></div>
-                    <div class="info-item"><strong>Gửi từ:</strong> <span>Hà Nội</span></div>
-                </div>
-                <div class="product-description">
-                    <h3>MÔ TẢ SẢN PHẨM</h3>
-                    ${descriptionParagraphs}
-                </div>
-            </div>
+        </div>
+        <div class="product-description">
+            <h3>MÔ TẢ SẢN PHẨM</h3>
+            ${descriptionParagraphs}
         </div>
         <div class="reviews-panel">
             <h3>Đánh giá từ người dùng <span class="review-count">(${reviewCount} đánh giá)</span></h3>
@@ -161,7 +165,16 @@ function displayProductDetail(product, reviews, averageRating) {
 function changeMainImage(imageUrl) {
     const mainImage = document.getElementById('mainImage');
     mainImage.src = imageUrl;
+    // Thêm hoặc xóa class 'active' cho thumbnail
+    document.querySelectorAll('.thumbnail-image').forEach(thumb => {
+        if (thumb.src === imageUrl) {
+            thumb.classList.add('active');
+        } else {
+            thumb.classList.remove('active');
+        }
+    });
 }
+
 
 async function addToCart(productId) {
     const quantity = parseInt(document.getElementById('quantity').value);
@@ -200,6 +213,11 @@ async function addToCart(productId) {
             console.log('Phản hồi API:', response.status); // Kiểm tra phản hồi API
             if (response.ok) {
                 alert('Thêm vào giỏ hàng thành công!');
+                // Cập nhật số lượng giỏ hàng trên navbar nếu có hàm updateCartCount
+                if (typeof window.updateCartCount === 'function') {
+                    window.updateCartCount();
+                }
+                // Điều hướng đến trang giỏ hàng sau khi thêm thành công
                 window.location.href = '/customer/cart/cart.html';
             } else {
                 let errorMessage = 'Lỗi không xác định khi thêm vào giỏ hàng.';
@@ -208,7 +226,11 @@ async function addToCart(productId) {
                 } else if (response.status === 404) {
                     errorMessage = 'Sản phẩm hoặc người dùng không tồn tại.';
                 } else if (response.status === 400) {
-                    errorMessage = 'Số lượng không hợp lệ hoặc vượt quá tồn kho.';
+                    // Cố gắng đọc thông báo lỗi từ server nếu có
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || 'Số lượng không hợp lệ hoặc vượt quá tồn kho.';
+                } else {
+                    errorMessage = `Lỗi: ${response.status} - ${response.statusText}`;
                 }
                 alert(errorMessage);
             }
@@ -230,17 +252,34 @@ function decreaseQuantity() {
 function increaseQuantity() {
     const quantityInput = document.getElementById('quantity');
     let quantity = parseInt(quantityInput.value);
-    quantityInput.value = quantity + 1;
+    const maxStock = window.currentProduct ? window.currentProduct.stock : Infinity; // Lấy tồn kho tối đa
+    if (quantity < maxStock) { // Giới hạn không vượt quá tồn kho
+        quantityInput.value = quantity + 1;
+    } else {
+        alert(`Số lượng không thể vượt quá ${maxStock} sản phẩm trong kho!`);
+    }
 }
 
 function buyNow(productId) {
     const quantity = parseInt(document.getElementById('quantity').value);
-    alert(`Mua ngay "${document.querySelector('h2').textContent}" với số lượng ${quantity}!`); // Placeholder, thay bằng logic thực tế
-    // Ví dụ: window.location.href = `/checkout?productId=${productId}&quantity=${quantity}`;
-}
+    const product = window.currentProduct;
+    if (!product) {
+        alert('Không tìm thấy thông tin sản phẩm!');
+        return;
+    }
 
-function test(productId) {
-    console.log("Thêm vào giỏ hàng ", productId)
+    const priceToUse = product.salePrice !== null && product.salePrice !== undefined ? product.salePrice : product.price;
+    const totalPrice = priceToUse * quantity;
+    const formattedTotalPrice = `đ${totalPrice.toLocaleString('vi-VN')}`;
+
+    const confirmMessage = `Bạn có muốn mua ngay "${product.name}" (x${quantity}) với tổng tiền ${formattedTotalPrice} không?`;
+    const userConfirmed = confirm(confirmMessage);
+
+    if (userConfirmed) {
+        // Đây là nơi bạn sẽ thêm logic chuyển hướng đến trang thanh toán
+        // Ví dụ: window.location.href = `/customer/checkout/checkout.html?productId=${productId}&quantity=${quantity}`;
+        alert(`Chuyển hướng đến trang thanh toán cho "${product.name}" (x${quantity})! (Chức năng này cần được phát triển)`);
+    }
 }
 
 // Khởi chạy khi trang load

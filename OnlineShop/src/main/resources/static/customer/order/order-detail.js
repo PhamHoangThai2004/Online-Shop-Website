@@ -1,4 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
+let userId;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded in order-detail.js, starting initialization');
@@ -32,6 +33,7 @@ async function getUserInfo() {
         if (response.ok) {
             const userInfo = await response.json();
             console.log('User Info Received:', userInfo);
+            userId = userInfo.id
             if (userInfo && userInfo.fullName) {
                 document.getElementById('userInfo').textContent = `Xin chào, ${userInfo.fullName}`;
             } else {
@@ -105,7 +107,7 @@ let currentProductId = null;
 let selectedRating = 0;
 
 function displayOrderDetail(order) {
-    const reviewHeader = document.getElementById('review-header'); // Đây là phần tử <thead>
+    const reviewHeader = document.getElementById('review-header');
     const orderItems = document.getElementById('order-items');
     const actionButtons = document.getElementById('action-buttons');
     console.log('DOM Elements:', { reviewHeader, orderItems, actionButtons });
@@ -131,7 +133,7 @@ function displayOrderDetail(order) {
                     <td>${item.price ? item.price.toLocaleString('vi-VN') + ' VNĐ' : 'N/A'}</td>
                     <td>${item.quantity || 0}</td>
                     <td>${item.price && item.quantity ? (item.price * item.quantity).toLocaleString('vi-VN') + ' VNĐ' : 'N/A'}</td>
-                    <td><span class="review-link" onclick="openReviewDialog(${item.productId || 0}, '${order.status}')" style="color: #0c97d3">Đánh giá</span></td>
+                    <td><span class="review-link" onclick="openReviewDialog(${item.productId || 0}, '${order.status}')">Đánh giá</span></td>
                 `;
                 orderItems.appendChild(row);
             });
@@ -165,8 +167,12 @@ function openReviewDialog(productId, orderStatus) {
     currentProductId = productId;
     selectedRating = 0;
 
-    if (orderStatus !== 'SHIPPED') {
-        alert('Yêu cầu nhận được hàng mới có thể review!');
+    console.log("Console - Order Status:", orderStatus);
+    console.log('Current Product ID:', productId);
+
+    if (orderStatus !== 'DELIVERED') {
+        console.log('Order status not DELIVERED, skipping dialog');
+        alert('Yêu cầu nhận được hàng mới có thể đánh giá!');
         return;
     }
 
@@ -175,36 +181,54 @@ function openReviewDialog(productId, orderStatus) {
     console.log('Review Dialog Elements:', { reviewComment, reviewDialog });
 
     if (!reviewDialog) {
+        console.error('Review dialog not found in DOM');
         alert('Lỗi: Không tìm thấy dialog review!');
         return;
     }
 
     if (reviewComment) {
         reviewComment.value = '';
+    } else {
+        console.error('Review comment textarea not found');
     }
 
     const stars = document.querySelectorAll('.star');
+    console.log('Stars found:', stars.length);
+    if (stars.length === 0) {
+        console.error('No stars found for rating');
+    }
     stars.forEach(star => {
+        star.removeEventListener('click', handleStarClick);
         star.classList.remove('selected');
-        star.addEventListener('click', () => {
-            selectedRating = parseInt(star.getAttribute('data-value'));
-            stars.forEach(s => s.classList.remove('selected'));
-            for (let i = 0; i < selectedRating; i++) {
-                stars[i].classList.add('selected');
-            }
-        });
+        star.addEventListener('click', handleStarClick);
     });
 
-    reviewDialog.style.display = 'flex';
+    console.log('Before setting display - Current display style:', reviewDialog.style.display);
+    reviewDialog.classList.add('show'); // Thêm class .show
+    reviewDialog.style.display = 'flex !important';
+    console.log('After setting display - New display style:', reviewDialog.style.display);
+    console.log('Review dialog displayed with class:', reviewDialog.classList);
+}
+
+function handleStarClick(event) {
+    const star = event.currentTarget;
+    selectedRating = parseInt(star.getAttribute('data-value'));
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(s => s.classList.remove('selected'));
+    for (let i = 0; i < selectedRating; i++) {
+        stars[i].classList.add('selected');
+    }
+    console.log('Selected Rating:', selectedRating);
 }
 
 function closeReviewDialog() {
     const reviewDialog = document.getElementById('review-dialog');
     if (reviewDialog) {
+        reviewDialog.classList.remove('show'); // Xóa class .show khi đóng
         reviewDialog.style.display = 'none';
+        currentProductId = null;
+        selectedRating = 0;
     }
-    currentProductId = null;
-    selectedRating = 0;
 }
 
 async function submitReview() {
@@ -231,16 +255,6 @@ async function submitReview() {
         return;
     }
 
-    let userId;
-    try {
-        userId = parseInt(await extractIdFromToken(token));
-        console.log('Extracted User ID:', userId);
-    } catch (error) {
-        console.error('Error extracting userId:', error.message);
-        alert('Lỗi khi lấy thông tin người dùng. Vui lòng thử lại!');
-        return;
-    }
-
     const reviewData = {
         userId: userId,
         rating: selectedRating,
@@ -259,12 +273,12 @@ async function submitReview() {
 
         console.log('API Response Status (submitReview):', response.status);
         if (response.ok) {
-            alert('Gửi review thành công!');
+            alert('Gửi đánh giá thành công!');
             closeReviewDialog();
         } else {
             const errorText = await response.text();
             console.error('API Error (submitReview) - Status:', response.status, 'Message:', errorText);
-            alert(`Lỗi khi gửi review: ${errorText}`);
+            alert(`Lỗi khi gửi đánh giá: ${errorText}`);
         }
     } catch (error) {
         console.error('Fetch Error (submitReview):', error.message);
@@ -277,10 +291,10 @@ async function extractIdFromToken(token) {
     return new Promise((resolve) => {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            resolve(payload.userId || payload.sub || "1"); // Thay 'userId' hoặc 'sub' bằng key thực tế trong token
+            resolve(payload.userId || payload.sub || "1");
         } catch (e) {
             console.warn("Could not parse token to extract user ID, returning mock ID '1'. Token:", token, "Error:", e);
-            resolve("1"); // Trả về ID giả nếu không parse được
+            resolve("1");
         }
     });
 }
@@ -309,7 +323,7 @@ async function cancelOrder(orderId) {
         console.log('API Response Status (cancelOrder):', response.status);
         if (response.ok) {
             alert('Hủy đơn hàng thành công!');
-            getOrderDetail(); // Tải lại chi tiết đơn hàng để cập nhật trạng thái
+            getOrderDetail();
         } else {
             const errorText = await response.text();
             console.error('API Error (cancelOrder) - Status:', response.status, 'Message:', errorText);
@@ -332,7 +346,6 @@ async function reorder(items) {
 
     try {
         for (const item of items) {
-            // Cần đảm bảo item.productId và item.quantity có sẵn và đúng
             if (typeof item.productId === 'undefined' || typeof item.quantity === 'undefined') {
                 console.error('Product ID or quantity is missing for item:', item);
                 alert(`Sản phẩm ${item.productName || 'không xác định'} thiếu thông tin để thêm vào giỏ hàng.`);
@@ -351,7 +364,7 @@ async function reorder(items) {
                 const errorText = await response.text();
                 console.error('API Error (reorder) - Status:', response.status, 'Message:', errorText);
                 alert(`Lỗi khi thêm sản phẩm ${item.productName || 'không xác định'} vào giỏ hàng: ${errorText}`);
-                return; // Dừng nếu có lỗi
+                return;
             }
         }
 
@@ -368,7 +381,7 @@ function goBack() {
     window.location.href = '/customer/order/order-list.html';
 }
 
-function logout() {
+function log_out() {
     localStorage.removeItem('token');
     window.location.href = '/auth/login.html';
 }

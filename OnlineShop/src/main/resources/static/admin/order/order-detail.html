@@ -25,7 +25,7 @@
   <div class="order-info">
     <p><strong>Mã Đơn Hàng:</strong> <span id="orderId"></span></p>
     <p><strong>Ngày Đặt Hàng:</strong> <span id="orderDate"></span></p>
-    <p><strong>Tổng Tiền:</strong> <span id="totalPrice"></span> VNĐ</p>
+    <p><strong>Tổng Tiền:</strong> <span id="totalPrice" style="color: red"></span> VNĐ</p>
     <p><strong>Trạng Thái:</strong> <span id="currentStatus"></span></p>
   </div>
   <h2>Chi Tiết Sản Phẩm</h2>
@@ -50,9 +50,9 @@
     <div>
       <label for="status">Trạng thái:</label><br>
       <select id="status" name="status" required>
-        <option value="PENDING">Đang chờ xử lý</option>
-        <option value="SHIPPED">Đã giao hàng</option>
-        <option value="DELIVERED">Đã giao</option>
+        <option value="PENDING">Chờ xác nhận</option>
+        <option value="SHIPPING">Đang vận chuyện</option>
+        <option value="DELIVERED">Đã giao hàng</option>
         <option value="CANCELLED">Đã hủy</option>
       </select>
     </div>

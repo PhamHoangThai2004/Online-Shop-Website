@@ -2,73 +2,81 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lí Sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Product</title>
     <link rel="stylesheet" href="../dashboard.css">
     <link rel="stylesheet" href="product.css">
 </head>
 <body>
-
 <div class="sidebar">
-    <h2><a href="../dashboard.html">Admin</a></h2>
+    <h2><a href="#">Admin</a></h2>
     <ul>
-        <li><a href="../user/user.html">Quản lí User</a></li>
-        <li class="active"><a href="product.html">Quản lí Sản phẩm</a></li>
-        <li><a href="../category/category.html">Quản lí Danh mục</a></li>
-        <li><a href="../order/order.html">Quản lí Đơn hàng</a></li>
+        <li><a href="#">Quản lý User</a></li>
+        <li class="active"><a href="#">Quản lý Sản phẩm</a></li>
+        <li><a href="../category/category.html">Quản lý Danh mục</a></li>
+        <li><a href="../order/order.html">Quản lý Đơn hàng</a></li>
         <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
-        <li class="logout-item"><a href="" id="logoutButton">Đăng xuất</a></li>
+        <li class="logout-item"><a href="#" id="logoutButton">Đăng xuất</a></li>
     </ul>
 </div>
 
 <div class="main-content">
-    <h1>Quản lí Sản phẩm</h1>
+    <h1>Quản lý Sản phẩm</h1>
 
     <button id="toggleCreateFormButton">Thêm Sản Phẩm</button>
 
-    <div id="createProductSection" style="display: none;">
+    <section id="createProductSection" style="display: none;">
         <h2>Tạo sản phẩm mới</h2>
-        <form id="createProductForm" class="form-inline">
+        <form id="createProductForm" class="form-inline" enctype="multipart/form-data">
             <div>
-                <label for="name">Tên sản phẩm:</label><br>
+                <label for="name">Tên sản phẩm:</label>
                 <input type="text" id="name" name="name" required>
             </div>
             <div>
-                <label for="price">Giá:</label><br>
+                <label for="price">Giá:</label>
                 <input type="number" id="price" name="price" step="0.01" required>
             </div>
             <div>
-                <label for="salePrice">Giá khuyến mãi:</label><br>
+                <label for="salePrice">Giá khuyến mãi:</label>
                 <input type="number" id="salePrice" name="salePrice" step="0.01">
             </div>
             <div>
-                <label for="description">Mô tả:</label><br>
+                <label for="description">Mô tả:</label>
                 <textarea id="description" name="description"></textarea>
             </div>
             <div>
-                <label for="stock">Số lượng tồn:</label><br>
+                <label for="stock">Số lượng tồn:</label>
                 <input type="number" id="stock" name="stock" required>
             </div>
             <div>
-                <label for="brand">Thương hiệu:</label><br>
+                <label for="brand">Thương hiệu:</label>
                 <input type="text" id="brand" name="brand">
             </div>
             <div>
-                <label for="origin">Xuất xứ:</label><br>
+                <label for="origin">Xuất xứ:</label>
                 <input type="text" id="origin" name="origin">
             </div>
             <div>
-                <label for="category">Danh mục:</label><br>
-                <select id="category" name="category" required>
+                <label for="category">Danh mục:</label>
+                <select id="category" name="category">
                     <option value="">Chọn danh mục</option>
-                    <!-- Danh sách danh mục sẽ được điền động trong product.js -->
                 </select>
+            </div>
+            <!-- Thêm trường upload ảnh -->
+            <div>
+                <label for="images">Hình ảnh sản phẩm:</label>
+                <input type="file" id="images" name="images" multiple accept="image/*" required>
+            </div>
+            <div id="imagePreviewContainer">
+                <label>Ảnh đã chọn:</label>
+                <div id="imagePreview" class="image-preview"></div>
             </div>
             <button type="submit">Thêm</button>
             <button type="button" id="cancelCreateButton">Hủy</button>
         </form>
-    </div>
+    </section>
 
-    <div id="productListSection">
+    <section id="productListSection">
         <h2>Danh sách sản phẩm</h2>
         <table>
             <thead>
@@ -80,22 +88,22 @@
                 <th>Hành động</th>
             </tr>
             </thead>
-            <tbody id="productTableBody">
-            <!-- Dữ liệu sản phẩm sẽ được render ở đây -->
-            </tbody>
+            <tbody id="productTableBody"></tbody>
         </table>
+    </section>
+</div>
+
+<div class="modal" id="logoutModal">
+    <div class="modal-content">
+        <div class="modal-message">Bạn có muốn đăng xuất?</div>
+        <div class="modal-actions">
+            <button class="yes-button" id="confirmLogout">Có</button>
+            <button class="no-button" id="cancelLogout">Không</button>
+        </div>
     </div>
 </div>
 
 <script src="product.js"></script>
 <script src="../dashboard.js"></script>
-<div id="logoutModal" class="modal">
-    <div class="modal-content">
-        <p class="modal-message">Bạn có muốn đăng xuất?</p>
-        <div class="modal-actions">
-            <button id="yesButton" class="yes-button">Có</button>
-            <button id="noButton" class="no-button">Không</button>
-        </div>
-    </div>
 </body>
 </html>

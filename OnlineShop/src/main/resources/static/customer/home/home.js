@@ -110,14 +110,20 @@ function displayProducts(products, title) {
                 : defaultImage;
 
             div.innerHTML = `
-                <img src="${imageUrl}" alt="${product.name}" onerror="this.src='${defaultImage}'">
-                <h4>${product.name}</h4>
-                <p class="${priceClass}">Giá: ${formattedPrice}</p>
-                ${formattedSalePrice ? `<p class="sale-price">${formattedSalePrice}</p>` : ''}
-                <p class="sold-quantity">Đã bán: ${product.soldQuantity || 0}</p>
-                <p class="rating-number"><i class="fa fa-star"></i> ${(product.averageRating || 0).toFixed(1)}</p>
-                <button class="add-to-cart" onclick="addCart(${product.id}); event.stopPropagation()">Thêm vào giỏ hàng</button>
-            `;
+    <img src="${imageUrl}" alt="${product.name}" onerror="this.src='${defaultImage}'">
+    <h4>${product.name}</h4>
+    <div class="price-wrapper">
+        <span class="${priceClass}">${formattedPrice}</span>
+        ${formattedSalePrice ? `<span class="sale-price">${formattedSalePrice}</span>` : ''}
+    </div>
+    <div class="info-wrapper">
+        <span class="rating-number"><i class="fa fa-star"></i> ${(product.averageRating || 0).toFixed(1)}</span>
+        <span class="sold-quantity">Đã bán: ${product.soldQuantity || 0}</span>
+    </div>
+    <button class="add-to-cart" onclick="addCart(${product.id}); event.stopPropagation()">Thêm vào giỏ hàng</button>
+`;
+
+
             div.onclick = () => {
                 window.location.href = `/customer/detail-product/detail-product.html?id=${product.id}`;
             };

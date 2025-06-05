@@ -10,7 +10,7 @@
 </head>
 <body>
 <nav class="navbar">
-    <div class="navbar-brand"><a href="/customer/home/home.html" style="color: #ffffff; text-decoration: none">Online Shop</a></div>
+    <div class="navbar-brand"><a href="/customer/home/home.html">Online Shop</a></div>
     <div class="navbar-links" id="userSection">
         <a href="/customer/cart/cart.html" class="cart-icon">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
@@ -19,7 +19,7 @@
             <span id="cart-count" class="badge">0</span>
         </a>
         <a href="/customer/user/info.html" id="userInfo">Xin chào</a>
-        <a href="#" onclick="logout()">Đăng xuất</a>
+        <a href="#" onclick="log_out()">Đăng xuất</a>
     </div>
 </nav>
 
@@ -37,7 +37,7 @@
             <i class="fas fa-shopping-cart"></i>
             <span>Giỏ hàng</span>
         </a>
-        <a href="#" class="sidebar-item" onclick="logout()">
+        <a href="#" class="sidebar-item" onclick="log_out()">
             <i class="fas fa-sign-out-alt"></i>
             <span>Đăng xuất</span>
         </a>
@@ -46,48 +46,55 @@
     <div class="content">
         <div class="info-container">
             <h2>Chi Tiết Đơn Hàng</h2>
-            <div class="order-detail-section">
+            <div class="order-detail-summary">
                 <p><strong>Mã Đơn Hàng:</strong> <span id="order-id"></span></p>
                 <p><strong>Ngày Đặt Hàng:</strong> <span id="order-date"></span></p>
                 <p><strong>Tổng Tiền:</strong> <span id="total-price"></span></p>
                 <p><strong>Trạng Thái:</strong> <span id="order-status"></span></p>
+            </div>
+
+            <div class="order-items-section">
+                <h3>Sản phẩm trong đơn hàng</h3>
                 <table class="order-table">
-                    <thead id="review-header">
+                    <thead>
                     <tr>
-                        <th>Tên Sản Phẩm</th>
+                        <th>Sản Phẩm</th>
                         <th>Giá</th>
                         <th>Số Lượng</th>
                         <th>Tổng</th>
                         <th>Hành động</th>
                     </tr>
                     </thead>
-                    <tbody id="order-items"></tbody>
+                    <tbody id="order-items">
+                    </tbody>
                 </table>
-                <div id="action-buttons" class="action-buttons">
-                </div>
+            </div>
+
+            <div id="action-buttons" class="action-buttons">
             </div>
         </div>
     </div>
 </div>
 
-<div id="review-dialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
-    <div style="background: white; padding: 20px; border-radius: 5px; width: 400px;">
+<div id="review-dialog" class="dialog-overlay">
+    <div class="dialog-content">
         <h3>Đánh giá sản phẩm</h3>
-        <div class="rating">
+        <div class="rating-stars" id="rating-stars-container">
             <span class="star" data-value="1">★</span>
             <span class="star" data-value="2">★</span>
             <span class="star" data-value="3">★</span>
             <span class="star" data-value="4">★</span>
             <span class="star" data-value="5">★</span>
         </div>
-        <textarea id="review-comment" placeholder="Nhập bình luận của bạn..." style="width: 100%; height: 100px; margin-top: 10px;"></textarea>
-        <div style="margin-top: 10px;">
-            <button onclick="submitReview()">Gửi</button>
-            <button onclick="closeReviewDialog()">Hủy</button>
+        <textarea id="review-comment" placeholder="Nhập bình luận của bạn..." rows="5"></textarea>
+        <div class="dialog-actions">
+            <button class="btn btn-primary" onclick="submitReview()">Gửi</button>
+            <button class="btn btn-secondary" onclick="closeReviewDialog()">Hủy</button>
         </div>
     </div>
 </div>
 
+<script src="/customer/home/home.js"></script>
 <script src="order-detail.js"></script>
 </body>
 </html>

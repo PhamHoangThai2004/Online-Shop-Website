@@ -39,7 +39,7 @@ async function getUserInfo() {
             console.error('API Error - Status:', response.status, 'Message:', errorText);
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
-                window.location.href = '/customer/login/login.html';
+                window.location.href = '/auth/login.html';
             } else {
                 alert(`Lỗi khi lấy thông tin người dùng: ${errorText}`);
             }
@@ -56,7 +56,7 @@ async function getOrderList() {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('Vui lòng đăng nhập để xem đơn hàng!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = '/auth/login.html';
         return;
     }
 
@@ -98,7 +98,7 @@ function displayOrders(orders) {
             <td>${new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
             <td>${order.totalPrice.toLocaleString('vi-VN')} VNĐ</td>
             <td>${order.status}</td>
-            <td><span class="action-text" onclick="viewOrderDetail(${order.id})">Xem chi tiết</span></td>
+            <td><span class="action-button" onclick="viewOrderDetail(${order.id})">Xem chi tiết</span></td>
         `;
         orderList.appendChild(row);
     });
@@ -306,7 +306,6 @@ function filterOrders() {
             return;
         }
 
-        // Lấy userId từ token (giả định jwtUtil.extractId là hàm có sẵn)
         let userId;
         try {
             userId = parseInt(await extractIdFromToken(token));
@@ -422,14 +421,6 @@ function filterOrders() {
         }
     }
 
-    function goBack() {
-        window.location.href = '/customer/order/order-list.html';
-    }
-
-    function logout() {
-        localStorage.removeItem('token');
-        window.location.href = '/auth/login.html';
-    }
     if (statusFilter !== 'ALL') {
         filteredOrders = allOrders.filter(order => order.status === statusFilter);
     }
@@ -438,7 +429,7 @@ function filterOrders() {
 }
 
 // Hàm logout sử dụng từ home.js
-function logout() {
+function log_out() {
     localStorage.removeItem('token');
-    window.location.href = '/customer/login/login.html';
+    window.location.href = '/auth/login.html';
 }

@@ -5,6 +5,13 @@ const productListSection = document.getElementById('productListSection');
 const toggleCreateFormButton = document.getElementById('toggleCreateFormButton');
 const cancelCreateButton = document.getElementById('cancelCreateButton');
 const categorySelect = document.getElementById('category');
+const imageInput = document.getElementById('images');
+const imagePreview = document.getElementById('imagePreview');
+
+// Thông tin Cloudinary
+const CLOUDINARY_CLOUD_NAME = 'dvzqdq4my';
+const CLOUDINARY_UPLOAD_PRESET = 'online_shop';
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 async function fetchCategories() {
     try {
@@ -14,7 +21,6 @@ async function fetchCategories() {
             return;
         }
 
-        // Giả định API để lấy danh mục (thay bằng API thực tế của bạn, ví dụ: /api/categories)
         const response = await fetch('http://localhost:8080/api/categories', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -82,6 +88,32 @@ function renderProducts(products) {
     });
 }
 
+async function uploadImageToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Không thể upload ảnh ${file.name}: ${await response.text()}`);
+        }
+
+        const data = await response.json();
+        return {
+            url: data.secure_url,
+            publicId: data.public_id
+        };
+    } catch (error) {
+        console.error(`Lỗi upload ảnh ${file.name}:`, error);
+        throw error; // Ném lỗi để bắt ở ngoài
+    }
+}
+
 async function createProduct(event) {
     event.preventDefault();
 
@@ -91,18 +123,34 @@ async function createProduct(event) {
         return;
     }
 
-    const productData = {
-        name: document.getElementById('name').value,
-        price: parseFloat(document.getElementById('price').value),
-        salePrice: document.getElementById('salePrice').value ? parseFloat(document.getElementById('salePrice').value) : null,
-        description: document.getElementById('description').value,
-        stock: parseInt(document.getElementById('stock').value),
-        brand: document.getElementById('brand').value,
-        origin: document.getElementById('origin').value,
-        category: { id: parseInt(document.getElementById('category').value) }
-    };
+    const files = imageInput.files;
+    const images = [];
 
+    console.log('Tổng số file:', files.length); // Kiểm tra số lượng file
+
+    // Upload từng ảnh lên Cloudinary
     try {
+        for (let file of files) {
+            console.log('Đang upload file:', file.name); // Log tên file
+            const { url, publicId } = await uploadImageToCloudinary(file);
+            images.push({ url, publicId });
+            console.log('Đã upload:', { url, publicId }); // Log kết quả
+        }
+
+        console.log('Danh sách ảnh đã upload:', images);
+
+        const productData = {
+            name: document.getElementById('name').value,
+            price: parseFloat(document.getElementById('price').value),
+            salePrice: document.getElementById('salePrice').value ? parseFloat(document.getElementById('salePrice').value) : null,
+            description: document.getElementById('description').value,
+            stock: parseInt(document.getElementById('stock').value),
+            brand: document.getElementById('brand').value,
+            origin: document.getElementById('origin').value,
+            categoryId: parseInt(document.getElementById('category').value),
+            images: images
+        };
+
         const response = await fetch(API_BASE_URL, {
             method: 'POST',
             headers: {
@@ -175,8 +223,34 @@ function toggleCreateForm() {
         productListSection.style.display = 'block';
         toggleCreateFormButton.textContent = 'Thêm Sản Phẩm';
         document.getElementById('createProductForm').reset();
+        imagePreview.innerHTML = ''; // Xóa preview ảnh khi hủy
     }
 }
+
+// Hiển thị preview tất cả các ảnh đã chọn
+imageInput.addEventListener('change', (event) => {
+    console.log('Số lượng file đã chọn:', imageInput.files.length);
+    const files = event.target.files;
+
+    if (files.length > 5) {
+        alert('Bạn chỉ có thể tải lên tối đa 5 ảnh!');
+        imageInput.value = ''; // Reset input
+        imagePreview.innerHTML = ''; // Xóa preview
+        return;
+    }
+
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = file.name;
+            img.classList.add('preview-image');
+            imagePreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+});
 
 // Gắn sự kiện cho nút "Thêm Sản Phẩm"
 toggleCreateFormButton.addEventListener('click', toggleCreateForm);
