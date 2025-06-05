@@ -185,22 +185,22 @@ body {
 }
 
 .order-table th:nth-child(1), .order-table td:nth-child(1) {
-    width: 35%;
+    width: 30%;
 }
 
 .order-table th:nth-child(2), .order-table td:nth-child(2) {
-    width: 15%;
-    text-align: right;
+    width: 20%;
+    text-align: center;
 }
 
 .order-table th:nth-child(3), .order-table td:nth-child(3) {
-    width: 10%;
+    width: 15%;
     text-align: center;
 }
 
 .order-table th:nth-child(4), .order-table td:nth-child(4) {
-    width: 25%;
-    text-align: right;
+    width: 20%;
+    text-align: center;
 }
 
 .order-table th:nth-child(5), .order-table td:nth-child(5) {
@@ -210,9 +210,9 @@ body {
 
 .order-table th {
     background-color: #f5f5f5;
-    color: #4CAF50;
+    color: #bbb;
     font-weight: bold;
-    /* text-align: left; */ /* Mặc định là left, không cần ghi đè trừ khi muốn thay đổi */
+    text-align: center;
 }
 
 .order-table td {

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa Trạng thái Đơn hàng</title>
+  <link rel="stylesheet" href="../dashboard.css">
+  <link rel="stylesheet" href="order.css">
+</head>
+<body>
+
+<div class="sidebar">
+  <h2><a href="../dashboard.html">Admin</a></h2>
+  <ul>
+    <li><a href="../user/user.html">Quản lí User</a></li>
+    <li><a href="../product/product.html">Quản lí Sản phẩm</a></li>
+    <li><a href="../category/category.html">Quản lí Danh mục</a></li>
+    <li class="active"><a href="../order/order.html">Quản lí Đơn hàng</a></li>
+    <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
+    <li class="logout-item"><a href="" id="logoutButton">Đăng xuất</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <h1>Chỉnh sửa Trạng thái Đơn hàng</h1>
+  <div class="order-info">
+    <p><strong>Mã Đơn Hàng:</strong> <span id="orderId"></span></p>
+    <p><strong>Ngày Đặt Hàng:</strong> <span id="orderDate"></span></p>
+    <p><strong>Tổng Tiền:</strong> <span id="totalPrice"></span> VNĐ</p>
+    <p><strong>Trạng Thái:</strong> <span id="currentStatus"></span></p>
+  </div>
+  <h2>Chi Tiết Sản Phẩm</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Tên Sản Phẩm</th>
+      <th>Giá</th>
+      <th>Số Lượng</th>
+      <th>Tổng</th>
+    </tr>
+    </thead>
+    <tbody id="orderItemsTableBody">
+    <!-- Dữ liệu sản phẩm sẽ được render ở đây -->
+    </tbody>
+  </table>
+  <form id="updateOrderForm" class="form-inline">
+    <div>
+      <label for="id">ID Đơn hàng:</label><br>
+      <input type="text" id="id" name="id" readonly>
+    </div>
+    <div>
+      <label for="status">Trạng thái:</label><br>
+      <select id="status" name="status" required>
+        <option value="PENDING">Đang chờ xử lý</option>
+        <option value="SHIPPED">Đã giao hàng</option>
+        <option value="DELIVERED">Đã giao</option>
+        <option value="CANCELLED">Đã hủy</option>
+      </select>
+    </div>
+    <button type="submit">Xác nhận</button>
+    <button type="button" onclick="window.location.href='order.html'">Hủy</button>
+  </form>
+</div>
+
+<script src="order-detail.js"></script>
+<script src="../dashboard.js"></script>
+<div id="logoutModal" class="modal">
+  <div class="modal-content">
+    <p class="modal-message">Bạn có muốn đăng xuất?</p>
+    <div class="modal-actions">
+      <button id="yesButton" class="yes-button">Có</button>
+      <button id="noButton" class="no-button">Không</button>
+    </div>
+  </div>
+</body>
+</html>

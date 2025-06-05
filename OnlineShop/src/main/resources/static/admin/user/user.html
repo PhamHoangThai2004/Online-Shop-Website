@@ -16,7 +16,8 @@
         <li><a href="../category/category.html">Quản lí Danh mục</a></li>
         <li><a href="../order/order.html">Quản lí Đơn hàng</a></li>
         <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
-        <li class="logout-item"><a href="" id="logoutButton">Đăng xuất</a></li>
+        <li class="logout-item"><a href="#" id="logoutButton">Đăng xuất</a></li>
+
     </ul>
 </div>
 
@@ -45,5 +46,15 @@
 </div>
 
 <script src="user.js"></script>
+<script src="../dashboard.js"></script>
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <p class="modal-message">Bạn có muốn đăng xuất?</p>
+        <div class="modal-actions">
+            <button id="yesButton" class="yes-button">Có</button>
+            <button id="noButton" class="no-button">Không</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

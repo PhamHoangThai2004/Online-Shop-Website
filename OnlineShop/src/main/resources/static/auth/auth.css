@@ -1,68 +1,154 @@
+/* auth.css */
+
+/* Thêm animation background cho các trang Đăng nhập/Đăng ký */
+/* Đây là khối CSS GHI ĐÈ lên style body từ styles.css */
+body {
+    /* Đảm bảo kích thước bắt đầu là 100% trước khi animation diễn ra */
+    /* Quan trọng: background-size được định nghĩa trong styles.css, đây chỉ là khởi tạo */
+    background-size: 100%;
+    /* Áp dụng animation: backgroundZoom (được định nghĩa trong styles.css) */
+    /* Tốc độ 2s, kiểu chuyển động ease-out, giữ trạng thái cuối cùng (110%) */
+    animation: backgroundZoom 0.8s ease-out forwards;
+}
+
+/* responsive riêng cho animation trên mobile của trang auth */
+@media (max-width: 600px) {
+    body {
+        /* Đảm bảo kích thước bắt đầu là auto 100% trên mobile */
+        background-size: auto 100%;
+        animation: backgroundZoomMobile 2s ease-out forwards;
+    }
+}
+
+
+/* Các style cho form đăng nhập/đăng ký */
 .form {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: var(--form-bg-opacity); /* Nền form TRẮNG HOÀN TOÀN */
+    backdrop-filter: none; /* Bỏ hiệu ứng làm mờ (vì không còn trong suốt) */
+    -webkit-backdrop-filter: none; /* Hỗ trợ Safari */
+    padding: 30px; /* Tăng padding bên trong form */
+    border-radius: 12px; /* Bo góc mềm mại cho form */
+    box-shadow: 0 8px 25px var(--shadow-medium); /* Đổ bóng nhẹ cho form */
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 450px; /* Chiều rộng tối đa cho form */
+    margin: 0 auto 20px auto; /* Căn giữa và khoảng cách dưới */
+    display: flex; /* Dùng flexbox để sắp xếp các form-group */
+    flex-direction: column; /* Sắp xếp theo cột */
+    gap: 15px; /* Khoảng cách giữa các form-group */
+    border: none; /* Bỏ viền nhẹ cho form nếu không cần */
 }
+
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 0; /* Đã dùng gap cho form, không cần margin-bottom ở đây */
+    text-align: left; /* Căn lề trái cho label và input */
 }
+
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
+    display: block; /* Đảm bảo label chiếm hết chiều rộng và xuống dòng */
+    margin-bottom: 8px; /* Khoảng cách dưới label */
+    font-weight: 500; /* Font weight trung bình cho label */
+    color: var(--text-dark); /* Màu chữ tối cho label */
+    font-size: 0.95em; /* Kích thước chữ nhỏ hơn một chút cho label */
 }
+
 .form-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+    /* Kế thừa từ styles.css, chỉ cần override nếu cần */
+    background-color: #ffffff; /* Nền input TRẮNG HOÀN TOÀN */
+    border: 1px solid var(--border-color); /* Viền input màu mặc định */
+    /* Các thuộc tính khác như padding, border-radius, font-size, color, transition, box-sizing đã được định nghĩa trong styles.css */
 }
-button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-button[type="submit"]:hover {
-    background: #45a049;
-}
+
+/* Style cho thông báo lỗi/thành công */
 .message {
-    margin-top: 10px;
-    color: red;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-weight: 500;
+    text-align: center;
 }
-/* Thêm CSS cho password wrapper */
+
+.message.success {
+    background-color: #d4edda; /* Màu nền xanh lá nhạt */
+    color: #155724; /* Màu chữ xanh lá đậm */
+    border: 1px solid #c3e6cb; /* Viền xanh lá */
+}
+
+.message.error {
+    background-color: #f8d7da; /* Màu nền đỏ nhạt */
+    color: #721c24; /* Màu chữ đỏ đậm */
+    border: 1px solid #f5c6cb; /* Viền đỏ */
+}
+
+/* CSS cho password wrapper (input và icon mắt) */
 .password-wrapper {
     position: relative;
+    width: 100%;
 }
+
 .password-wrapper input {
-    padding-right: 40px; /* Để lại không gian cho con mắt */
+    padding-right: 45px; /* Để lại nhiều không gian hơn cho icon */
+    margin-bottom: 0; /* Loại bỏ margin-bottom mặc định */
 }
+
 .toggle-password {
     position: absolute;
-    right: 10px;
+    right: 15px; /* Đẩy icon vào trong hơn */
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #000000; /* Màu mặc định khi ẩn mật khẩu */
+    color: #999; /* Màu icon khi ẩn mật khẩu */
     transition: color 0.3s; /* Hiệu ứng chuyển màu mượt mà */
+    font-size: 1.1em; /* Tăng kích thước icon */
 }
+
 .toggle-password:hover {
-    color: #666;
+    color: #666; /* Màu icon khi hover */
 }
+
 .toggle-password.active {
-    color: #ff0000; /* Màu khi hiển thị mật khẩu */
+    color: var(--primary-color); /* Màu cam từ biến --primary-color khi hiển thị mật khẩu */
+    animation: none; /* Bỏ animation pulse nếu không cần thiết */
 }
-/* Thêm animation khi thay đổi trạng thái */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+
+/* Nút submit trong form */
+.form button[type="submit"] {
+    width: 100%;
+    margin-top: 20px; /* Khoảng cách trên nút submit */
+    /* Các thuộc tính khác như padding, background, color, border, border-radius, cursor, font-size, font-weight, transition, box-shadow đã được định nghĩa trong styles.css */
 }
-.toggle-password.active {
-    animation: pulse 0.5s ease-in-out;
+
+/* Liên kết "Chưa có tài khoản?" và "Quay lại trang chủ" */
+/* ... (các style khác của bạn) ... */
+
+/* Liên kết "Chưa có tài khoản?" và "Quay lại trang chủ" */
+p a {
+    color: var(--text-dark); /* Màu link thành màu tối để dễ nhìn trên nền trắng/sáng của container */
+    text-shadow: none; /* Bỏ bóng chữ */
+    text-decoration: none;
+    font-weight: 500; /* Font weight mặc định */
+    transition: all 0.3s ease; /* Thay đổi thành 'all' để chuyển động mượt mà cho tất cả thuộc tính thay đổi */
+    margin-top: 10px; /* Khoảng cách giữa các link */
+    display: inline-block; /* Để áp dụng margin-top và các thuộc tính transform */
+}
+
+p a:hover {
+    color: var(--primary-color); /* Màu cam khi hover */
+    text-decoration: underline; /* Gạch chân khi hover */
+    font-weight: 700; /* Làm chữ đậm hơn khi hover */
+    transform: scale(1.05); /* Phóng to link lên 5% khi hover */
+}
+
+/* ... (các style responsive khác của bạn) ... */
+
+/* Responsive cho auth.css */
+@media (max-width: 600px) {
+    .form {
+        padding: 20px;
+        border-radius: 0;
+        box-shadow: none;
+        background-color: #ffffff; /* Nền trắng hoàn toàn trên mobile */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
 }

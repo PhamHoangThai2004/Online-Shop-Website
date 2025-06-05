@@ -93,16 +93,16 @@ body {
 
 /* Các style mới cho Modal Đăng xuất */
 .modal {
-    display: none; /* Ẩn modal ban đầu */
-    position: fixed; /* Giữ modal cố định trên màn hình */
-    z-index: 1000; /* Đảm bảo modal nằm trên các nội dung khác */
+    display: none; /* Chính xác: Ẩn modal mặc định khi tải trang */
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Cho phép cuộn nếu nội dung quá dài */
-    background-color: rgba(0, 0, 0, 0.4); /* Lớp phủ mờ đen */
-    display: flex; /* Dùng flexbox để căn giữa nội dung */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Các thuộc tính flexbox sẽ chỉ có hiệu lực khi JavaScript đặt display thành 'flex' */
     justify-content: center;
     align-items: center;
 }

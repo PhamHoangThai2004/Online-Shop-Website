@@ -117,19 +117,6 @@ function displayOrderDetail(order) {
 
     if (orderItems) {
         orderItems.innerHTML = '';
-        // const canReview = order.status === 'SHIPPED'; // Biến này có thể dùng cho logic khác
-
-        // Dòng sau đã được XÓA BỎ hoặc VÔ HIỆU HÓA để sửa lỗi lệch bảng:
-        // if (reviewHeader) {
-        //     reviewHeader.style.display = 'table-row'; // Gây lỗi: <thead> không nên có display: table-row
-        // }
-        // Thay vào đó, <thead> sẽ sử dụng display mặc định là 'table-header-group'
-        // Nếu bạn cần ẩn/hiện thead dựa trên điều kiện, hãy dùng 'table-header-group' hoặc 'none'.
-        // Ví dụ:
-        // if (reviewHeader) {
-        //    reviewHeader.style.display = (order.status === 'COMPLETED') ? 'table-header-group' : 'none';
-        // }
-        // Hiện tại, cứ để CSS mặc định xử lý hiển thị của <thead>
 
         if (order.items && order.items.length === 0) {
             orderItems.innerHTML = `<tr><td colspan="5" style="text-align: center;">Không có sản phẩm nào trong đơn hàng.</td></tr>`;
@@ -144,7 +131,7 @@ function displayOrderDetail(order) {
                     <td>${item.price ? item.price.toLocaleString('vi-VN') + ' VNĐ' : 'N/A'}</td>
                     <td>${item.quantity || 0}</td>
                     <td>${item.price && item.quantity ? (item.price * item.quantity).toLocaleString('vi-VN') + ' VNĐ' : 'N/A'}</td>
-                    <td><span class="review-link" onclick="openReviewDialog(${item.productId || 0}, '${order.status}')">Review</span></td>
+                    <td><span class="review-link" onclick="openReviewDialog(${item.productId || 0}, '${order.status}')" style="color: #0c97d3">Đánh giá</span></td>
                 `;
                 orderItems.appendChild(row);
             });
@@ -287,12 +274,9 @@ async function submitReview() {
 }
 
 async function extractIdFromToken(token) {
-    // Đây là hàm giả định, bạn cần thay thế bằng logic giải mã token thực tế để lấy ID người dùng
     return new Promise((resolve) => {
-        // Giả sử token chứa ID người dùng sau khi parse, hoặc bạn gọi API để lấy ID từ token
-        // Ví dụ đơn giản:
         try {
-            const payload = JSON.parse(atob(token.split('.')[1])); // Giải mã phần payload của JWT
+            const payload = JSON.parse(atob(token.split('.')[1]));
             resolve(payload.userId || payload.sub || "1"); // Thay 'userId' hoặc 'sub' bằng key thực tế trong token
         } catch (e) {
             console.warn("Could not parse token to extract user ID, returning mock ID '1'. Token:", token, "Error:", e);

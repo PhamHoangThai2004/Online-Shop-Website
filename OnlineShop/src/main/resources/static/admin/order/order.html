@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Quản lí Đơn hàng</title>
     <link rel="stylesheet" href="../dashboard.css">
+    <link rel="stylesheet" href="order.css">
 </head>
 <body>
 
@@ -21,8 +22,32 @@
 
 <div class="main-content">
     <h1>Quản lí Đơn hàng</h1>
-    <p>Chức năng quản lý đơn hàng sẽ được xây dựng tại đây.</p>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID User</th>
+            <th>Tổng giá</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody id="orderTableBody">
+        <!-- Dữ liệu đơn hàng sẽ được render ở đây -->
+        </tbody>
+    </table>
 </div>
 
+<script src="order.js"></script>
+<script src="../dashboard.js"></script>
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <p class="modal-message">Bạn có muốn đăng xuất?</p>
+        <div class="modal-actions">
+            <button id="yesButton" class="yes-button">Có</button>
+            <button id="noButton" class="no-button">Không</button>
+        </div>
+    </div>
 </body>
 </html>

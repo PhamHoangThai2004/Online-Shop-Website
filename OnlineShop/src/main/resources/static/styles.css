@@ -1,23 +1,234 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: #f4f4f4;
+/* Import Google Fonts (ví dụ: Poppins hoặc Roboto) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Định nghĩa biến màu sắc mới để phù hợp với ảnh nền và sidebar xanh lá */
+    /* Màu xanh lá cho sidebar đã có, giữ nguyên */
+    --sidebar-green: #4CAF50;
+    --sidebar-green-dark: #388E3C;
+
+    /* Các màu lấy cảm hứng từ hộp quà (cam/đỏ) và nền xám của ảnh */
+    --primary-color: #FF7043; /* Màu cam sáng từ hộp quà - dùng cho nút chính */
+    --primary-dark: #E64A19;  /* Màu cam đậm hơn */
+    --accent-color: #F44336;  /* Màu đỏ từ ruy băng - dùng cho điểm nhấn phụ */
+
+    --text-dark: #333; /* Màu chữ tối cho các thành phần trên nền sáng */
+    --text-light: #f8f8f8; /* Màu chữ sáng cho các thành phần trên nền tối (sidebar) */
+
+    --background-light: #f8f9fa; /* Nền sáng chung */
+    --background-dark: #e9ecef; /* Nền xám nhạt */
+
+    --border-color: #ced4da; /* Màu viền input */
+    --shadow-light: rgba(0, 0, 0, 0.08); /* Đổ bóng nhẹ */
+    --shadow-medium: rgba(0, 0, 0, 0.15); /* Đổ bóng vừa */
+    --shadow-strong: rgba(0, 0, 0, 0.25); /* Đổ bóng mạnh hơn */
+
+    --background-overlay: rgba(0, 0, 0, 0.4); /* Lớp phủ cho ảnh nền (ít tối hơn) */
+    --form-bg-opacity: #ffffff; /* Nền form sẽ là TRẮNG HOÀN TOÀN */
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+
+    /* BACKGROUND IMAGE VÀ OVERLAY */
+    background-image: url('../assets/background.jpg'); /* ĐƯỜNG DẪN ẢNH CỦA BẠN */
+    background-size: 100%; /* Bắt đầu từ 100% */
+    background-position: center center;
+    background-attachment: fixed; /* Hiệu ứng parallax */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden; /* Ngăn chặn scroll ngang */
+}
+
+/* XÓA BỎ DÒNG NÀY (hoặc khối này) NẾU CÒN:
+body:hover {
+    background-size: 105%;
+}
+*/
+
+/* Lớp phủ ảnh nền */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-overlay); /* Màu đen trong suốt */
+    z-index: -1; /* Đặt dưới nội dung chính */
+}
+
+/* @keyframes cho hiệu ứng phóng to/thu nhỏ background */
+@keyframes backgroundZoom {
+    0% {
+        background-size: 100%; /* Bắt đầu ở 100% */
+    }
+    100% {
+        background-size: 110%; /* Phóng to lên 115% */
+    }
+}
+
+
 .container {
     max-width: 800px;
+    width: 100%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 30px;
+    background-color: var(--form-bg-opacity); /* Nền TRẮNG HOÀN TOÀN */
+    backdrop-filter: none; /* Bỏ hiệu ứng làm mờ nếu không còn trong suốt */
+    -webkit-backdrop-filter: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px var(--shadow-strong); /* Đổ bóng mạnh hơn */
     text-align: center;
+    position: relative;
+    z-index: 1;
+    overflow: hidden; /* Đảm bảo các hiệu ứng bên trong không tràn ra ngoài */
+
+    /* Thêm hiệu ứng lắc nhẹ khi hover container */
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
+
+.container:hover {
+    transform: translateY(-5px); /* Nâng container lên một chút */
+    box-shadow: 0 15px 40px var(--shadow-strong); /* Đổ bóng mạnh hơn nữa */
+}
+
+
+h1, h2 {
+    color: var(--primary-dark); /* Tiêu đề màu cam đậm */
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* Bóng nhẹ cho chữ */
+}
+
+/* Kiểu cho thanh điều hướng (nếu có trên trang chủ) */
 .nav {
-    margin-top: 20px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
+
 .nav a {
-    margin: 0 10px;
     text-decoration: none;
-    color: #4CAF50;
-    font-weight: bold;
+    color: var(--text-light); /* Chữ trắng cho link điều hướng */
+    font-weight: 500;
+    padding: 12px 25px; /* Tăng padding nút điều hướng */
+    border-radius: 8px; /* Bo góc mềm mại hơn */
+    background-color: var(--primary-color); /* Nền cam cho link */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--shadow-light);
 }
+
 .nav a:hover {
-    text-decoration: underline;
+    background-color: var(--primary-dark);
+    transform: translateY(-3px) scale(1.02); /* Nâng lên và hơi phóng to */
+    box-shadow: 0 8px 20px var(--shadow-medium);
+}
+
+/* Các thuộc tính cho input, textarea và button (có thể lặp lại hoặc override trong auth.css) */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    color: var(--text-dark);
+    background-color: #ffffff; /* Nền TRẮNG HOÀN TOÀN */
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(255, 112, 67, 0.3); /* Bóng focus màu cam */
+    outline: none;
+    background-color: #fff;
+}
+
+button {
+    padding: 15px 30px; /* Tăng padding nút chính */
+    background: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em; /* Kích thước chữ to hơn */
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px var(--shadow-light);
+}
+
+button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-3px) scale(1.02); /* Nâng nút lên và hơi phóng to */
+    box-shadow: 0 10px 25px var(--shadow-medium);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+        background-size: auto 100%; /* Đảm bảo ảnh nền không bị kéo giãn quá mức */
+        background-position: top center;
+        animation: backgroundZoomMobile 20s ease-in-out infinite alternate; /* Animation riêng cho mobile */
+    }
+    /* Keyframes riêng cho mobile để tránh hiệu ứng bị bể */
+    @keyframes backgroundZoomMobile {
+        0% {
+            background-size: auto 100%;
+        }
+        100% {
+            background-size: auto 110%;
+        }
+    }
+    .container {
+        padding: 20px;
+        border-radius: 0;
+        box-shadow: none;
+        margin-top: 20px;
+        background-color: #ffffff; /* Nền trắng hoàn toàn trên mobile */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        transform: none; /* Bỏ hiệu ứng hover container trên mobile */
+    }
+    .container:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    h1, h2 {
+        font-size: 1.8em;
+    }
+    .nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .nav a {
+        width: 100%;
+    }
 }

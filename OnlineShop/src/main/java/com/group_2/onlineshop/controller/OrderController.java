@@ -124,6 +124,22 @@ public class OrderController {
         return ResponseEntity.ok(convertToResponse(savedOrder));
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllOrders(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Invalid Authorization header");
+        }
+
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (!jwtUtil.validateToken(token, username)) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+        List<OrderDTO> orders = orderRepository.findAll().stream().map(this::convertToResponse).collect(Collectors.toList());
+        return ResponseEntity.ok(orders);
+    }
+
     // Get đơn hàng bằng user: http://localhost:8080/api/orders/user
     @GetMapping("/user")
     public ResponseEntity<?> getOrdersByUser(@RequestHeader("Authorization") String authorizationHeader) {
