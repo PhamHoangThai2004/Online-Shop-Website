@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(err => {
                 console.error('Lỗi khi thêm danh mục:', err);
-                alert('Lỗi khi thêm danh mục');
+                alert('Tên danh mục đã tồn tại');
             });
     });
 
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(err => {
                 console.error('Lỗi khi sửa danh mục:', err);
-                alert('Lỗi khi sửa danh mục');
+                alert('Tên danh mục đã tồn tại');
             });
     });
 
@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => {
                 if (response.ok) {
                     fetchCategories(searchInput.value.trim());
+                    showSuccessMessage('Xoá danh mục thành công!');
                 } else {
                     alert('Lỗi khi xóa danh mục');
                 }

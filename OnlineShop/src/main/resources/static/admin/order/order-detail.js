@@ -89,7 +89,7 @@ async function updateOrderStatus(event) {
         window.location.href = 'order.html';
     } catch (error) {
         console.error('Lỗi:', error);
-        alert(`Đã có lỗi xảy ra: ${error.message}`);
+        alert(`${error.message}`);
     }
 }
 

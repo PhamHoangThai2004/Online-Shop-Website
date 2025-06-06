@@ -247,7 +247,7 @@ function filterOrders() {
             cancelBtn.textContent = 'Hủy Đơn Hàng';
             cancelBtn.onclick = () => cancelOrder(order.id);
             actionButtons.appendChild(cancelBtn);
-        } else if (order.status === 'CANCELLED' || order.status === 'SHIPPED') {
+        } else if (order.status === 'CANCELLED' || order.status === 'DELIVERED') {
             const reorderBtn = document.createElement('button');
             reorderBtn.classList.add('reorder-btn');
             reorderBtn.textContent = 'Mua Lại';

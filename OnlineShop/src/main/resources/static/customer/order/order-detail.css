@@ -585,7 +585,7 @@ body {
     }
     .order-table th:nth-child(2), .order-table td:nth-child(2) {
         width: 20%;
-        text-align: right;
+        text-align: center;
     }
     .order-table th:nth-child(3), .order-table td:nth-child(3) {
         width: 15%;
@@ -593,7 +593,7 @@ body {
     }
     .order-table th:nth-child(4), .order-table td:nth-child(4) {
         width: 20%;
-        text-align: right;
+        text-align: center;
     }
     .order-table th:nth-child(5), .order-table td:nth-child(5) {
         width: 10%;

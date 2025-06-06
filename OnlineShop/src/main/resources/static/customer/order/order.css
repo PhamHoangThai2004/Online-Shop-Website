@@ -1,248 +1,211 @@
+/* Trong home.css (hoặc global.css) */
+:root {
+    --primary-color: #0069fd; /* Xanh lá chính */
+    --primary-dark: #0069fd;
+    --secondary-color: #6c757d; /* Xám phụ */
+    --accent-color: #007bff; /* Xanh dương (ví dụ cho link/nút phụ) */
+    --accent-dark: #0056b3;
+    --danger-color: #dc3545; /* Đỏ */
+    --danger-dark: #c82333;
+
+    --background-color: #f0f2f5; /* Nền tổng thể của trang */
+    --card-background: #ffffff; /* Nền của các hộp/panel */
+    --border-color: #e0e0e0; /* Màu viền chung */
+    --text-color-dark: #333333; /* Màu chữ đậm */
+    --text-color-medium: #555555; /* Màu chữ trung bình */
+    --text-color-light: #777777; /* Màu chữ nhạt */
+
+    --shadow-light: rgba(0, 0, 0, 0.08); /* Bóng nhẹ */
+    --shadow-medium: rgba(0, 0, 0, 0.15); /* Bóng vừa */
+    --transition-speed: 0.3s ease;
+
+    --font-family-primary: 'Arial', sans-serif;
+}
+
+/* Các style chung cho layout và typography trong home.css */
 body {
-    font-family: Arial, sans-serif;
+    font-family: var(--font-family-primary);
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
+    color: var(--text-color-dark);
 }
 
 .navbar {
-    background-color: #4CAF50;
+    background-color: var(--primary-color);
     color: white;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 5px var(--shadow-light);
 }
-
-.navbar-brand {
+.navbar-brand a {
+    color: #ffffff;
+    text-decoration: none;
     font-size: 24px;
     font-weight: bold;
-    cursor: pointer;
 }
-
-.navbar-brand:hover {
+.navbar-brand a:hover {
     text-decoration: underline;
 }
-
 .navbar-links {
     display: flex;
     gap: 15px;
+    align-items: center;
 }
-
 .navbar-links a {
     color: white;
     text-decoration: none;
     font-size: 16px;
+    transition: color var(--transition-speed);
 }
-
 .navbar-links a:hover {
-    text-decoration: underline;
+    color: rgba(255, 255, 255, 0.8);
 }
-
 .cart-icon {
     position: relative;
     color: white;
-    margin-right: 30px;
+    margin-right: 15px; /* Giảm khoảng cách */
+    display: flex; /* Để căn giữa badge */
+    align-items: center;
 }
-
 .cart-icon svg {
-    position: relative;
-    z-index: 1;
+    fill: white; /* Đảm bảo màu trắng */
 }
-
 .badge {
     position: absolute;
-    top: -10px;
-    right: -12px;
-    background-color: #fff;
-    color: #4CAF50;
-    border-radius: 30px;
-    border: 3px solid #4CAF50;
-    padding: 1px;
-    font-size: 12px;
+    top: -8px; /* Điều chỉnh vị trí */
+    right: -10px; /* Điều chỉnh vị trí */
+    background-color: red;
+    color: white;
+    border-radius: 50%; /* Hình tròn hoàn hảo */
+    border: 2px solid var(--primary-color);
+    padding: 2px 6px; /* Điều chỉnh padding */
+    font-size: 11px; /* Kích thước font nhỏ hơn */
     font-weight: bold;
     min-width: 18px;
     text-align: center;
-    z-index: 0;
+    line-height: 1.2; /* Căn chỉnh text trong badge */
+    z-index: 1; /* Đảm bảo hiển thị trên icon */
 }
-
 .badge[data-count="0"], .badge:empty {
     display: none;
 }
 
-.order-container {
-    max-width: 1650px;
-    margin: 0 auto;
-    background-color: white;
+/* Common Card/Panel Styles */
+.content-card {
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow-light);
     padding: 20px;
-    border-end-end-radius: 8px;
-    border-end-start-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Khoảng cách giữa các card */
 }
 
-.order-container h2 {
+/* Page Container (for max-width and centering) */
+.page-container {
+    max-width: 1200px; /* Giảm max-width để trang trông gọn gàng hơn */
+    margin: 30px auto; /* Khoảng cách trên/dưới và căn giữa */
+    padding: 20px;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+}
+
+/* Page Title */
+.page-title {
     text-align: center;
-    margin-bottom: 20px;
-    color: #4CAF50;
-    font-size: 24px;
+    color: var(--primary-color);
+    font-size: 28px; /* Giảm kích thước font một chút */
+    margin-bottom: 25px;
+    font-weight: bold;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
 }
 
-.order-content {
-    margin-bottom: 20px;
+/* Panel Title */
+.panel-title {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 600;
 }
 
-#order-table {
+/* Common Table Styles */
+.data-table {
     width: 100%;
     border-collapse: collapse;
+    /* Loại bỏ background, shadow, border-radius vì nó đã được bọc trong content-card */
 }
-
-#order-table th,
-#order-table td {
+.data-table th,
+.data-table td {
     padding: 12px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-color);
 }
-
-#order-table th {
-    background-color: #f4f4f4;
+.data-table th {
+    background-color: var(--background-color); /* Màu nền header bảng */
     font-weight: bold;
-    color: #bbb;
+    color: var(--text-color-light); /* Màu chữ nhạt cho header */
+    text-transform: uppercase;
+    font-size: 0.9em;
 }
-
-#order-table td {
+.data-table td {
     vertical-align: middle;
+    color: var(--text-color-medium);
 }
-
-#order-table img {
+.data-table img {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
 }
-
-#order-table tr:hover {
-    background-color: #f9f9f9;
+.data-table tr:hover {
+    background-color: var(--background-light); /* Màu sáng hơn khi hover */
 }
 
-.order-bottom-layout {
-    display: flex;
-    gap: 20px;
-}
-
-.user-info-panel,
-.payment-panel {
-    flex: 1;
-    padding: 15px;
-    background-color: #fff;
-}
-
-.user-info-panel h3,
-.payment-panel h3 {
-    margin-top: 0;
-    color: #4CAF50;
-    font-size: 20px;
-}
-
-.payment-panel h3 {
-    text-align: right;
-}
-
-.user-info-section,
-.payment-info {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.user-info-section p,
-.payment-info p {
-    margin: 0;
-    color: #444;
-    font-size: 16px;
-}
-
-.user-info-section p strong,
-.payment-info p strong {
-    color: #bbb;
-}
-
-#order-total,
-#shipping-fee,
-#total-payment {
-    color: #000;
-    font-weight: bold;
-}
-
-.order-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.payment-info {
-    align-self: flex-end;
-}
-
-.change-info-link {
-    color: #0c97d3;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    margin-top: 10px;
-    transition: color 0.3s;
-}
-
-.change-info-link:hover {
-    color: #83b1c5;
-    text-decoration: underline;
-}
-
-.confirm-order-btn {
-    background-color: #4CAF50;
+/* Common Button Styles */
+.primary-button {
+    background-color: var(--primary-color);
     color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: 4px;
+    border-radius: 6px; /* Bo góc nhẹ nhàng hơn */
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
-    align-self: flex-end;
+    font-weight: 600;
+    transition: background-color var(--transition-speed), transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.primary-button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.primary-button:active {
+    transform: translateY(0);
 }
 
-.confirm-order-btn:hover {
-    background-color: #45a049;
+.link-button {
+    color: var(--accent-color); /* Màu xanh dương cho link button */
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color var(--transition-speed), text-decoration var(--transition-speed);
+}
+.link-button:hover {
+    color: var(--accent-dark);
+    text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-    .order-bottom-layout {
-        flex-direction: column;
-    }
-
-    .user-info-panel,
-    .payment-panel {
-        flex: none;
-    }
-
-    .payment-panel h3 {
-        text-align: center;
-    }
-
-    .payment-info {
-        align-self: center;
-    }
-
-    #order-table th,
-    #order-table td {
-        padding: 8px;
-        font-size: 14px;
-    }
-
-    #order-table img {
-        width: 40px;
-        height: 40px;
-    }
-
-    .confirm-order-btn {
-        width: 100%;
-        padding: 10px;
-    }
+/* Text alignment helpers */
+.text-right {
+    text-align: left;
 }
+
+/* Highlight total payment */
+.total-highlight {
+    color: var(--danger-color); /* Màu đỏ để làm nổi bật tổng tiền */
+    font-weight: bold;
+    font-size: 1.2em; /* Lớn hơn một chút */
+}
+
+/* END home.css (hoặc global.css) */

@@ -50,8 +50,8 @@ if (loginForm) {
                 const userInfoData = await userInfoResponse.json();
 
                 if (userInfoResponse.ok) {
-                    const role = userInfoData.role; // Giả sử API trả về role
-                    localStorage.setItem('role', role); // Lưu role để sử dụng sau này
+                    const role = userInfoData.role;
+                    localStorage.setItem('role', role);
                     localStorage.setItem('username', userInfoData.username); // Lưu username (tùy chọn)
 
                     document.getElementById('loginMessage').textContent = 'Đăng nhập thành công!';
@@ -117,10 +117,10 @@ if (registerForm) {
             if (response.ok) {
                 document.getElementById('registerMessage').textContent = 'Đăng ký thành công!';
                 document.getElementById('registerMessage').style.color = 'green';
-                setTimeout(() => window.location.href = '/login/login.html', 1000); // Cập nhật đường dẫn tuyệt đối
+                setTimeout(() => window.location.href = '/auth/login.html', 1000); // Cập nhật đường dẫn tuyệt đối
             } else {
                 console.log(data.message);
-                document.getElementById('registerMessage').textContent = 'Đăng ký thất bại!';
+                document.getElementById('registerMessage').textContent = 'Tên tài khoản đã tồn tại';
                 document.getElementById('registerMessage').style.color = 'red';
             }
         } catch (error) {

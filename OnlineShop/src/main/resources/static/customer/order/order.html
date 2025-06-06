@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh Toán</title>
+    <link rel="stylesheet" href="/customer/home/home.css">
     <link rel="stylesheet" href="order.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<!-- Navbar -->
 <nav class="navbar">
-    <div class="navbar-brand"><a href="/customer/home/home.html" style="color: #ffffff; text-decoration: none">Online Shop</a></div>
+    <div class="navbar-brand"><a href="/customer/home/home.html">Online Shop</a></div>
     <div class="navbar-links" id="userSection" style="display: none;">
         <a href="/customer/cart/cart.html" class="cart-icon">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
@@ -23,11 +23,10 @@
     </div>
 </nav>
 
-<div class="order-container">
-    <h2>Đặt Hàng</h2>
-    <!-- Nửa trên: Bảng sản phẩm -->
-    <div class="order-content">
-        <table id="order-table">
+<div class="order-container page-container">
+    <h2 class="page-title">Đặt Hàng</h2>
+    <div class="order-content content-card">
+        <table id="order-table" class="data-table">
             <thead>
             <tr>
                 <th></th>
@@ -38,32 +37,28 @@
             </tr>
             </thead>
             <tbody id="order-items">
-            <!-- Danh sách sản phẩm sẽ được thêm bằng JavaScript -->
             </tbody>
         </table>
     </div>
-    <!-- Nửa dưới: Thông tin người dùng và thanh toán -->
     <div class="order-bottom-layout">
-        <!-- Bên trái: Thông tin người dùng -->
-        <div class="user-info-panel">
-            <h3>Địa Chỉ Nhận Hàng</h3>
+        <div class="user-info-panel content-card">
+            <h3 class="panel-title">Địa Chỉ Nhận Hàng</h3>
             <div class="user-info-section">
                 <p><strong>Họ và tên:</strong> <span id="user-full-name">Đang tải...</span></p>
                 <p><strong>Số điện thoại:</strong> <span id="user-phone-number">Đang tải...</span></p>
                 <p><strong>Địa chỉ:</strong> <span id="user-address">Đang tải...</span></p>
             </div>
-            <p><a href="/customer/user/info.html" class="change-info-link">THAY ĐỔI</a></p>
+            <p><a href="/customer/user/info.html" class="change-info-link link-button">THAY ĐỔI</a></p>
         </div>
-        <!-- Bên phải: Thông tin thanh toán -->
-        <div class="payment-panel">
-            <h3>Thông Tin Thanh Toán</h3>
+        <div class="payment-panel content-card">
+            <h3 class="panel-title text-right">Thông Tin Thanh Toán</h3>
             <div class="order-summary">
                 <div class="payment-info">
                     <p><strong>Tổng tiền hàng:</strong> <span id="order-total">đ0</span></p>
                     <p><strong>Phí vận chuyển:</strong> <span id="shipping-fee">đ10.000</span></p>
-                    <p><strong>Tổng thanh toán:</strong> <span  id="total-payment">đ0</span></p>
+                    <p><strong>Tổng thanh toán:</strong> <span  id="total-payment" class="total-highlight">đ0</span></p>
                 </div>
-                <button class="confirm-order-btn" onclick="handleOrderConfirmation()">Đặt hàng</button>
+                <button class="confirm-order-btn primary-button" onclick="handleOrderConfirmation()">Đặt hàng</button>
             </div>
         </div>
     </div>

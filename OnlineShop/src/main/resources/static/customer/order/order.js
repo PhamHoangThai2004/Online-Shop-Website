@@ -47,7 +47,7 @@ async function getUserInfo() {
     if (!token || token.trim() === '') {
         console.error('No valid token found in localStorage');
         alert('Vui lòng đăng nhập để xem thông tin!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = '/auth/login.html';
         return;
     }
 
@@ -80,7 +80,7 @@ async function getUserInfo() {
             console.error('API Error - Status:', response.status, 'Message:', errorText);
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
-                window.location.href = '/customer/login/login.html';
+                window.location.href = '/auth/login.html';
             } else {
                 alert(`Lỗi khi lấy thông tin người dùng: ${errorText}`);
             }
@@ -101,7 +101,7 @@ async function confirmOrder() {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('Vui lòng đăng nhập để đặt hàng!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = '/auth/login.html';
         return;
     }
 
@@ -125,12 +125,12 @@ async function confirmOrder() {
         if (response.ok) {
             alert('Đặt hàng thành công!');
             localStorage.removeItem('selectedItemsForOrder');
-            window.location.href = '/customer/home/home.html';
+            window.location.href = '/customer/order/order-list.html';
         } else {
             const errorText = await response.text();
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
-                window.location.href = '/customer/login/login.html';
+                window.location.href = '/auth/login.html';
             } else {
                 alert(`Lỗi khi đặt hàng: ${errorText}`);
             }

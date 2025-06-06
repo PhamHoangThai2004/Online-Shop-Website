@@ -12,7 +12,6 @@ async function fetchProductDetail() {
             const product = await productResponse.json();
             let reviews = await reviewsResponse.json();
 
-            // Lấy fullName cho từng userId
             const userPromises = reviews.map(review =>
                 fetch(`http://localhost:8080/api/auth/users/${review.userId}`)
                     .then(res => res.ok ? res.json() : Promise.reject('Không lấy được thông tin người dùng'))
@@ -24,7 +23,6 @@ async function fetchProductDetail() {
             );
             reviews = await Promise.all(userPromises);
 
-            // Tính averageRating từ reviews nếu cần
             const averageRating = reviews.length > 0
                 ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
                 : 0;
