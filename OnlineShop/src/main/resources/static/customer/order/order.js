@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded in order.js, starting initialization');
     getUserInfo();
     displayOrderItems().then(() => {
         updateTotalPayment();
@@ -7,9 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function displayOrderItems() {
-    console.log('Displaying order items');
     const selectedItems = JSON.parse(localStorage.getItem('selectedItemsForOrder')) || [];
-    console.log('Selected Items:', selectedItems); // Kiểm tra dữ liệu
     const orderTableBody = document.getElementById('order-items');
     const orderTotalElement = document.getElementById('order-total');
     let totalOrderPrice = 0;
@@ -22,7 +19,6 @@ function displayOrderItems() {
 
     orderTableBody.innerHTML = '';
     selectedItems.forEach(item => {
-        console.log('Item:', item); // Kiểm tra từng item
         totalOrderPrice += item.totalPrice || 0; // Đảm bảo totalPrice không undefined
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -35,17 +31,13 @@ function displayOrderItems() {
         orderTableBody.appendChild(row);
     });
 
-    console.log('Total Order Price:', totalOrderPrice); // Kiểm tra tổng
     if (orderTotalElement) orderTotalElement.textContent = `đ${totalOrderPrice.toLocaleString('vi-VN')}`;
     return Promise.resolve();
 }
 
 async function getUserInfo() {
-    console.log('Fetching user info started in order.js');
     const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
     if (!token || token.trim() === '') {
-        console.error('No valid token found in localStorage');
         alert('Vui lòng đăng nhập để xem thông tin!');
         window.location.href = '/auth/login.html';
         return;
@@ -60,16 +52,13 @@ async function getUserInfo() {
             }
         });
 
-        console.log('API Response Status:', response.status);
         if (response.ok) {
             const userInfo = await response.json();
-            console.log('User Info Received:', userInfo);
             if (userInfo && typeof userInfo === 'object' && userInfo.fullName && userInfo.phoneNumber && userInfo.address) {
                 document.getElementById('user-full-name').textContent = userInfo.fullName;
                 document.getElementById('user-phone-number').textContent = userInfo.phoneNumber;
                 document.getElementById('user-address').textContent = userInfo.address;
             } else {
-                console.error('Invalid user info structure:', userInfo);
                 alert('Dữ liệu từ API không chứa đầy đủ thông tin (fullName, phoneNumber, address).');
                 document.getElementById('user-full-name').textContent = 'Chưa có thông tin';
                 document.getElementById('user-phone-number').textContent = 'Chưa có thông tin';
@@ -77,7 +66,6 @@ async function getUserInfo() {
             }
         } else {
             const errorText = await response.text();
-            console.error('API Error - Status:', response.status, 'Message:', errorText);
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
                 window.location.href = '/auth/login.html';
@@ -141,7 +129,6 @@ async function confirmOrder() {
     }
 }
 
-// Hàm kiểm tra xác nhận trước khi đặt hàng
 function handleOrderConfirmation() {
     if (confirm('Bạn có chắc chắn muốn đặt hàng không?')) {
         confirmOrder();
@@ -150,10 +137,8 @@ function handleOrderConfirmation() {
 
 function updateTotalPayment() {
     const orderTotalText = document.getElementById('order-total').textContent.replace('đ', '').replace(/\./g, '');
-    console.log('Order Total Text:', orderTotalText); // Kiểm tra chuỗi trước khi parse
     const orderTotal = parseInt(orderTotalText) || 0;
-    console.log('Order Total Parsed:', orderTotal); // Kiểm tra giá trị sau khi parse
-    const shippingFee = 10000; // Phí vận chuyển cố định 10.000
+    const shippingFee = 10000;
     const totalPayment = orderTotal + shippingFee;
     document.getElementById('shipping-fee').textContent = `đ${shippingFee.toLocaleString('vi-VN')}`;
     document.getElementById('total-payment').textContent = `đ${totalPayment.toLocaleString('vi-VN')}`;

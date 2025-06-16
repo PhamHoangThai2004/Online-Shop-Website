@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang chủ - Online Shop</title>
     <link rel="stylesheet" href="/customer/home/home.css">
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -40,6 +40,16 @@
 
     <main class="product-grid-container">
         <div class="product-header">
+            <div class="filter-options">
+                <input type="text" id="filterKeyword" placeholder="Từ khóa...">
+                <select id="filterCategory">
+                    <option value="">Tất cả danh mục</option>
+                </select>
+                <input type="number" id="filterMinPrice" placeholder="Giá tối thiểu..." min="0" step="1000">
+                <input type="number" id="filterMaxPrice" placeholder="Giá tối đa..." min="0" step="1000">
+                <label><input type="checkbox" id="filterInStock"> Chỉ hàng có sẵn</label>
+                <button onclick="applyFilters()">Áp dụng bộ lọc</button>
+            </div>
             <h3 id="productTitle" class="product-section-title">Tất cả sản phẩm</h3>
             <div class="sort-options">
                 <label for="sortSelect">Sắp xếp theo:</label>
@@ -53,6 +63,11 @@
         <div id="productList" class="products">
         </div>
         <p id="noProductsMessage" class="no-products" style="display: none;">Không tìm thấy sản phẩm nào.</p>
+        <div id="pagination" class="pagination" style="text-align: center; margin-top: 20px;">
+            <button id="prevPage" onclick="prevPage()"><i class="fa fa-angle-left"></i></button>
+            <div id="pageNumbers" class="page-numbers"></div>
+            <button id="nextPage" onclick="nextPage()"><i class="fa fa-angle-right"></i></button>
+        </div>
     </main>
 </div>
 

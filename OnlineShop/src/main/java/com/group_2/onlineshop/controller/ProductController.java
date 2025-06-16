@@ -28,16 +28,34 @@ public class ProductController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Lấy tất cả danh sách sản phẩm: http://localhost:8080/api/products
-    // Sẽ fix để phân trang
+    // Lấy danh sách sản phẩm với phân trang: http://localhost:8080/api/products?page=0&size=10&sort=id,asc
     @GetMapping
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "id,asc") String sort) {
+
+        // Phân tách trường sắp xếp và hướng sắp xếp
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
+        Sort sortBy = Sort.by(sortDirection, sortField);
+
+        // Tạo Pageable với trang, kích thước, và sắp xếp
+        Pageable pageable = PageRequest.of(page, size, sortBy);
+
+        // Lấy danh sách sản phẩm phân trang
+        Page<Product> productPage = productRepository.findAll(pageable);
+
+        // Chuyển đổi sang Page<ProductDTO>
+        Page<ProductDTO> productDTOPage = productPage.map(this::convertToDTO);
+
+        return ResponseEntity.ok(productDTOPage);
     }
 
     // Lấy thông tin chi tiết sản phẩm bằng Id: http://localhost:8080/api/products/1
     @GetMapping("/{id}")
-        public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         Optional<Product> product = productRepository.findById(id);
         return product.map(this::convertToDTO)
                 .map(ResponseEntity::ok)
@@ -71,7 +89,7 @@ public class ProductController {
             @PathVariable Long id,
             @RequestBody Product updatedProduct,
             @RequestHeader("Authorization") String authorizationHeader
-            ) {
+    ) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Invalid Authorization header");
         }
@@ -94,14 +112,34 @@ public class ProductController {
 
     // Lấy danh sách sản phẩm theo danh mục: http://localhost:8080/api/products?categoryId={id}
     @GetMapping(params = "categoryId")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@RequestParam Long categoryId) {
-        List<Product> products = productRepository.findByCategoryId(categoryId);
+    public ResponseEntity<Page<ProductDTO>> getProductsByCategory(
+            @RequestParam Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "id,asc") String sort) {
 
-        List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
-        return ResponseEntity.ok(productDTOs);
+        // Phân tích tham số sort
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
+        Sort sortBy = Sort.by(sortDirection, sortField);
+
+        // Tạo Pageable
+        Pageable pageable = PageRequest.of(page, size, sortBy);
+
+        // Kiểm tra categoryId tồn tại (tùy chọn)
+        if (categoryId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Lấy dữ liệu phân trang
+        Page<Product> productPage = productRepository.findByCategoryId(categoryId, pageable);
+        Page<ProductDTO> productDTOPage = productPage.map(this::convertToDTO);
+
+        return ResponseEntity.ok(productDTOPage);
     }
 
-    // Xoá 1 sản phâ (chỉ ADMIN có quyền): http://localhost:8080/api/products/4
+    // Xoá 1 sản phẩm (chỉ ADMIN có quyền): http://localhost:8080/api/products/4
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(
             @PathVariable Long id,
@@ -151,12 +189,37 @@ public class ProductController {
     }
 
     @GetMapping("/search-by-keyword")
-    public ResponseEntity<List<ProductDTO>> searchByKeyword(@RequestParam String keyword) {
+    public ResponseEntity<Page<ProductDTO>> searchByKeyword(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "id,asc") String sort) {
+
         if (keyword == null || keyword.trim().isEmpty()) {
-            return ResponseEntity.ok(getAllProducts());
+            return ResponseEntity.ok(getProducts(page, size, sort));
         }
-        List<Product> products = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
-        return ResponseEntity.ok(products.stream().map(this::convertToDTO).collect(Collectors.toList()));
+
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
+        Sort sortBy = Sort.by(sortDirection, sortField);
+
+        Pageable pageable = PageRequest.of(page, size, sortBy);
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword, pageable);
+        Page<ProductDTO> productDTOPage = productPage.map(this::convertToDTO);
+
+        return ResponseEntity.ok(productDTOPage);
+    }
+
+    public Page<ProductDTO> getProducts(int page, int size, String sort) {
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
+        Sort sortBy = Sort.by(sortDirection, sortField);
+
+        Pageable pageable = PageRequest.of(page, size, sortBy);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return productPage.map(this::convertToDTO);
     }
 
     private ProductDTO convertToDTO(Product product) {

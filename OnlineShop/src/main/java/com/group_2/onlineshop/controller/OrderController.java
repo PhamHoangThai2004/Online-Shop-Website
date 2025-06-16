@@ -68,7 +68,6 @@ public class OrderController {
             return ResponseEntity.badRequest().body("No items selected for the order");
         }
 
-        // Kiểm tra số lượng tồn kho
         for (OrderRequest.OrderItemRequest item : orderRequest.getItems()) {
             Optional<Product> product = productRepository.findById(item.getProductId());
             if (!product.isPresent()) {
@@ -89,7 +88,7 @@ public class OrderController {
 
         for (OrderRequest.OrderItemRequest itemRequest : orderRequest.getItems()) {
             Optional<Product> product = productRepository.findById(itemRequest.getProductId());
-            Product prod = product.get(); // Đã kiểm tra tồn tại ở trên
+            Product prod = product.get();
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(savedOrder);
@@ -99,7 +98,6 @@ public class OrderController {
             orderItem.setPrice(price);
             totalPrice += price * itemRequest.getQuantity();
 
-            // Cập nhật tồn kho và số lượng đã bán
             prod.setStock(prod.getStock() - itemRequest.getQuantity());
             prod.setSoldQuantity(prod.getSoldQuantity() + itemRequest.getQuantity());
             productRepository.save(prod);
@@ -110,7 +108,6 @@ public class OrderController {
         order.setTotalPrice(totalPrice);
         savedOrder = orderRepository.save(order);
 
-        // Xóa các sản phẩm đã đặt hàng khỏi giỏ hàng
         Optional<Cart> cartOpt = cartRepository.findByUser(user.get());
         if (cartOpt.isPresent()) {
             Cart cart = cartOpt.get();
@@ -278,7 +275,7 @@ public class OrderController {
     }
 
     private boolean isValidStatus(String status) {
-        return status.equals("PENDING") || status.equals("SHIPPED") || status.equals("DELIVERED") || status.equals("CANCELLED");
+        return status.equals("PENDING") || status.equals("SHIPPING") || status.equals("DELIVERED") || status.equals("CANCELLED");
     }
 }
 

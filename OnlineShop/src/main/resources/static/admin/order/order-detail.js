@@ -42,7 +42,6 @@ async function fetchAndPopulateOrder() {
 
         renderOrderItems(order.items);
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -88,13 +87,10 @@ async function updateOrderStatus(event) {
         alert('Cập nhật trạng thái thành công');
         window.location.href = 'order.html';
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`${error.message}`);
     }
 }
 
-// Gắn sự kiện cho form cập nhật
 updateOrderForm.addEventListener('submit', updateOrderStatus);
 
-// Tải thông tin đơn hàng khi trang được tải
 document.addEventListener('DOMContentLoaded', fetchAndPopulateOrder);

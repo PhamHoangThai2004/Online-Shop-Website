@@ -2,20 +2,15 @@ const urlParams = new URLSearchParams(window.location.search);
 let userId;
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded in order-detail.js, starting initialization');
     const reviewDialog = document.getElementById('review-dialog');
     const reviewComment = document.getElementById('review-comment');
-    console.log('Initial DOM Check - Review Dialog Elements:', { reviewDialog, reviewComment });
     getUserInfo();
     getOrderDetail();
 });
 
 async function getUserInfo() {
-    console.log('Fetching user info started in order-detail.js');
     const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
     if (!token || token.trim() === '') {
-        console.error('No valid token found in localStorage');
         alert('Vui lòng đăng nhập để xem chi tiết đơn hàng!');
         window.location.href = '/auth/login.html';
         return;
@@ -29,20 +24,16 @@ async function getUserInfo() {
             }
         });
 
-        console.log('API Response Status (getUserInfo):', response.status);
         if (response.ok) {
             const userInfo = await response.json();
-            console.log('User Info Received:', userInfo);
             userId = userInfo.id
             if (userInfo && userInfo.fullName) {
                 document.getElementById('userInfo').textContent = `Xin chào, ${userInfo.fullName}`;
             } else {
-                console.error('Invalid user info structure:', userInfo);
                 document.getElementById('userInfo').textContent = 'Xin chào';
             }
         } else {
             const errorText = await response.text();
-            console.error('API Error (getUserInfo) - Status:', response.status, 'Message:', errorText);
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
                 window.location.href = '/auth/login.html';
@@ -51,8 +42,6 @@ async function getUserInfo() {
             }
         }
     } catch (error) {
-        console.error('Fetch Error (getUserInfo):', error.message);
-        console.error('Error Stack:', error.stack);
         alert('Lỗi kết nối đến server khi lấy thông tin người dùng. Vui lòng kiểm tra server!');
     }
 }
@@ -72,10 +61,6 @@ async function getOrderDetail() {
         return;
     }
 
-    console.log('Token:', token);
-    console.log('Order ID:', orderId);
-    console.log('Fetching URL:', `http://localhost:8080/api/orders/${orderId}`);
-
     try {
         const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
             method: 'GET',
@@ -84,20 +69,15 @@ async function getOrderDetail() {
             }
         });
 
-        console.log('API Response Status (getOrderDetail):', response.status);
         if (response.ok) {
             const order = await response.json();
-            console.log('Order Data:', order);
             displayOrderDetail(order);
         } else {
             const errorText = await response.text();
-            console.error('API Error (getOrderDetail) - Status:', response.status, 'Message:', errorText);
             alert(`Lỗi khi lấy chi tiết đơn hàng: ${errorText}`);
             window.location.href = '/customer/order/order-list.html';
         }
     } catch (error) {
-        console.error('Fetch Error (getOrderDetail):', error.message);
-        console.error('Error Stack:', error.stack);
         alert('Lỗi kết nối đến server khi lấy chi tiết đơn hàng. Vui lòng kiểm tra server!');
         window.location.href = '/customer/order/order-list.html';
     }
@@ -110,7 +90,6 @@ function displayOrderDetail(order) {
     const reviewHeader = document.getElementById('review-header');
     const orderItems = document.getElementById('order-items');
     const actionButtons = document.getElementById('action-buttons');
-    console.log('DOM Elements:', { reviewHeader, orderItems, actionButtons });
 
     document.getElementById('order-id').textContent = order.id;
     document.getElementById('order-date').textContent = new Date(order.createdAt).toLocaleDateString('vi-VN');
@@ -148,7 +127,7 @@ function displayOrderDetail(order) {
             cancelBtn.textContent = 'Hủy Đơn Hàng';
             cancelBtn.onclick = () => cancelOrder(order.id);
             actionButtons.appendChild(cancelBtn);
-        } else if (order.status === 'CANCELLED' || order.status === 'SHIPPED') {
+        } else if (order.status === 'CANCELLED' || order.status === 'SHIPPED' || order.status === 'DELIVERED') {
             const reorderBtn = document.createElement('button');
             reorderBtn.classList.add('reorder-btn');
             reorderBtn.textContent = 'Mua Lại';
@@ -167,21 +146,16 @@ function openReviewDialog(productId, orderStatus) {
     currentProductId = productId;
     selectedRating = 0;
 
-    console.log("Console - Order Status:", orderStatus);
-    console.log('Current Product ID:', productId);
 
     if (orderStatus !== 'DELIVERED') {
-        console.log('Order status not DELIVERED, skipping dialog');
         alert('Yêu cầu nhận được hàng mới có thể đánh giá!');
         return;
     }
 
     const reviewComment = document.getElementById('review-comment');
     const reviewDialog = document.getElementById('review-dialog');
-    console.log('Review Dialog Elements:', { reviewComment, reviewDialog });
 
     if (!reviewDialog) {
-        console.error('Review dialog not found in DOM');
         alert('Lỗi: Không tìm thấy dialog review!');
         return;
     }
@@ -193,7 +167,6 @@ function openReviewDialog(productId, orderStatus) {
     }
 
     const stars = document.querySelectorAll('.star');
-    console.log('Stars found:', stars.length);
     if (stars.length === 0) {
         console.error('No stars found for rating');
     }
@@ -203,11 +176,8 @@ function openReviewDialog(productId, orderStatus) {
         star.addEventListener('click', handleStarClick);
     });
 
-    console.log('Before setting display - Current display style:', reviewDialog.style.display);
-    reviewDialog.classList.add('show'); // Thêm class .show
+    reviewDialog.classList.add('show');
     reviewDialog.style.display = 'flex !important';
-    console.log('After setting display - New display style:', reviewDialog.style.display);
-    console.log('Review dialog displayed with class:', reviewDialog.classList);
 }
 
 function handleStarClick(event) {
@@ -218,7 +188,6 @@ function handleStarClick(event) {
     for (let i = 0; i < selectedRating; i++) {
         stars[i].classList.add('selected');
     }
-    console.log('Selected Rating:', selectedRating);
 }
 
 function closeReviewDialog() {
@@ -228,6 +197,7 @@ function closeReviewDialog() {
         reviewDialog.style.display = 'none';
         currentProductId = null;
         selectedRating = 0;
+        location.reload()
     }
 }
 
@@ -271,7 +241,6 @@ async function submitReview() {
             body: JSON.stringify(reviewData)
         });
 
-        console.log('API Response Status (submitReview):', response.status);
         if (response.ok) {
             alert('Gửi đánh giá thành công!');
             closeReviewDialog();
@@ -281,22 +250,8 @@ async function submitReview() {
             alert(`Lỗi khi gửi đánh giá: ${errorText}`);
         }
     } catch (error) {
-        console.error('Fetch Error (submitReview):', error.message);
-        console.error('Error Stack:', error.stack);
         alert('Lỗi kết nối đến server khi gửi review. Vui lòng kiểm tra server!');
     }
-}
-
-async function extractIdFromToken(token) {
-    return new Promise((resolve) => {
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            resolve(payload.userId || payload.sub || "1");
-        } catch (e) {
-            console.warn("Could not parse token to extract user ID, returning mock ID '1'. Token:", token, "Error:", e);
-            resolve("1");
-        }
-    });
 }
 
 async function cancelOrder(orderId) {
@@ -320,18 +275,14 @@ async function cancelOrder(orderId) {
             }
         });
 
-        console.log('API Response Status (cancelOrder):', response.status);
         if (response.ok) {
             alert('Hủy đơn hàng thành công!');
             getOrderDetail();
         } else {
             const errorText = await response.text();
-            console.error('API Error (cancelOrder) - Status:', response.status, 'Message:', errorText);
             alert(`Lỗi khi hủy đơn hàng: ${errorText}`);
         }
     } catch (error) {
-        console.error('Fetch Error (cancelOrder):', error.message);
-        console.error('Error Stack:', error.stack);
         alert('Lỗi kết nối đến server khi hủy đơn hàng. Vui lòng kiểm tra server!');
     }
 }
@@ -347,7 +298,6 @@ async function reorder(items) {
     try {
         for (const item of items) {
             if (typeof item.productId === 'undefined' || typeof item.quantity === 'undefined') {
-                console.error('Product ID or quantity is missing for item:', item);
                 alert(`Sản phẩm ${item.productName || 'không xác định'} thiếu thông tin để thêm vào giỏ hàng.`);
                 continue;
             }
@@ -359,10 +309,8 @@ async function reorder(items) {
                 }
             });
 
-            console.log('API Response Status (reorder):', response.status);
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('API Error (reorder) - Status:', response.status, 'Message:', errorText);
                 alert(`Lỗi khi thêm sản phẩm ${item.productName || 'không xác định'} vào giỏ hàng: ${errorText}`);
                 return;
             }
@@ -371,8 +319,6 @@ async function reorder(items) {
         alert('Đã thêm tất cả sản phẩm vào giỏ hàng!');
         window.location.href = '/customer/cart/cart.html';
     } catch (error) {
-        console.error('Fetch Error (reorder):', error.message);
-        console.error('Error Stack:', error.stack);
         alert('Lỗi kết nối đến server khi mua lại đơn hàng. Vui lòng kiểm tra server!');
     }
 }

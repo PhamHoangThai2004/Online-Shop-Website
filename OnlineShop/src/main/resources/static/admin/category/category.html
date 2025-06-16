@@ -5,6 +5,7 @@
   <title>Quản lí Danh mục</title>
   <link rel="stylesheet" href="../dashboard.css">
   <link rel="stylesheet" href="category.css">
+  <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
   <script defer src="category.js"></script>
 </head>
 <body>
@@ -24,13 +25,11 @@
 <div class="main-content">
   <h1>Quản lí Danh mục</h1>
 
-  <!-- Tìm kiếm danh mục -->
   <form id="searchForm">
     <input type="text" id="searchName" placeholder="Nhập tên danh mục...">
     <button type="submit">Tìm kiếm</button>
   </form>
 
-  <!-- Bảng danh mục -->
   <table>
     <thead>
     <tr>
@@ -49,7 +48,6 @@
     </tfoot>
   </table>
 
-  <!-- Form thêm danh mục (ẩn ban đầu) -->
   <form id="addForm" style="display:none; margin-top:20px;">
     <input type="text" id="newCategoryName" placeholder="Tên danh mục mới" required>
     <button type="submit">Thêm danh mục mới</button>
@@ -72,5 +70,6 @@
       <button id="noButton" class="no-button">Không</button>
     </div>
   </div>
+</div>
 </body>
 </html>

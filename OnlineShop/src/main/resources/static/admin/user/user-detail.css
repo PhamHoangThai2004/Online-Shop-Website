@@ -1,0 +1,44 @@
+.user-details {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+.label {
+    font-weight: bold;
+    width: 120px;
+    color: #333;
+}
+
+.value {
+    flex: 1;
+    color: #555;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1.05em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}

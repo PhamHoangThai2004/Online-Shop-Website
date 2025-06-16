@@ -1,28 +1,23 @@
-/* Trong home.css (hoặc global.css) */
 :root {
-    --primary-color: #0069fd; /* Xanh lá chính */
+    --primary-color: #0069fd;
     --primary-dark: #0069fd;
-    --secondary-color: #6c757d; /* Xám phụ */
-    --accent-color: #007bff; /* Xanh dương (ví dụ cho link/nút phụ) */
+    --secondary-color: #6c757d;
+    --accent-color: #007bff;
     --accent-dark: #0056b3;
-    --danger-color: #dc3545; /* Đỏ */
+    --danger-color: #dc3545;
     --danger-dark: #c82333;
-
-    --background-color: #f0f2f5; /* Nền tổng thể của trang */
-    --card-background: #ffffff; /* Nền của các hộp/panel */
-    --border-color: #e0e0e0; /* Màu viền chung */
-    --text-color-dark: #333333; /* Màu chữ đậm */
-    --text-color-medium: #555555; /* Màu chữ trung bình */
-    --text-color-light: #777777; /* Màu chữ nhạt */
-
-    --shadow-light: rgba(0, 0, 0, 0.08); /* Bóng nhẹ */
-    --shadow-medium: rgba(0, 0, 0, 0.15); /* Bóng vừa */
+    --background-color: #f0f2f5;
+    --card-background: #ffffff;
+    --border-color: #e0e0e0;
+    --text-color-dark: #333333;
+    --text-color-medium: #555555;
+    --text-color-light: #777777;
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
     --transition-speed: 0.3s ease;
-
     --font-family-primary: 'Arial', sans-serif;
 }
 
-/* Các style chung cho layout và typography trong home.css */
 body {
     font-family: var(--font-family-primary);
     margin: 0;
@@ -39,88 +34,93 @@ body {
     align-items: center;
     box-shadow: 0 2px 5px var(--shadow-light);
 }
+
 .navbar-brand a {
     color: #ffffff;
     text-decoration: none;
     font-size: 24px;
     font-weight: bold;
 }
+
 .navbar-brand a:hover {
     text-decoration: underline;
 }
+
 .navbar-links {
     display: flex;
     gap: 15px;
     align-items: center;
 }
+
 .navbar-links a {
     color: white;
     text-decoration: none;
     font-size: 16px;
     transition: color var(--transition-speed);
 }
+
 .navbar-links a:hover {
     color: rgba(255, 255, 255, 0.8);
 }
+
 .cart-icon {
     position: relative;
     color: white;
-    margin-right: 15px; /* Giảm khoảng cách */
-    display: flex; /* Để căn giữa badge */
+    margin-right: 15px;
+    display: flex;
     align-items: center;
 }
+
 .cart-icon svg {
-    fill: white; /* Đảm bảo màu trắng */
+    fill: white;
 }
+
 .badge {
     position: absolute;
-    top: -8px; /* Điều chỉnh vị trí */
-    right: -10px; /* Điều chỉnh vị trí */
+    top: -8px;
+    right: -10px;
     background-color: red;
     color: white;
-    border-radius: 50%; /* Hình tròn hoàn hảo */
+    border-radius: 50%;
     border: 2px solid var(--primary-color);
-    padding: 2px 6px; /* Điều chỉnh padding */
-    font-size: 11px; /* Kích thước font nhỏ hơn */
+    padding: 2px 6px;
+    font-size: 11px;
     font-weight: bold;
     min-width: 18px;
     text-align: center;
-    line-height: 1.2; /* Căn chỉnh text trong badge */
-    z-index: 1; /* Đảm bảo hiển thị trên icon */
+    line-height: 1.2;
+    z-index: 1;
 }
+
 .badge[data-count="0"], .badge:empty {
     display: none;
 }
 
-/* Common Card/Panel Styles */
 .content-card {
     background-color: var(--card-background);
     border-radius: 8px;
     box-shadow: 0 4px 12px var(--shadow-light);
     padding: 20px;
-    margin-bottom: 20px; /* Khoảng cách giữa các card */
+    margin-bottom: 20px;
 }
 
-/* Page Container (for max-width and centering) */
 .page-container {
-    max-width: 1200px; /* Giảm max-width để trang trông gọn gàng hơn */
-    margin: 30px auto; /* Khoảng cách trên/dưới và căn giữa */
+    max-width: 1200px;
+    margin: 30px auto;
     padding: 20px;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+    box-sizing: border-box;
 }
 
-/* Page Title */
 .page-title {
     text-align: center;
     color: var(--primary-color);
-    font-size: 28px; /* Giảm kích thước font một chút */
+    font-size: 28px;
     margin-bottom: 25px;
     font-weight: bold;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 15px;
 }
 
-/* Panel Title */
 .panel-title {
     font-size: 20px;
     color: var(--primary-color);
@@ -129,83 +129,84 @@ body {
     font-weight: 600;
 }
 
-/* Common Table Styles */
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    /* Loại bỏ background, shadow, border-radius vì nó đã được bọc trong content-card */
 }
+
 .data-table th,
 .data-table td {
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid var(--border-color);
 }
+
 .data-table th {
-    background-color: var(--background-color); /* Màu nền header bảng */
+    background-color: var(--background-color);
     font-weight: bold;
-    color: var(--text-color-light); /* Màu chữ nhạt cho header */
+    color: var(--text-color-light);
     text-transform: uppercase;
     font-size: 0.9em;
 }
+
 .data-table td {
     vertical-align: middle;
     color: var(--text-color-medium);
 }
+
 .data-table img {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
 }
+
 .data-table tr:hover {
-    background-color: var(--background-light); /* Màu sáng hơn khi hover */
+    background-color: var(--background-light);
 }
 
-/* Common Button Styles */
 .primary-button {
     background-color: var(--primary-color);
     color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: 6px; /* Bo góc nhẹ nhàng hơn */
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
     transition: background-color var(--transition-speed), transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .primary-button:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .primary-button:active {
     transform: translateY(0);
 }
 
 .link-button {
-    color: var(--accent-color); /* Màu xanh dương cho link button */
+    color: var(--accent-color);
     font-size: 14px;
     cursor: pointer;
     text-decoration: none;
     transition: color var(--transition-speed), text-decoration var(--transition-speed);
 }
+
 .link-button:hover {
     color: var(--accent-dark);
     text-decoration: underline;
 }
 
-/* Text alignment helpers */
 .text-right {
     text-align: left;
 }
 
-/* Highlight total payment */
 .total-highlight {
-    color: var(--danger-color); /* Màu đỏ để làm nổi bật tổng tiền */
+    color: var(--danger-color);
     font-weight: bold;
-    font-size: 1.2em; /* Lớn hơn một chút */
+    font-size: 1.2em;
 }
-
-/* END home.css (hoặc global.css) */

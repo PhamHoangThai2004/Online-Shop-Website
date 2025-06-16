@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDeleteAllButton();
     });
 
-    // Thêm sự kiện cho nút "Mua hàng"
     document.querySelector('.buy-now-btn').addEventListener('click', proceedToOrder);
 });
 
@@ -16,7 +15,7 @@ async function fetchCartItems() {
 
     if (!token) {
         alert('Vui lòng đăng nhập để xem giỏ hàng!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = '/auth/login.html';
         return;
     }
 
@@ -41,14 +40,13 @@ async function fetchCartItems() {
 
         if (response.ok) {
             const cartData = await response.json();
-            console.log('Dữ liệu từ API:', cartData);
             const cartItems = Array.isArray(cartData.items) ? cartData.items : (cartData.cart?.items || []);
             displayCartItems(cartItems);
         } else {
             const errorText = await response.text();
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
-                window.location.href = '/customer/login/login.html';
+                window.location.href = 'auth/login.html';
             } else if (response.status === 404) {
                 alert('Không tìm thấy giỏ hàng cho người dùng này.');
             } else {
@@ -97,8 +95,6 @@ async function displayCartItems(cartItems) {
         const quantity = item.quantity !== null && item.quantity !== undefined ? item.quantity : 1;
         let totalPrice = priceToUse * quantity;
 
-        console.log(`Sản phẩm: ${item.productName}, productSalePrice: ${item.productSalePrice}, productPrice: ${item.productPrice}, quantity: ${quantity}, priceToUse: ${priceToUse}, totalPrice: ${totalPrice}`);
-
         if (isNaN(totalPrice) || totalPrice < 0) {
             console.warn(`totalPrice không hợp lệ cho ${item.productName}, gán mặc định 0`);
             totalPrice = 0;
@@ -127,12 +123,10 @@ async function displayCartItems(cartItems) {
         cartTableBody.appendChild(row);
 
         const checkbox = row.querySelector('.item-checkbox');
-        console.log(`Checkbox data-price cho ${item.productName}: ${checkbox.getAttribute('data-price')}`);
     }
 
     document.querySelectorAll('.item-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
-            console.log(`Checkbox thay đổi: ${checkbox.getAttribute('data-product-id')}, trạng thái: ${checkbox.checked}`);
             updateTotal();
             updateDeleteAllButton();
             updateSelectAllCheckbox();
@@ -152,15 +146,12 @@ function updateTotal() {
 
     checkboxes.forEach(checkbox => {
         const price = parseFloat(checkbox.getAttribute('data-price'));
-        console.log(`Checkbox giá trị: ${checkbox.getAttribute('data-price')}, sau parseFloat: ${price}`);
         if (!isNaN(price)) {
             totalCartPrice += price;
         } else {
             console.warn(`Giá trị data-price không hợp lệ: ${checkbox.getAttribute('data-price')}`);
         }
     });
-
-    console.log(`Tổng tiền tính toán: ${totalCartPrice}, số sản phẩm được chọn: ${checkboxes.length}`);
 
     cartTotalElement.textContent = `đ${totalCartPrice.toLocaleString('vi-VN')}`;
     selectedCountElement.textContent = checkboxes.length;
@@ -290,7 +281,7 @@ async function updateQuantity(productId, newQuantity) {
             let errorMessage = 'Lỗi khi cập nhật số lượng.';
             if (response.status === 401) {
                 errorMessage = 'Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!';
-                window.location.href = '/customer/login/login.html';
+                window.location.href = 'auth/login.html';
             } else if (response.status === 400) {
                 errorMessage = 'Số lượng không hợp lệ hoặc vượt quá tồn kho.';
             }
@@ -319,7 +310,7 @@ async function removeFromCart(productId) {
             let errorMessage = 'Lỗi khi xóa sản phẩm.';
             if (response.status === 401) {
                 errorMessage = 'Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!';
-                window.location.href = '/customer/login/login.html';
+                window.location.href = '/auth/login.html';
             }
             alert(errorMessage);
         }
@@ -363,6 +354,6 @@ function proceedToOrder() {
     window.location.href = '/customer/order/order.html';
 }
 
-function proceedToCheckout() {
-    window.location.href = '/customer/checkout/checkout.html';
-}
+// function proceedToCheckout() {
+//     window.location.href = '/customer/checkout/checkout.html';
+// }

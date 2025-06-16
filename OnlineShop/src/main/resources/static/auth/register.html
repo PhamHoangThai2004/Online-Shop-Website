@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/auth/auth.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../assets/logo.png">
 </head>
 <body>
 <div class="container">
@@ -32,15 +32,15 @@
         </div>
         <div class="form-group">
             <label for="registerFullName">Họ và tên:</label>
-            <input type="text" id="registerFullName" name="fullName">
+            <input type="text" id="registerFullName" name="fullName" required>
         </div>
         <div class="form-group">
             <label for="registerPhoneNumber">Số điện thoại:</label>
-            <input type="text" id="registerPhoneNumber" name="phoneNumber">
+            <input type="number" id="registerPhoneNumber" name="phoneNumber" required>
         </div>
         <div class="form-group">
             <label for="registerAddress">Địa chỉ:</label>
-            <input type="text" id="registerAddress" name="address">
+            <input type="text" id="registerAddress" name="address" required>
         </div>
         <button type="submit">Đăng ký</button>
         <div id="registerMessage" class="message"></div>

@@ -1,4 +1,3 @@
-/* --- CSS Variables (Consistent with home.css) --- */
 :root {
     --primary-color: #007bff; /* Xanh dương làm màu chủ đạo */
     --primary-dark: #0056b3;
@@ -14,7 +13,6 @@
     --transition-speed: 0.3s ease;
 }
 
-/* --- Global Reset & Body --- */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -27,7 +25,6 @@ body {
     line-height: 1.6;
 }
 
-/* --- Navbar (Consistent with home.css) --- */
 .navbar {
     background-color: var(--primary-color);
     color: white;
@@ -121,7 +118,6 @@ body {
     display: none;
 }
 
-/* --- Main Container --- */
 .main-container {
     display: flex;
     justify-content: center; /* Căn giữa nội dung chính */
@@ -140,7 +136,6 @@ body {
     box-sizing: border-box;
 }
 
-/* --- Product Detail Layout --- */
 .product-container {
     display: flex;
     gap: 30px; /* Khoảng cách lớn hơn giữa ảnh và thông tin */
@@ -191,7 +186,7 @@ body {
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: var(--primary-color) var(--background-light); /* Firefox */
 }
-/* Webkit (Chrome, Safari) scrollbar styling */
+
 .thumbnail-section::-webkit-scrollbar {
     height: 8px;
 }
@@ -225,7 +220,6 @@ body {
     box-shadow: 0 0 5px var(--primary-color);
 }
 
-/* --- Info Section --- */
 .info-section {
     flex: 1; /* Chiếm hết không gian còn lại */
     padding: 10px;
@@ -241,7 +235,6 @@ body {
     line-height: 1.3;
 }
 
-/* --- Price & Rating Section --- */
 .price-rating {
     margin-bottom: 20px; /* Tăng khoảng cách dưới phần giá/đánh giá */
     border-bottom: 1px solid var(--border-color); /* Đường kẻ phân cách */
@@ -312,7 +305,6 @@ body {
     white-space: nowrap;
 }
 
-/* --- Product Info Panels (Unified Styling) --- */
 .product-info-panel,
 .product-description,
 .reviews-panel {
@@ -431,7 +423,6 @@ body {
     background-color: white;
 }
 
-/* --- Action Buttons --- */
 .action-buttons {
     display: flex;
     gap: 15px; /* Khoảng cách giữa các nút */
@@ -489,7 +480,6 @@ body {
     display: none; /* Mặc định ẩn trên desktop */
 }
 
-/* --- Reviews Section --- */
 .reviews-panel h3 {
     gap: 8px; /* Khoảng cách nhỏ hơn trong tiêu đề review */
 }
@@ -542,9 +532,6 @@ body {
     margin: 0;
 }
 
-/* --- Responsive Media Queries --- */
-
-/* Tablet & Smaller Desktop */
 @media (max-width: 992px) {
     .main-container {
         padding: 20px;
@@ -589,7 +576,6 @@ body {
     }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
     .navbar {
         padding: 10px 15px;

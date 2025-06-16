@@ -1,70 +1,142 @@
 let allProducts = [];
 let allCategories = [];
+let currentPage = 0;
+let pageSize = 6;
+let totalPages = 1;
+let selectedCategoryId = null;
 
 async function fetchCategories() {
     try {
         const response = await fetch('http://localhost:8080/api/categories');
         allCategories = await response.json();
         const categoryList = document.getElementById('categoryList');
+        const filterCategory = document.getElementById('filterCategory');
         categoryList.innerHTML = '';
+        filterCategory.innerHTML = '<option value="">Tất cả danh mục</option>';
         allCategories.forEach(category => {
             const li = document.createElement('li');
             li.textContent = category.name;
-            li.onclick = () => fetchProductsByCategory(category.id, category.name);
+            li.onclick = () => {
+                selectedCategoryId = category.id;
+                fetchProductsByCategory(category.id, category.name);
+            };
             categoryList.appendChild(li);
+
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            filterCategory.appendChild(option);
         });
     } catch (error) {
         console.log('Lỗi lấy danh mục:', error);
     }
 }
 
-async function fetchProducts() {
+async function fetchProducts(page = 0) {
     try {
-        const response = await fetch('http://localhost:8080/api/products');
-        allProducts = await response.json();
+        const response = await fetch(`http://localhost:8080/api/products?page=${page}&size=${pageSize}&sort=id,asc`);
+        const data = await response.json();
+        allProducts = data.content;
+        totalPages = data.totalPages;
+        currentPage = data.number;
         for (let product of allProducts) {
             product.averageRating = await fetchProductRating(product.id);
         }
         displayProducts(allProducts, "Tất cả sản phẩm");
+        updatePagination();
     } catch (error) {
         console.log('Lỗi lấy sản phẩm:', error);
     }
 }
 
-async function fetchProductsByCategory(categoryId, categoryName) {
+async function fetchProductsByCategory(categoryId, categoryName, page = 0) {
     try {
-        const response = await fetch(`http://localhost:8080/api/products?categoryId=${categoryId}`);
-        if (response.status === 204) {
-            allProducts = [];
-        } else {
-            allProducts = await response.json();
-            for (let product of allProducts) {
-                product.averageRating = await fetchProductRating(product.id);
-            }
+        const response = await fetch(`http://localhost:8080/api/products?categoryId=${categoryId}&page=${page}&size=${pageSize}&sort=id,asc`);
+        const data = await response.json();
+        allProducts = data.content;
+        totalPages = data.totalPages;
+        currentPage = data.number;
+        for (let product of allProducts) {
+            product.averageRating = await fetchProductRating(product.id);
         }
         displayProducts(allProducts, categoryName);
+        updatePagination();
     } catch (error) {
         console.log('Lỗi lấy sản phẩm theo danh mục:', error);
     }
 }
 
-async function searchProducts() {
+async function searchProducts(page = 0) {
     const keyword = document.getElementById('searchInput').value.trim();
+    if (keyword.length <= 0) return;
     try {
-        const response = await fetch(`http://localhost:8080/api/products/search-by-keyword?keyword=${encodeURIComponent(keyword)}`);
+        const response = await fetch(`http://localhost:8080/api/products/search-by-keyword?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${pageSize}&sort=id,asc`);
         if (response.ok) {
-            allProducts = await response.json();
+            const data = await response.json();
+            allProducts = data.content;
+            totalPages = data.totalPages;
+            currentPage = data.number;
             for (let product of allProducts) {
                 product.averageRating = await fetchProductRating(product.id);
             }
-            displayProducts(allProducts, `Kết quả tìm kiếm: ${keyword || "Tất cả sản phẩm"}`);
+            displayProducts(allProducts, `Kết quả tìm kiếm: ${keyword}`);
+            updatePagination();
         } else {
-            console.log('Lỗi tìm kiếm:', await response.text());
             displayProducts([], "Không tìm thấy kết quả");
+            totalPages = 1;
+            updatePagination();
         }
     } catch (error) {
         console.log('Lỗi kết nối khi tìm kiếm:', error);
         displayProducts([], "Lỗi kết nối khi tìm kiếm");
+        totalPages = 1;
+        updatePagination();
+    }
+}
+
+async function applyFilters(page = 0) {
+    const keyword = document.getElementById('filterKeyword').value.trim();
+    const categoryId = document.getElementById('filterCategory').value || null;
+    const minPrice = document.getElementById('filterMinPrice').value ? parseFloat(document.getElementById('filterMinPrice').value) : null;
+    const maxPrice = document.getElementById('filterMaxPrice').value ? parseFloat(document.getElementById('filterMaxPrice').value) : null;
+    const inStock = document.getElementById('filterInStock').checked;
+
+    const url = new URL(`http://localhost:8080/api/products/search`);
+    const params = {
+        page,
+        size: pageSize,
+        sort: 'id,asc',
+        keyword: keyword || undefined,
+        categoryId: categoryId || undefined,
+        minPrice: minPrice || undefined,
+        maxPrice: maxPrice || undefined,
+        inStock: inStock || undefined
+    };
+    Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
+    url.search = new URLSearchParams(params).toString();
+
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            allProducts = data.content;
+            totalPages = data.totalPages;
+            currentPage = data.number;
+            for (let product of allProducts) {
+                product.averageRating = await fetchProductRating(product.id);
+            }
+            displayProducts(allProducts, "Kết quả bộ lọc");
+            updatePagination();
+        } else {
+            displayProducts([], "Không tìm thấy sản phẩm nào");
+            totalPages = 1;
+            updatePagination();
+        }
+    } catch (error) {
+        console.log('Lỗi kết nối khi áp dụng bộ lọc:', error);
+        displayProducts([], "Lỗi kết nối khi áp dụng bộ lọc");
+        totalPages = 1;
+        updatePagination();
     }
 }
 
@@ -110,19 +182,18 @@ function displayProducts(products, title) {
                 : defaultImage;
 
             div.innerHTML = `
-    <img src="${imageUrl}" alt="${product.name}" onerror="this.src='${defaultImage}'">
-    <h4>${product.name}</h4>
-    <div class="price-wrapper">
-        <span class="${priceClass}">${formattedPrice}</span>
-        ${formattedSalePrice ? `<span class="sale-price">${formattedSalePrice}</span>` : ''}
-    </div>
-    <div class="info-wrapper">
-        <span class="rating-number"><i class="fa fa-star"></i> ${(product.averageRating || 0).toFixed(1)}</span>
-        <span class="sold-quantity">Đã bán: ${product.soldQuantity || 0}</span>
-    </div>
-    <button class="add-to-cart" onclick="addCart(${product.id}); event.stopPropagation()">Thêm vào giỏ hàng</button>
-`;
-
+                <img src="${imageUrl}" alt="${product.name}" onerror="this.src='${defaultImage}'">
+                <h4>${product.name}</h4>
+                <div class="price-wrapper">
+                    <span class="${priceClass}">${formattedPrice}</span>
+                    ${formattedSalePrice ? `<span class="sale-price">${formattedSalePrice}</span>` : ''}
+                </div>
+                <div class="info-wrapper">
+                    <span class="rating-number"><i class="fa fa-star"></i> ${(product.averageRating || 0).toFixed(1)}</span>
+                    <span class="sold-quantity">Đã bán: ${product.soldQuantity || 0}</span>
+                </div>
+                <button class="add-to-cart" onclick="addCart(${product.id}); event.stopPropagation()">Thêm vào giỏ hàng</button>
+            `;
 
             div.onclick = () => {
                 window.location.href = `/customer/detail-product/detail-product.html?id=${product.id}`;
@@ -145,11 +216,88 @@ function sortProducts() {
     displayProducts(sortedProducts, document.getElementById('productTitle').textContent);
 }
 
+function updatePagination() {
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+    const pageNumbersDiv = document.getElementById('pageNumbers');
+    pageNumbersDiv.innerHTML = '';
+
+    prevPageBtn.disabled = currentPage === 0;
+    nextPageBtn.disabled = currentPage === totalPages - 1;
+
+    const maxVisiblePages = 5;
+    let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages);
+
+    if (endPage - startPage < maxVisiblePages) {
+        startPage = Math.max(0, endPage - maxVisiblePages);
+    }
+
+    if (startPage > 0) {
+        const firstPageBtn = document.createElement('button');
+        firstPageBtn.textContent = '1';
+        firstPageBtn.onclick = () => goToPage(0);
+        pageNumbersDiv.appendChild(firstPageBtn);
+        if (startPage > 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            pageNumbersDiv.appendChild(ellipsis);
+        }
+    }
+
+    for (let i = startPage; i < endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i + 1;
+        pageBtn.className = i === currentPage ? 'active' : '';
+        pageBtn.onclick = () => goToPage(i);
+        pageNumbersDiv.appendChild(pageBtn);
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            pageNumbersDiv.appendChild(ellipsis);
+        }
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.textContent = totalPages;
+        lastPageBtn.onclick = () => goToPage(totalPages - 1);
+        pageNumbersDiv.appendChild(lastPageBtn);
+    }
+}
+
+function goToPage(page) {
+    currentPage = page;
+    const title = document.getElementById('productTitle').textContent;
+    if (title.startsWith('Kết quả tìm kiếm')) {
+        searchProducts(currentPage);
+    } else if (title.startsWith('Kết quả bộ lọc')) {
+        applyFilters(currentPage);
+    } else if (title !== 'Tất cả sản phẩm') {
+        const categoryId = allCategories.find(cat => cat.name === title)?.id;
+        fetchProductsByCategory(categoryId, title, currentPage);
+    } else {
+        fetchProducts(currentPage);
+    }
+}
+
+function prevPage() {
+    if (currentPage > 0) {
+        goToPage(currentPage - 1);
+    }
+}
+
+function nextPage() {
+    if (currentPage < totalPages - 1) {
+        goToPage(currentPage + 1);
+    }
+}
+
 async function addCart(productId) {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
-        window.location.href = '/customer/login/login.html';
+        window.location.href = '/auth/login.html';
         return;
     }
 
@@ -171,7 +319,7 @@ async function addCart(productId) {
             let errorMessage = 'Lỗi khi thêm sản phẩm vào giỏ hàng.';
             if (response.status === 401) {
                 errorMessage = 'Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!';
-                window.location.href = '/customer/login/login.html';
+                window.location.href = 'auth/login.html';
             } else if (response.status === 400) {
                 errorMessage = 'Số lượng không hợp lệ hoặc vượt quá tồn kho.';
             }
@@ -253,7 +401,13 @@ function logout() {
 
 function resetPage() {
     document.getElementById('searchInput').value = '';
-    fetchProducts();
+    document.getElementById('filterKeyword').value = '';
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterMinPrice').value = '';
+    document.getElementById('filterMaxPrice').value = '';
+    document.getElementById('filterInStock').checked = false;
+    currentPage = 0;
+    fetchProducts(currentPage);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

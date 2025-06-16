@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết User - Admin</title>
+    <link rel="stylesheet" href="../dashboard.css">
+    <link rel="stylesheet" href="user-detail.css">
+    <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
+</head>
+<body>
+<div class="sidebar">
+    <h2><a href="../dashboard.html">Admin</a></h2>
+    <ul>
+        <li><a href="user.html">Quản lí User</a></li>
+        <li><a href="../product/product.html">Quản lí Sản phẩm</a></li>
+        <li><a href="../category/category.html">Quản lí Danh mục</a></li>
+        <li><a href="../order/order.html">Quản lí Đơn hàng</a></li>
+        <li><a href="../Infor/infor.html">Thông tin tài khoản</a></li>
+        <li class="logout-item"><a href="#" id="logoutButton">Đăng xuất</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <h1>Chi tiết User</h1>
+
+    <div class="user-details">
+        <div class="detail-item"><span class="label">ID:</span><span id="userId" class="value"></span></div>
+        <div class="detail-item"><span class="label">Tên:</span><span id="fullName" class="value"></span></div>
+        <div class="detail-item"><span class="label">Email:</span><span id="email" class="value"></span></div>
+        <div class="detail-item"><span class="label">Vai trò:</span><span id="role" class="value"></span></div>
+        <div class="detail-item"><span class="label">Số điện thoại:</span><span id="phoneNumber" class="value"></span></div>
+        <div class="detail-item"><span class="label">Địa chỉ:</span><span id="address" class="value"></span></div>
+        <div class="detail-item"><span class="label">Ngày sinh:</span><span id="birthday" class="value"></span></div>
+        <div class="detail-item"><span class="label">Giới tính:</span><span id="gender" class="value"></span></div>
+        <a href="user.html" class="back-button">Quay lại</a>
+    </div>
+</div>
+
+<script src="user-detail.js"></script>
+<script src="../dashboard.js"></script>
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <p class="modal-message">Bạn có muốn đăng xuất?</p>
+        <div class="modal-actions">
+            <button id="yesButton" class="yes-button">Có</button>
+            <button id="noButton" class="no-button">Không</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

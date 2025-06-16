@@ -1,25 +1,23 @@
-/* --- CSS Variables (Consistent with other pages) --- */
 :root {
-    --primary-color: #007bff; /* Xanh dương làm màu chủ đạo */
+    --primary-color: #007bff;
     --primary-dark: #0056b3;
-    --secondary-color: #6c757d; /* Xám cho các yếu tố phụ */
-    --accent-color: #28a745; /* Xanh lá cây cho nút hành động thành công */
+    --secondary-color: #6c757d;
+    --accent-color: #28a745;
     --accent-dark: #218838;
-    --danger-color: #dc3545; /* Đỏ cho nút hủy/nguy hiểm */
+    --danger-color: #dc3545;
     --danger-dark: #c82333;
-    --info-color: #17a2b8; /* Xanh ngọc cho trạng thái info */
-    --warning-color: #ffc107; /* Vàng cho trạng thái warning */
-    --background-light: #f8f9fa; /* Nền sáng */
-    --card-background: #ffffff; /* Nền thẻ/panel */
-    --text-dark: #343a40; /* Màu chữ chính */
-    --text-light: #666; /* Màu chữ phụ */
-    --border-color: #dee2e6; /* Màu viền */
-    --shadow-light: rgba(0, 0, 0, 0.08); /* Bóng nhẹ */
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --background-light: #f8f9fa;
+    --card-background: #ffffff;
+    --text-dark: #343a40;
+    --text-light: #666;
+    --border-color: #dee2e6;
+    --shadow-light: rgba(0, 0, 0, 0.08);
     --transition-speed: 0.3s ease;
-    --font-family-primary: 'Roboto', sans-serif; /* Sử dụng font Roboto */
+    --font-family-primary: 'Roboto', sans-serif;
 }
 
-/* --- Global Reset & Body --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -33,7 +31,6 @@ body {
     line-height: 1.6;
 }
 
-/* --- Navbar (Consistent with other pages) --- */
 .navbar {
     background-color: var(--primary-color);
     color: white;
@@ -42,7 +39,7 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 8px var(--shadow-light);
-    position: sticky; /* Sticky navbar */
+    position: sticky;
     top: 0;
     z-index: 1000;
 }
@@ -127,26 +124,25 @@ body {
     display: none;
 }
 
-/* --- Main Container & Sidebar --- */
 .main-container {
     display: flex;
-    padding: 20px; /* Padding tổng thể cho container */
-    max-width: 1650px; /* Giới hạn chiều rộng tổng thể */
+    padding: 20px;
+    max-width: 1650px;
     margin-left: auto;
     margin-right: auto;
-    gap: 20px; /* Khoảng cách giữa sidebar và content */
+    gap: 20px;
 }
 
 .sidebar {
-    flex-shrink: 0; /* Ngăn sidebar co lại */
-    width: 280px; /* Chiều rộng tăng nhẹ */
+    flex-shrink: 0;
+    width: 280px;
     background-color: var(--card-background);
     border-radius: 8px;
     box-shadow: 0 4px 15px var(--shadow-light);
     padding: 15px 0;
-    height: fit-content; /* Chiều cao vừa với nội dung */
-    position: sticky; /* Sidebar sticky */
-    top: 90px; /* Dưới navbar một chút */
+    height: fit-content;
+    position: sticky;
+    top: 90px;
 }
 
 .sidebar-item {
@@ -157,13 +153,13 @@ body {
     font-size: 16px;
     padding: 15px 20px;
     transition: background-color var(--transition-speed), color var(--transition-speed);
-    border-left: 4px solid transparent; /* Viền trái cho hiệu ứng active */
+    border-left: 4px solid transparent;
 }
 
 .sidebar-item i {
-    font-size: 18px; /* Kích thước icon nhỏ hơn một chút */
+    font-size: 18px;
     margin-right: 12px;
-    color: var(--secondary-color); /* Màu icon mặc định */
+    color: var(--secondary-color);
 }
 
 .sidebar-item span {
@@ -181,9 +177,9 @@ body {
 }
 
 .sidebar-item.active {
-    background-color: var(--background-light); /* Nền nhẹ hơn cho active */
+    background-color: var(--background-light);
     color: var(--primary-color);
-    font-weight: 700; /* Đậm hơn */
+    font-weight: 700;
     border-left-color: var(--primary-color);
 }
 
@@ -191,15 +187,14 @@ body {
     color: var(--primary-color);
 }
 
-/* --- Content Area --- */
 .content {
-    flex-grow: 1; /* Cho phép content mở rộng */
-    max-width: calc(100% - 300px); /* Đảm bảo không tràn ra ngoài khi sidebar cố định */
+    flex-grow: 1;
+    max-width: calc(100% - 300px);
 }
 
 .info-container {
     background-color: var(--card-background);
-    padding: 30px; /* Tăng padding */
+    padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 15px var(--shadow-light);
 }
@@ -208,18 +203,18 @@ body {
     text-align: center;
     margin-bottom: 30px;
     color: var(--primary-color);
-    font-size: 28px; /* Lớn hơn */
+    font-size: 28px;
     font-weight: 700;
-    border-bottom: 2px solid var(--border-color); /* Đường kẻ dưới */
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 15px;
 }
 
 .filter-section {
-    margin-bottom: 25px; /* Tăng khoảng cách */
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
-    gap: 15px; /* Tăng khoảng cách */
-    justify-content: flex-end; /* Căn phải bộ lọc */
+    gap: 15px;
+    justify-content: flex-end;
 }
 
 .filter-section label {
@@ -229,15 +224,15 @@ body {
 }
 
 .filter-section select {
-    padding: 10px 15px; /* Tăng padding */
+    padding: 10px 15px;
     border: 1px solid var(--border-color);
-    border-radius: 6px; /* Bo góc mềm mại */
+    border-radius: 6px;
     font-size: 15px;
     color: var(--text-dark);
     background-color: var(--card-background);
     cursor: pointer;
     transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-    appearance: none; /* Ẩn mũi tên mặc định của select */
+    appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c757d'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -258,9 +253,9 @@ body {
     width: 100%;
     border-collapse: collapse;
     font-size: 15px;
-    box-shadow: 0 2px 8px var(--shadow-light); /* Thêm bóng đổ nhẹ cho bảng */
-    border-radius: 8px; /* Bo góc bảng */
-    overflow: hidden; /* Đảm bảo bo góc hoạt động */
+    box-shadow: 0 2px 8px var(--shadow-light);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .order-table th,
@@ -268,16 +263,16 @@ body {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
-    white-space: nowrap; /* Ngăn xuống dòng */
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Hiển thị dấu ba chấm nếu tràn */
+    text-overflow: ellipsis;
 }
 
 .order-table th {
-    background-color: var(--primary-color); /* Màu nền đậm hơn cho header */
+    background-color: var(--primary-color);
     color: white;
     font-weight: 600;
-    text-align: center; /* Căn giữa tiêu đề */
+    text-align: center;
 }
 
 .order-table th:first-child { border-top-left-radius: 8px; }
@@ -289,35 +284,33 @@ body {
 }
 
 .order-table tbody tr:nth-child(even) td {
-    background-color: #f6f6f6; /* Màu xen kẽ cho hàng */
+    background-color: #f6f6f6;
 }
 
 .order-table tr:hover td {
-    background-color: #eef; /* Hiệu ứng hover nhẹ */
+    background-color: #eef;
 }
 
-/* Column specific widths for better layout on desktop */
-.order-table th:nth-child(1), .order-table td:nth-child(1) { /* Order ID */
+.order-table th:nth-child(1), .order-table td:nth-child(1) {
     width: 20%;
     text-align: center;
 }
-.order-table th:nth-child(2), .order-table td:nth-child(2) { /* Order Date */
+.order-table th:nth-child(2), .order-table td:nth-child(2) {
     width: 25%;
     text-align: center;
 }
-.order-table th:nth-child(3), .order-table td:nth-child(3) { /* Total Price */
+.order-table th:nth-child(3), .order-table td:nth-child(3) {
     width: 20%;
     text-align: right;
 }
-.order-table th:nth-child(4), .order-table td:nth-child(4) { /* Status */
+.order-table th:nth-child(4), .order-table td:nth-child(4) {
     width: 15%;
     text-align: center;
 }
-.order-table th:nth-child(5), .order-table td:nth-child(5) { /* Action */
+.order-table th:nth-child(5), .order-table td:nth-child(5) {
     width: 20%;
     text-align: center;
 }
-
 
 .order-id-link {
     color: var(--primary-color);
@@ -344,15 +337,13 @@ body {
     text-align: center;
 }
 
-/* Status specific colors */
 .status-badge.pending { background-color: var(--warning-color); color: var(--text-dark); }
 .status-badge.processing { background-color: var(--info-color); }
-.status-badge.shipped { background-color: #fd7e14; /* Orange */ }
+.status-badge.shipped { background-color: #fd7e14; }
 .status-badge.delivered { background-color: var(--accent-color); }
-.status-badge.completed { background-color: #6f42c1; /* Purple */ }
+.status-badge.completed { background-color: #6f42c1; }
 .status-badge.cancelled { background-color: var(--danger-color); }
 .status-badge.failed { background-color: var(--danger-color); }
-
 
 .action-button {
     background-color: var(--primary-color);
@@ -362,7 +353,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    text-decoration: none; /* Ensure it looks like a button */
+    text-decoration: none;
     display: inline-block;
     transition: background-color var(--transition-speed), transform 0.1s ease;
 }
@@ -386,8 +377,6 @@ body {
     box-shadow: 0 2px 8px var(--shadow-light);
 }
 
-
-/* --- Responsive Adjustments --- */
 @media (max-width: 992px) {
     .navbar {
         flex-wrap: wrap;
@@ -403,39 +392,38 @@ body {
     .main-container {
         flex-direction: column;
         padding: 15px;
-        margin-top: 60px; /* Điều chỉnh lại margin-top */
+        margin-top: 60px;
         gap: 15px;
     }
 
     .sidebar {
         width: 100%;
         height: auto;
-        position: relative; /* Không sticky trên mobile */
+        position: relative;
         top: auto;
         padding: 10px 0;
-        box-shadow: 0 2px 8px var(--shadow-light); /* Bóng đổ cho sidebar */
+        box-shadow: 0 2px 8px var(--shadow-light);
     }
-    /* Sắp xếp sidebar items theo hàng ngang trên mobile */
     .sidebar {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        overflow-x: auto; /* Cho phép scroll ngang nếu quá nhiều item */
-        -webkit-overflow-scrolling: touch; /* Hỗ trợ cuộn mượt trên iOS */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .sidebar-item {
         padding: 10px 15px;
         font-size: 14px;
-        flex-shrink: 0; /* Ngăn co lại */
-        border-left: none; /* Bỏ viền trái */
-        border-bottom: 3px solid transparent; /* Thay bằng viền dưới */
+        flex-shrink: 0;
+        border-left: none;
+        border-bottom: 3px solid transparent;
         text-align: center;
-        flex-direction: column; /* Icon trên, text dưới */
-        gap: 5px; /* Khoảng cách giữa icon và text */
+        flex-direction: column;
+        gap: 5px;
     }
     .sidebar-item i {
-        margin-right: 0; /* Bỏ margin phải */
+        margin-right: 0;
         font-size: 18px;
     }
     .sidebar-item:hover {
@@ -449,8 +437,8 @@ body {
 
     .content {
         margin-left: 0;
-        max-width: 100%; /* Cho phép content chiếm hết chiều rộng */
-        padding: 0; /* Bỏ padding cũ, container có padding rồi */
+        max-width: 100%;
+        padding: 0;
     }
 
     .info-container {
@@ -464,14 +452,14 @@ body {
     }
 
     .filter-section {
-        flex-direction: column; /* Xếp chồng label và select */
+        flex-direction: column;
         align-items: flex-start;
         gap: 8px;
         margin-bottom: 20px;
-        justify-content: flex-start; /* Căn trái trên mobile */
+        justify-content: flex-start;
     }
     .filter-section select {
-        width: 100%; /* Chiếm toàn bộ chiều rộng */
+        width: 100%;
         font-size: 14px;
         padding: 8px 12px;
     }
@@ -481,96 +469,21 @@ body {
 
     .order-table {
         font-size: 14px;
-        table-layout: auto; /* Cho phép cột tự điều chỉnh trên mobile */
+        table-layout: auto;
     }
     .order-table th, .order-table td {
         padding: 8px 10px;
-        white-space: normal; /* Cho phép text xuống dòng trên mobile */
-        word-break: break-word; /* Ngắt từ nếu quá dài */
+        white-space: normal;
+        word-break: break-word;
     }
 
-    /* Adjust column widths for mobile */
-    .order-table th:nth-child(1), .order-table td:nth-child(1) { /* Order ID */
+    .order-table th:nth-child(1), .order-table td:nth-child(1) {
         width: 25%;
     }
-    .order-table th:nth-child(2), .order-table td:nth-child(2) { /* Order Date */
+    .order-table th:nth-child(2), .order-table td:nth-child(2) {
         width: 25%;
     }
-    .order-table th:nth-child(3), .order-table td:nth-child(3) { /* Total Price */
+    .order-table th:nth-child(3), .order-table td:nth-child(3) {
         width: 20%;
-    }
-    .order-table th:nth-child(4), .order-table td:nth-child(4) { /* Status */
-        width: 15%;
-    }
-    .order-table th:nth-child(5), .order-table td:nth-child(5) { /* Action */
-        width: 15%;
-    }
-
-    .status-badge {
-        font-size: 12px;
-        padding: 5px 8px;
-        min-width: 80px;
-    }
-    .action-button {
-        font-size: 13px;
-        padding: 6px 10px;
-    }
-}
-
-@media (max-width: 576px) {
-    .navbar-links {
-        gap: 10px;
-        margin-top: 10px;
-    }
-    .navbar-links a {
-        font-size: 14px;
-    }
-    .cart-icon svg {
-        width: 24px;
-        height: 24px;
-    }
-    .badge {
-        font-size: 10px;
-        min-width: 18px;
-        top: -3px;
-        right: -8px;
-    }
-
-    .sidebar-item {
-        padding: 8px 10px;
-        font-size: 13px;
-    }
-    .sidebar-item i {
-        font-size: 16px;
-    }
-
-    .info-container {
-        padding: 15px;
-    }
-    .info-container h2 {
-        font-size: 22px;
-        margin-bottom: 20px;
-    }
-
-    .filter-section label {
-        font-size: 14px;
-    }
-    .filter-section select {
-        font-size: 13px;
-        padding: 7px 10px;
-    }
-
-    .order-table th, .order-table td {
-        padding: 6px 8px;
-        font-size: 13px;
-    }
-    .status-badge {
-        font-size: 11px;
-        padding: 4px 6px;
-        min-width: 70px;
-    }
-    .action-button {
-        font-size: 12px;
-        padding: 5px 8px;
     }
 }

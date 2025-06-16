@@ -1,27 +1,17 @@
-/* auth.css */
 
-/* Thêm animation background cho các trang Đăng nhập/Đăng ký */
-/* Đây là khối CSS GHI ĐÈ lên style body từ styles.css */
 body {
-    /* Đảm bảo kích thước bắt đầu là 100% trước khi animation diễn ra */
-    /* Quan trọng: background-size được định nghĩa trong styles.css, đây chỉ là khởi tạo */
     background-size: 100%;
-    /* Áp dụng animation: backgroundZoom (được định nghĩa trong styles.css) */
-    /* Tốc độ 2s, kiểu chuyển động ease-out, giữ trạng thái cuối cùng (110%) */
     animation: backgroundZoom 0.8s ease-out forwards;
 }
 
-/* responsive riêng cho animation trên mobile của trang auth */
 @media (max-width: 600px) {
     body {
-        /* Đảm bảo kích thước bắt đầu là auto 100% trên mobile */
         background-size: auto 100%;
         animation: backgroundZoomMobile 2s ease-out forwards;
     }
 }
 
 
-/* Các style cho form đăng nhập/đăng ký */
 .form {
     background: var(--form-bg-opacity); /* Nền form TRẮNG HOÀN TOÀN */
     backdrop-filter: none; /* Bỏ hiệu ứng làm mờ (vì không còn trong suốt) */
@@ -118,10 +108,6 @@ body {
     /* Các thuộc tính khác như padding, background, color, border, border-radius, cursor, font-size, font-weight, transition, box-shadow đã được định nghĩa trong styles.css */
 }
 
-/* Liên kết "Chưa có tài khoản?" và "Quay lại trang chủ" */
-/* ... (các style khác của bạn) ... */
-
-/* Liên kết "Chưa có tài khoản?" và "Quay lại trang chủ" */
 p a {
     color: var(--text-dark); /* Màu link thành màu tối để dễ nhìn trên nền trắng/sáng của container */
     text-shadow: none; /* Bỏ bóng chữ */
@@ -130,6 +116,12 @@ p a {
     transition: all 0.3s ease; /* Thay đổi thành 'all' để chuyển động mượt mà cho tất cả thuộc tính thay đổi */
     margin-top: 10px; /* Khoảng cách giữa các link */
     display: inline-block; /* Để áp dụng margin-top và các thuộc tính transform */
+}
+
+.message {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
 }
 
 p a:hover {

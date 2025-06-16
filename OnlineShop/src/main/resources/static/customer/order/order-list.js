@@ -1,15 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded in order-list.js, starting initialization');
     getUserInfo();
     getOrderList();
 });
 
 async function getUserInfo() {
-    console.log('Fetching user info started in order-list.js');
     const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
     if (!token || token.trim() === '') {
-        console.error('No valid token found in localStorage');
         alert('Vui lòng đăng nhập để xem đơn hàng!');
         window.location.href = '/customer/login/login.html';
         return;
@@ -24,19 +20,15 @@ async function getUserInfo() {
             }
         });
 
-        console.log('API Response Status:', response.status);
         if (response.ok) {
             const userInfo = await response.json();
-            console.log('User Info Received:', userInfo);
             if (userInfo && userInfo.fullName) {
                 document.getElementById('userInfo').textContent = `Xin chào, ${userInfo.fullName}`;
             } else {
-                console.error('Invalid user info structure:', userInfo);
                 document.getElementById('userInfo').textContent = 'Xin chào';
             }
         } else {
             const errorText = await response.text();
-            console.error('API Error - Status:', response.status, 'Message:', errorText);
             if (response.status === 401) {
                 alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
                 window.location.href = '/auth/login.html';
@@ -45,7 +37,6 @@ async function getUserInfo() {
             }
         }
     } catch (error) {
-        console.error('Fetch Error:', error.message);
         alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
     }
 }
@@ -77,7 +68,6 @@ async function getOrderList() {
             alert(`Lỗi khi lấy danh sách đơn hàng: ${errorText}`);
         }
     } catch (error) {
-        console.error('Fetch Error:', error.message);
         alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
     }
 }
@@ -112,17 +102,13 @@ function filterOrders() {
     const statusFilter = document.getElementById('status-filter').value;
     let filteredOrders = allOrders;
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM fully loaded in order-detail.js, starting initialization');
         getUserInfo();
         getOrderDetail();
     });
 
     async function getUserInfo() {
-        console.log('Fetching user info started in order-detail.js');
         const token = localStorage.getItem('token');
-        console.log('Token from localStorage:', token);
         if (!token || token.trim() === '') {
-            console.error('No valid token found in localStorage');
             alert('Vui lòng đăng nhập để xem chi tiết đơn hàng!');
             window.location.href = '/auth/login.html';
             return;
@@ -137,19 +123,15 @@ function filterOrders() {
                 }
             });
 
-            console.log('API Response Status:', response.status);
             if (response.ok) {
                 const userInfo = await response.json();
-                console.log('User Info Received:', userInfo);
                 if (userInfo && userInfo.fullName) {
                     document.getElementById('userInfo').textContent = `Xin chào, ${userInfo.fullName}`;
                 } else {
-                    console.error('Invalid user info structure:', userInfo);
                     document.getElementById('userInfo').textContent = 'Xin chào';
                 }
             } else {
                 const errorText = await response.text();
-                console.error('API Error - Status:', response.status, 'Message:', errorText);
                 if (response.status === 401) {
                     alert('Token không hợp lệ hoặc hết hạn. Vui lòng đăng nhập lại!');
                     window.location.href = '/auth/login.html';
@@ -158,7 +140,6 @@ function filterOrders() {
                 }
             }
         } catch (error) {
-            console.error('Fetch Error:', error.message);
             alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
         }
     }
@@ -197,7 +178,6 @@ function filterOrders() {
                 window.location.href = '/customer/order/order-list.html';
             }
         } catch (error) {
-            console.error('Fetch Error:', error.message);
             alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
             window.location.href = '/customer/order/order-list.html';
         }
@@ -310,7 +290,6 @@ function filterOrders() {
         try {
             userId = parseInt(await extractIdFromToken(token));
         } catch (error) {
-            console.error('Error extracting userId:', error.message);
             alert('Lỗi khi lấy thông tin người dùng. Vui lòng thử lại!');
             return;
         }
@@ -338,18 +317,13 @@ function filterOrders() {
                 alert(`Lỗi khi gửi review: ${errorText}`);
             }
         } catch (error) {
-            console.error('Fetch Error:', error.message);
             alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
         }
     }
 
-// Hàm giả định để lấy userId từ token (cần tích hợp với jwtUtil nếu có)
     async function extractIdFromToken(token) {
-        // Giả định jwtUtil.extractId là hàm có sẵn trong ứng dụng
-        // Đây là placeholder, cần thay bằng logic thực tế
         return new Promise((resolve) => {
-            // Thay bằng mã thực tế để gọi jwtUtil.extractId(token)
-            const mockUserId = "1"; // Thay bằng logic thực tế
+            const mockUserId = "1";
             resolve(mockUserId);
         });
     }
@@ -383,7 +357,6 @@ function filterOrders() {
                 alert(`Lỗi khi hủy đơn hàng: ${errorText}`);
             }
         } catch (error) {
-            console.error('Fetch Error:', error.message);
             alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
         }
     }
@@ -416,7 +389,6 @@ function filterOrders() {
             alert('Đã thêm tất cả sản phẩm vào giỏ hàng!');
             window.location.href = '/customer/cart/cart.html';
         } catch (error) {
-            console.error('Fetch Error:', error.message);
             alert('Lỗi kết nối đến server. Vui lòng thử lại sau!');
         }
     }
@@ -428,7 +400,6 @@ function filterOrders() {
     displayOrders(filteredOrders);
 }
 
-// Hàm logout sử dụng từ home.js
 function log_out() {
     localStorage.removeItem('token');
     window.location.href = '/auth/login.html';

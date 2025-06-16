@@ -9,11 +9,16 @@ const imageInput = document.getElementById('images');
 const imagePreview = document.getElementById('imagePreview');
 const searchInput = document.getElementById('searchInput');
 const sortOptionSelect = document.getElementById('sortOption');
+const pagination = document.createElement('div'); // Thêm phần tử phân trang
+pagination.className = 'pagination';
+document.querySelector('.main-content').appendChild(pagination);
 
-// Thông tin Cloudinary
 const CLOUDINARY_CLOUD_NAME = 'dvzqdq4my';
 const CLOUDINARY_UPLOAD_PRESET = 'online_shop';
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+let currentPage = 0;
+const pageSize = 6; // Số sản phẩm trên mỗi trang
 
 async function fetchCategories() {
     try {
@@ -41,12 +46,11 @@ async function fetchCategories() {
             categorySelect.appendChild(option);
         });
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
 
-async function fetchAndRenderProducts() {
+async function fetchAndRenderProducts(page = currentPage) {
     try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -54,7 +58,23 @@ async function fetchAndRenderProducts() {
             return;
         }
 
-        const response = await fetch(API_BASE_URL, {
+        const sortOption = sortOptionSelect.value;
+        let sortParam = 'id,asc'; // Mặc định
+        switch (sortOption) {
+            case 'idAsc': sortParam = 'id,asc'; break;
+            case 'idDesc': sortParam = 'id,desc'; break;
+            case 'priceAsc': sortParam = 'price,asc'; break;
+            case 'priceDesc': sortParam = 'price,desc'; break;
+            case 'nameAsc': sortParam = 'name,asc'; break;
+            case 'nameDesc': sortParam = 'name,desc'; break;
+        }
+
+        const searchTerm = searchInput.value.trim();
+        const url = searchTerm
+            ? `${API_BASE_URL}/search-by-keyword?keyword=${encodeURIComponent(searchTerm)}&page=${page}&size=${pageSize}&sort=${sortParam}`
+            : `${API_BASE_URL}?page=${page}&size=${pageSize}&sort=${sortParam}`;
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -64,47 +84,22 @@ async function fetchAndRenderProducts() {
             throw new Error(`Không thể lấy danh sách sản phẩm: ${await response.text()}`);
         }
 
-        const products = await response.json();
-        renderProducts(products);
+        const data = await response.json();
+        renderProducts(data.content);
+        renderPagination(data.totalPages, data.number);
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
 
 function renderProducts(products) {
-    const searchTerm = searchInput.value.toLowerCase();
-
-    // Lọc sản phẩm theo tên
-    let filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm)
-    );
-
-    // Sắp xếp sản phẩm dựa trên lựa chọn
-    const sortOption = sortOptionSelect.value;
-
-    if (sortOption === 'idAsc') {
-        filteredProducts.sort((a, b) => a.id - b.id);
-    } else if (sortOption === 'idDesc') {
-        filteredProducts.sort((a, b) => b.id - a.id);
-    } else if (sortOption === 'priceAsc') {
-        filteredProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
-    } else if (sortOption === 'priceDesc') {
-        filteredProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
-    } else if (sortOption === 'nameAsc') {
-        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortOption === 'nameDesc') {
-        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    // Render danh sách sản phẩm
     productTableBody.innerHTML = '';
-    filteredProducts.forEach(product => {
+    products.forEach(product => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${product.id}</td>
             <td>${product.name}</td>
-            <td>${product.price}</td>
+            <td>${product.price ? product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'N/A'}</td>
             <td>${product.stock}</td>
             <td>
                 <button onclick="updateProduct(${product.id})">Cập nhật</button>
@@ -113,6 +108,20 @@ function renderProducts(products) {
         `;
         productTableBody.appendChild(row);
     });
+}
+
+function renderPagination(totalPages, currentPageNum) {
+    pagination.innerHTML = '';
+    for (let i = 0; i < totalPages; i++) {
+        const button = document.createElement('button');
+        button.textContent = i + 1;
+        button.className = i === currentPageNum ? 'active' : '';
+        button.addEventListener('click', () => {
+            currentPage = i;
+            fetchAndRenderProducts(currentPage);
+        });
+        pagination.appendChild(button);
+    }
 }
 
 async function uploadImageToCloudinary(file) {
@@ -136,8 +145,7 @@ async function uploadImageToCloudinary(file) {
             publicId: data.public_id
         };
     } catch (error) {
-        console.error(`Lỗi upload ảnh ${file.name}:`, error);
-        throw error; // Ném lỗi để bắt ở ngoài
+        throw error;
     }
 }
 
@@ -153,18 +161,16 @@ async function createProduct(event) {
     const files = imageInput.files;
     const images = [];
 
-    console.log('Tổng số file:', files.length); // Kiểm tra số lượng file
-
-    // Upload từng ảnh lên Cloudinary
     try {
-        for (let file of files) {
-            console.log('Đang upload file:', file.name); // Log tên file
-            const { url, publicId } = await uploadImageToCloudinary(file);
-            images.push({ url, publicId });
-            console.log('Đã upload:', { url, publicId }); // Log kết quả
+        if (files.length > 5) {
+            alert('Bạn chỉ có thể tải lên tối đa 5 ảnh!');
+            return;
         }
 
-        console.log('Danh sách ảnh đã upload:', images);
+        for (let file of files) {
+            const { url, publicId } = await uploadImageToCloudinary(file);
+            images.push({ url, publicId });
+        }
 
         const productData = {
             name: document.getElementById('name').value,
@@ -194,9 +200,8 @@ async function createProduct(event) {
         alert('Thêm sản phẩm thành công');
         document.getElementById('createProductForm').reset();
         toggleCreateForm();
-        fetchAndRenderProducts();
+        fetchAndRenderProducts(0);
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -232,9 +237,8 @@ async function deleteProduct(id) {
             }
 
             alert('Xóa sản phẩm thành công');
-            fetchAndRenderProducts();
+            fetchAndRenderProducts(currentPage);
         } catch (error) {
-            console.error('Lỗi:', error);
             alert(`Đã có lỗi xảy ra: ${error.message}`);
         }
     }
@@ -250,22 +254,21 @@ function toggleCreateForm() {
         productListSection.style.display = 'block';
         toggleCreateFormButton.textContent = 'Thêm Sản Phẩm';
         document.getElementById('createProductForm').reset();
-        imagePreview.innerHTML = ''; // Xóa preview ảnh khi hủy
+        imagePreview.innerHTML = '';
     }
 }
 
-// Hiển thị preview tất cả các ảnh đã chọn
 imageInput.addEventListener('change', (event) => {
-    console.log('Số lượng file đã chọn:', imageInput.files.length);
     const files = event.target.files;
 
     if (files.length > 5) {
         alert('Bạn chỉ có thể tải lên tối đa 5 ảnh!');
-        imageInput.value = ''; // Reset input
-        imagePreview.innerHTML = ''; // Xóa preview
+        imageInput.value = '';
+        imagePreview.innerHTML = '';
         return;
     }
 
+    imagePreview.innerHTML = '';
     Array.from(files).forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -279,20 +282,16 @@ imageInput.addEventListener('change', (event) => {
     });
 });
 
-// Gắn sự kiện cho nút "Thêm Sản Phẩm"
 toggleCreateFormButton.addEventListener('click', toggleCreateForm);
-
-// Gắn sự kiện cho nút "Hủy"
 cancelCreateButton.addEventListener('click', toggleCreateForm);
-
-// Gắn sự kiện cho form tạo sản phẩm
 document.getElementById('createProductForm').addEventListener('submit', createProduct);
 
-// Tải danh sách danh mục và sản phẩm khi trang được tải
 document.addEventListener('DOMContentLoaded', () => {
     fetchCategories();
     fetchAndRenderProducts();
 });
 
-// Gắn sự kiện tìm kiếm theo input
-searchInput.addEventListener('input', fetchAndRenderProducts);
+searchInput.addEventListener('input', () => {
+    currentPage = 0;
+    fetchAndRenderProducts(0);
+});

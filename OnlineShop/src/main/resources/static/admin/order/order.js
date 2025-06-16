@@ -22,7 +22,6 @@ async function fetchAndRenderOrders() {
         const orders = await response.json();
         renderOrders(orders);
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -49,5 +48,4 @@ function editOrderStatus(orderId) {
     window.location.href = `order-detail.html?id=${orderId}`;
 }
 
-// Tải danh sách đơn hàng khi trang được tải
 document.addEventListener('DOMContentLoaded', fetchAndRenderOrders);

@@ -1,4 +1,3 @@
-/* Các style hiện có của bạn (không thay đổi) */
 * {
     margin: 0;
     padding: 0;
@@ -48,6 +47,7 @@ body {
 .sidebar ul li:hover {
     background-color: #0c97d3;
 }
+
 .sidebar ul li.active {
     background-color: #16a085;
 }
@@ -68,34 +68,31 @@ body {
     color: #ecf0f1;
 }
 
-/* Các style mới cho nút Đăng xuất */
 .sidebar .logout-item {
-    margin-top: 30px; /* Thêm khoảng cách phía trên nút Đăng xuất */
-    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Đường kẻ phân cách */
+    margin-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar .logout-item a {
-    background-color: #dc3545; /* Màu đỏ cho nút đăng xuất */
+    background-color: #dc3545;
     text-align: center;
     font-weight: bold;
-    padding: 15px 20px; /* Đảm bảo padding nhất quán */
-    border-radius: 0 0 5px 5px; /* Bo góc dưới nếu bạn muốn */
+    padding: 15px 20px;
+    border-radius: 0 0 5px 5px;
 }
 
 .sidebar .logout-item a:hover {
-    background-color: #c82333; /* Màu đỏ đậm hơn khi hover */
-    transform: none; /* Đảm bảo không có hiệu ứng transform */
+    background-color: #c82333;
+    transform: none;
 }
-
 
 .main-content {
     flex: 1;
     padding: 20px;
 }
 
-/* Các style mới cho Modal Đăng xuất */
 .modal {
-    display: none; /* Chính xác: Ẩn modal mặc định khi tải trang */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -104,7 +101,6 @@ body {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-    /* Các thuộc tính flexbox sẽ chỉ có hiệu lực khi JavaScript đặt display thành 'flex' */
     justify-content: center;
     align-items: center;
 }
@@ -113,12 +109,12 @@ body {
     background-color: #fefefe;
     padding: 30px;
     border: 1px solid #888;
-    border-radius: 10px; /* Bo góc modal */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Đổ bóng */
-    width: 90%; /* Chiều rộng tương đối */
-    max-width: 400px; /* Chiều rộng tối đa */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
     text-align: center;
-    animation: fadeIn 0.3s ease-out; /* Hoạt ảnh fade in */
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-message {
@@ -130,8 +126,8 @@ body {
 
 .modal-actions {
     display: flex;
-    justify-content: center; /* Căn giữa các nút */
-    gap: 15px; /* Khoảng cách giữa các nút */
+    justify-content: center;
+    gap: 15px;
 }
 
 .modal-actions button {
@@ -146,7 +142,7 @@ body {
 }
 
 .yes-button {
-    background-color: #007bff; /* Màu xanh cho "Có" */
+    background-color: #007bff;
     color: white;
 }
 
@@ -157,7 +153,7 @@ body {
 }
 
 .no-button {
-    background-color: #6c757d; /* Màu xám cho "Không" */
+    background-color: #6c757d;
     color: white;
 }
 
@@ -167,7 +163,6 @@ body {
     box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
 }
 
-/* Keyframes cho hoạt ảnh fade in */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -179,7 +174,6 @@ body {
     }
 }
 
-/* Keyframes cho hoạt ảnh fade out (nếu bạn muốn dùng JS để fade out) */
 @keyframes fadeOut {
     from {
         opacity: 1;

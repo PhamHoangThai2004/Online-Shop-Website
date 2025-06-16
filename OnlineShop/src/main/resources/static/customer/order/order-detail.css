@@ -1,4 +1,3 @@
-/* --- CSS Variables (Consistent with other pages) --- */
 :root {
     --primary-color: #007bff;
     --primary-dark: #0056b3;
@@ -19,7 +18,6 @@
     --star-color-empty: #ccc;
 }
 
-/* --- Global Reset & Body --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -127,7 +125,6 @@ body {
     display: none;
 }
 
-/* --- Main Container & Sidebar --- */
 .main-container {
     display: flex;
     padding: 20px;
@@ -191,7 +188,6 @@ body {
     color: var(--primary-color);
 }
 
-/* --- Content Area --- */
 .content {
     flex-grow: 1;
     max-width: calc(100% - 300px);
@@ -320,7 +316,6 @@ body {
     color: var(--primary-dark);
 }
 
-/* --- Action Buttons --- */
 .action-buttons {
     margin-top: 30px;
     text-align: right;
@@ -371,7 +366,6 @@ body {
     background-color: #5a6268;
 }
 
-/* --- Review Dialog --- */
 .dialog-overlay {
     position: fixed;
     top: 0;
@@ -379,7 +373,7 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    display: flex; /* Đổi thành flex ngay từ đầu để tránh xung đột */
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
@@ -490,7 +484,6 @@ body {
     transform: translateY(0);
 }
 
-/* --- Responsive Adjustments --- */
 @media (max-width: 992px) {
     .navbar {
         flex-wrap: wrap;

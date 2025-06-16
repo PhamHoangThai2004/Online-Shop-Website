@@ -31,7 +31,6 @@ async function fetchReviews() {
         }
 
         const reviews = await response.json();
-        console.log('Reviews Data:', reviews);
 
         reviewsBody.innerHTML = ''; // Xóa nội dung cũ
         if (reviews.length === 0) {
@@ -55,7 +54,6 @@ async function fetchReviews() {
             reviewsBody.appendChild(row);
         });
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -86,9 +84,8 @@ async function deleteReview(reviewId, userId) {
         }
 
         alert('Xóa đánh giá thành công!');
-        fetchReviews(); // Làm mới danh sách
+        fetchReviews();
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -104,5 +101,4 @@ function goBack() {
     window.location.href = `../product/detail.html?id=${productId}`;
 }
 
-// Tải danh sách đánh giá khi trang được tải
 document.addEventListener('DOMContentLoaded', fetchReviews);

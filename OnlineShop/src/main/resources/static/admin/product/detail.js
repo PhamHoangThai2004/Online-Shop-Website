@@ -6,7 +6,6 @@ const imageUpload = document.getElementById('imageUpload');
 let categoriesData = [];
 let currentImages = []; // Lưu ảnh hiện tại
 
-// Cấu hình Cloudinary (lấy từ product.js)
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvzqdq4my/image/upload';
 const CLOUDINARY_UPLOAD_PRESET = 'online_shop';
 
@@ -29,7 +28,6 @@ async function fetchCategories() {
         }
 
         const categories = await response.json();
-        console.log('Categories Data:', categories);
         categoriesData = categories;
         categories.forEach(category => {
             const option = document.createElement('option');
@@ -39,7 +37,6 @@ async function fetchCategories() {
         });
         return categories;
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
         return [];
     }
@@ -72,7 +69,6 @@ async function fetchAndPopulateProduct() {
         }
 
         const product = await response.json();
-        console.log('Product Data:', product);
 
         document.getElementById('id').value = product.id;
         document.getElementById('name').value = product.name;
@@ -89,7 +85,6 @@ async function fetchAndPopulateProduct() {
         currentImages = product.images || [];
         updateImagePreview();
     } catch (error) {
-        console.error('Lỗi:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -135,15 +130,13 @@ async function uploadToCloudinary(file) {
             publicId: data.public_id
         };
     } catch (error) {
-        console.error('Lỗi upload ảnh:', error);
         alert('Lỗi khi upload ảnh lên Cloudinary');
-        throw error; // Ném lỗi để bắt ở ngoài
+        throw error;
     }
 }
 
 async function updateProduct(event) {
-    event.preventDefault(); // Ngăn chặn reload trang
-    console.log('Bắt đầu cập nhật sản phẩm...');
+    event.preventDefault();
 
     const token = localStorage.getItem('token');
     if (!token) {
@@ -154,25 +147,19 @@ async function updateProduct(event) {
     const productId = document.getElementById('id').value;
     const newImages = Array.from(imageUpload.files);
 
-    console.log('Số ảnh mới:', newImages.length);
-    // Upload ảnh mới lên Cloudinary
     const uploadedImages = [];
     try {
         for (const file of newImages) {
-            console.log('Đang upload ảnh:', file.name);
             const imageData = await uploadToCloudinary(file);
             if (imageData) {
                 uploadedImages.push(imageData);
             }
         }
     } catch (error) {
-        console.error('Lỗi trong quá trình upload ảnh:', error);
-        return; // Dừng nếu upload ảnh thất bại
+        return;
     }
 
-    // Kết hợp ảnh cũ và ảnh mới
     const allImages = [...currentImages, ...uploadedImages];
-    console.log('Danh sách ảnh cuối cùng:', allImages);
 
     const productData = {
         name: document.getElementById('name').value,
@@ -187,7 +174,6 @@ async function updateProduct(event) {
     };
 
     try {
-        console.log('Gửi request tới server:', productData);
         const response = await fetch(`${API_BASE_URL}/${productId}`, {
             method: 'PUT',
             headers: {
@@ -202,11 +188,9 @@ async function updateProduct(event) {
             throw new Error(`Không thể cập nhật sản phẩm: ${errorText}`);
         }
 
-        console.log('Cập nhật thành công:', await response.json());
         alert('Cập nhật sản phẩm thành công');
         window.location.href = 'product.html';
     } catch (error) {
-        console.error('Lỗi khi cập nhật:', error);
         alert(`Đã có lỗi xảy ra: ${error.message}`);
     }
 }
@@ -220,13 +204,10 @@ function viewProductReviews() {
     window.location.href = `../review/review.html?productId=${productId}`;
 }
 
-// Gắn sự kiện submit cho form
 updateProductForm.addEventListener('submit', updateProduct);
 
-// Lắng nghe sự kiện khi chọn ảnh mới
 imageUpload.addEventListener('change', updateImagePreview);
 
-// Tải danh sách danh mục trước, sau đó mới tải thông tin sản phẩm
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchCategories();
     await fetchAndPopulateProduct();

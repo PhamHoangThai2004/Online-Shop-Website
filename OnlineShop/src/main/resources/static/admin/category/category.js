@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         successDialog.style.display = 'block';
         setTimeout(() => {
             successDialog.style.display = 'none';
-        }, 3000); // ẩn sau 3 giây
+        }, 3000);
     }
 
     function fetchCategories(nameFilter = '') {
@@ -54,20 +54,17 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(err => console.error('Lỗi khi lấy danh mục:', err));
     }
 
-    // Tìm kiếm
     searchForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const keyword = searchInput.value.trim();
         fetchCategories(keyword);
     });
 
-    // Hiện form thêm
     showAddFormButton.addEventListener('click', function () {
         addForm.style.display = addForm.style.display === 'none' ? 'block' : 'none';
-        editForm.style.display = 'none'; // ẩn form sửa nếu đang hiện
+        editForm.style.display = 'none';
     });
 
-    // Thêm danh mục
     addForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const name = newCategoryNameInput.value.trim();
@@ -96,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Hiển thị form sửa danh mục
     window.editCategory = function (id, name) {
         addForm.style.display = 'none';
         editForm.style.display = 'block';
@@ -104,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
         editCategoryNameInput.value = name;
     };
 
-    // Xử lý cập nhật danh mục
     editForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const id = editCategoryIdInput.value;
@@ -134,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Xóa danh mục
     window.deleteCategory = function (id) {
         if (!confirm('Bạn có chắc muốn xóa danh mục này?')) return;
 
@@ -157,6 +151,5 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
 
-    // Khởi tạo
     fetchCategories();
 });

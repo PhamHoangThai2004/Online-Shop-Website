@@ -1,60 +1,51 @@
-/* review.css - Các style tùy chỉnh cho trang Đánh giá Sản phẩm */
-
-/* Loại bỏ các style đã có trong dashboard.css hoặc đã được tái sử dụng từ product.css */
-/*
-.main-content {
-    margin-left: 250px; // Đã được xử lý bởi display: flex trên body và flex: 1 trên main-content
-    padding: 20px;     // Đã được xử lý bởi padding trên main-content
-}
-h1 {
-    margin-bottom: 20px; // margin-bottom đã được xử lý trong product.css
-}
-*/
-
-/* Sử dụng các style cho bảng đã định nghĩa trong product.css */
-#reviewsTable { /* Áp dụng các style chung của bảng */
+#reviewsTable {
     width: 100%;
     border-collapse: collapse;
-    background: var(--card-background); /* Nền trắng */
+    background: var(--card-background);
     margin-top: 20px;
     border-radius: 8px;
-    overflow: hidden; /* Đảm bảo bo góc hoạt động */
-    box-shadow: 0 4px 12px var(--shadow-light); /* Đổ bóng */
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow-light);
 }
 
-#reviewsTable th, #reviewsTable td { /* Sử dụng các style chung cho th, td */
+#reviewsTable th,
+#reviewsTable td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid var(--border-color); /* Viền phân cách */
-    white-space: nowrap; /* Ngăn text xuống dòng */
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Thêm dấu ba chấm nếu tràn */
+    text-overflow: ellipsis;
 }
 
-#reviewsTable th { /* Style cho header bảng */
-    background-color: var(--primary-color); /* Màu nền xanh */
+#reviewsTable th {
+    background-color: var(--primary-color);
     color: white;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.9em;
 }
-/* Bo góc cho header bảng (nếu cần, đã có trong product.css) */
-#reviewsTable th:first-child { border-top-left-radius: 8px; }
-#reviewsTable th:last-child { border-top-right-radius: 8px; }
+
+#reviewsTable th:first-child {
+    border-top-left-radius: 8px;
+}
+
+#reviewsTable th:last-child {
+    border-top-right-radius: 8px;
+}
 
 #reviewsTable tr:last-child td {
-    border-bottom: none; /* Không có border dưới cho hàng cuối cùng */
+    border-bottom: none;
 }
 
 #reviewsTable tbody tr:hover {
-    background-color: var(--background-light); /* Hiệu ứng hover cho hàng */
+    background-color: var(--background-light);
 }
 
-/* Style cho thông báo không có đánh giá */
 .no-reviews {
     text-align: center;
     padding: 20px;
-    color: var(--text-light); /* Sử dụng biến màu xám nhẹ */
+    color: var(--text-light);
     font-size: 1.1em;
     font-style: italic;
     background-color: var(--card-background);
@@ -63,8 +54,6 @@ h1 {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* --- Style cho nút "Quay lại" (action-button info-button) --- */
-/* Đồng bộ với các nút hành động trong product.css */
 .action-button {
     padding: 12px 25px;
     border: none;
@@ -74,43 +63,43 @@ h1 {
     font-weight: bold;
     transition: background-color var(--transition-speed), transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: inline-block; /* Quan trọng để nút có thể căn chỉnh tốt */
+    display: inline-block;
     text-align: center;
-    text-decoration: none; /* Đảm bảo không có gạch chân nếu là thẻ <a> */
-    color: white; /* Mặc định cho các nút hành động */
+    text-decoration: none;
+    color: white;
 }
 
-.action-button.info-button { /* Màu xanh ngọc cho nút Quay lại */
+.action-button.info-button {
     background-color: var(--info-color);
 }
 
 .action-button.info-button:hover {
-    background-color: #138496; /* Màu đậm hơn khi hover */
+    background-color: #138496;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
 }
 
-/* --- Style cho nút "Xóa" (delete-btn) trong bảng --- */
 .delete-btn {
-    background-color: var(--danger-color); /* Màu đỏ */
+    background-color: var(--danger-color);
     color: white;
-    padding: 8px 15px; /* Padding nhất quán với các nút trong bảng khác */
+    padding: 8px 15px;
     border: none;
-    border-radius: 5px; /* Bo góc nhất quán */
+    border-radius: 5px;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s ease, transform 0.1s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
 .delete-btn:hover {
-    background-color: var(--danger-dark); /* Màu đỏ đậm hơn khi hover */
+    background-color: var(--danger-dark);
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Responsive Adjustments (áp dụng các quy tắc tương tự product.css) */
 @media (max-width: 768px) {
-    #reviewsTable th, #reviewsTable td {
+    #reviewsTable th,
+    #reviewsTable td {
         padding: 10px;
         white-space: normal;
         word-break: break-word;
@@ -118,8 +107,8 @@ h1 {
     .action-button {
         padding: 10px 20px;
         font-size: 1em;
-        width: 100%; /* Nút chiếm toàn bộ chiều rộng trên mobile */
-        margin-bottom: 15px; /* Khoảng cách với bảng */
+        width: 100%;
+        margin-bottom: 15px;
     }
     .delete-btn {
         padding: 6px 10px;
@@ -131,7 +120,8 @@ h1 {
     #reviewsTable {
         font-size: 13px;
     }
-    #reviewsTable th, #reviewsTable td {
+    #reviewsTable th,
+    #reviewsTable td {
         padding: 8px;
     }
     .action-button {

@@ -1,4 +1,3 @@
-// Hàm hiển thị/ẩn mật khẩu
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const eyeIcon = document.getElementById(inputId + 'EyeIcon');
@@ -15,6 +14,20 @@ function togglePassword(inputId) {
     }
 }
 
+function validatePassword(password) {
+    return password.length >= 8;
+}
+
+function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+}
+
+function validatePhoneNumber(phoneNumber) {
+    const phoneRegex = /^(0|\+84)[1-9][0-9]{8,9}$/;
+    return phoneRegex.test(phoneNumber);
+}
+
 // Xử lý form đăng nhập
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
@@ -22,6 +35,22 @@ if (loginForm) {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
+
+        let isValid = true;
+        let errorMessage = '';
+        if (username.trim().length < 6) {
+            isValid = false;
+            errorMessage = 'Tên tài khoản phải có ít nhất 6 ký tự';
+        } else if (!validatePassword(password)) {
+            isValid = false;
+            errorMessage = 'Mật khẩu phải có ít nhất 8 ký tự';
+        }
+
+        if (!isValid) {
+            document.getElementById('loginMessage').textContent = errorMessage;
+            document.getElementById('loginMessage').style.color = 'red';
+            return;
+        }
 
         try {
             // Gửi yêu cầu đăng nhập
@@ -40,9 +69,8 @@ if (loginForm) {
             }
 
             if (loginResponse.ok) {
-                localStorage.setItem('token', loginData.token); // Lưu token
+                localStorage.setItem('token', loginData.token);
 
-                // Gọi API để lấy thông tin người dùng (bao gồm role)
                 const userInfoResponse = await fetch('http://localhost:8080/api/auth/user/info', {
                     headers: { 'Authorization': `Bearer ${loginData.token}` }
                 });
@@ -52,12 +80,11 @@ if (loginForm) {
                 if (userInfoResponse.ok) {
                     const role = userInfoData.role;
                     localStorage.setItem('role', role);
-                    localStorage.setItem('username', userInfoData.username); // Lưu username (tùy chọn)
+                    localStorage.setItem('username', userInfoData.username);
 
                     document.getElementById('loginMessage').textContent = 'Đăng nhập thành công!';
                     document.getElementById('loginMessage').style.color = 'green';
 
-                    // Điều hướng dựa trên vai trò
                     if (role === 'CUSTOMER') {
                         setTimeout(() => window.location.href = '/customer/home/home.html', 1000);
                     } else if (role === 'ADMIN') {
@@ -80,7 +107,7 @@ if (loginForm) {
                 document.getElementById('loginMessage').style.color = 'red';
             }
         } catch (error) {
-            document.getElementById('loginMessage').textContent = 'Lỗi kết nối!';
+            document.getElementById('loginMessage').textContent = 'Lỗi kết nối Internet!';
             document.getElementById('loginMessage').style.color = 'red';
             console.log('Lỗi kết nối:', error);
         }
@@ -98,6 +125,35 @@ if (registerForm) {
         const fullName = document.getElementById('registerFullName').value || '';
         const phoneNumber = document.getElementById('registerPhoneNumber').value || '';
         const address = document.getElementById('registerAddress').value || '';
+
+        // Kiểm tra các trường
+        let isValid = true;
+        let errorMessage = '';
+        if (username.trim().length < 6) {
+            isValid = false;
+            errorMessage = 'Tên tài khoản phải có ít nhất 6 ký tự';
+        } else if (!validatePassword(password)) {
+            isValid = false;
+            errorMessage = 'Mật khẩu phải có ít nhất 8 ký tự';
+        } else if (!validateEmail(email)) {
+            isValid = false;
+            errorMessage = 'Email không hợp lệ. Vui lòng nhập đúng định dạng (ví dụ: example@email.com)';
+        } else if (fullName.trim().length <= 0) {
+            isValid = false;
+            errorMessage = 'Họ và tên không được để trống';
+        } else if (!validatePhoneNumber(phoneNumber)) {
+            isValid = false;
+            errorMessage = 'Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng (bắt đầu bằng 0 hoặc +84, 10-11 chữ số)';
+        } else if (address.trim().length <= 0) {
+            isValid = false;
+            errorMessage = 'Địa chỉ không được để trống';
+        }
+
+        if (!isValid) {
+            document.getElementById('registerMessage').textContent = errorMessage;
+            document.getElementById('registerMessage').style.color = 'red';
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:8080/api/auth/register', {
@@ -117,9 +173,8 @@ if (registerForm) {
             if (response.ok) {
                 document.getElementById('registerMessage').textContent = 'Đăng ký thành công!';
                 document.getElementById('registerMessage').style.color = 'green';
-                setTimeout(() => window.location.href = '/auth/login.html', 1000); // Cập nhật đường dẫn tuyệt đối
+                setTimeout(() => window.location.href = '/auth/login.html', 1000);
             } else {
-                console.log(data.message);
                 document.getElementById('registerMessage').textContent = 'Tên tài khoản đã tồn tại';
                 document.getElementById('registerMessage').style.color = 'red';
             }
