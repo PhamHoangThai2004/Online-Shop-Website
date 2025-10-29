@@ -39,26 +39,7 @@
             Tài khoản test: TK: phthai - MK: 12345678 (link login: http://localhost:8080/auth/login.html)
 
 3. Cấu trúc thưc mục:
-    online-shop/
-    ├── backend/
-    │    ├── src/
-    │    │    ├── main/java/com/group_2/onlineshop/
-    │    │    │     ├── controller/
-    |    |    |     ├── dto
-    |    |    |     ├── entity
-    │    │    │     ├── service/
-    │    │    │     ├── repository/
-    │    │    │     ├── security/
-    │    │    │     └── OnlineShopApp.java
-    │    │    └── resources/
-    |    |          ├── static
-    |    |          |     ├── admin
-    |    |          |     ├── assets
-    |    |          |     ├── auth
-    |    |          |     └── customer
-    |    |          └── application.properties
-    │    └── pom.xml
-    └── README.
+![alt text](image.png)
 
 4. Thư viện & phụ thuộc chính
     - Các thư viện và phụ thuộc
